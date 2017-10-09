@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhd.mapper.AreaMapper">
+    <resultMap id="BaseResultMap" type="com.zhd.pojo.Area">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="northPoint" jdbcType="DECIMAL" property="northPoint"/>
+        <result column="southPoint" jdbcType="DECIMAL" property="southPoint"/>
+        <result column="westPoint" jdbcType="DECIMAL" property="westPoint"/>
+        <result column="eastPoint" jdbcType="DECIMAL" property="eastPoint"/>
+        <result column="type" jdbcType="BIT" property="type"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, name, northPoint, southPoint, westPoint, eastPoint, type
+  </sql>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from areas
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+    <insert id="insert" parameterType="com.zhd.pojo.Area" >
+    <selectKey resultType="int" keyProperty="id" order="AFTER" >
+       SELECT LAST_INSERT_ID() AS id
+    </selectKey>
+    insert into areas (id, name, northPoint,
+      southPoint, westPoint, eastPoint,
+      type)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{northPoint,jdbcType=DECIMAL}, 
+      #{southPoint,jdbcType=DECIMAL}, #{westPoint,jdbcType=DECIMAL}, #{eastPoint,jdbcType=DECIMAL}, 
+      #{type,jdbcType=BIT})
+  </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.zhd.pojo.Area">
+        update areas
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="northPoint != null">
+                northPoint = #{northPoint,jdbcType=DECIMAL},
+            </if>
+            <if test="southPoint != null">
+                southPoint = #{southPoint,jdbcType=DECIMAL},
+            </if>
+            <if test="westPoint != null">
+                westPoint = #{westPoint,jdbcType=DECIMAL},
+            </if>
+            <if test="eastPoint != null">
+                eastPoint = #{eastPoint,jdbcType=DECIMAL},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=BIT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.zhd.pojo.Area">
+    update areas
+    set name = #{name,jdbcType=VARCHAR},
+      northPoint = #{northPoint,jdbcType=DECIMAL},
+      southPoint = #{southPoint,jdbcType=DECIMAL},
+      westPoint = #{westPoint,jdbcType=DECIMAL},
+      eastPoint = #{eastPoint,jdbcType=DECIMAL},
+      type = #{type,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from areas
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectCount" parameterType="com.zhd.pojo.Area" resultType="java.lang.Integer">
+        select count(*)
+        from areas
+        <trim prefix="where" prefixOverrides="and">
+            <if test="record.name != null">
+                name = ${record.name}
+            </if>
+            <if test="record.northPoint != null">
+                and northPoint = #{record.northPoint,jdbcType=DECIMAL}
+            </if>
+            <if test="record.southPoint != null">
+                and southPoint = #{record.southPoint,jdbcType=DECIMAL}
+            </if>
+            <if test="record.westPoint != null">
+                and westPoint = #{record.westPoint,jdbcType=DECIMAL}
+            </if>
+            <if test="record.eastPoint != null">
+                and eastPoint = #{record.eastPoint,jdbcType=DECIMAL}
+            </if>
+            <if test="record.type != null">
+                and type = #{record.type,jdbcType=BIT}
+            </if>
+        </trim>
+    </select>
+
+    <select id="selectAreas" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from areas
+        <trim prefix="where" prefixOverrides="and">
+            <if test="record.name != null">
+                name = ${record.name}
+            </if>
+            <if test="record.northPoint != null">
+                and northPoint = #{record.northPoint,jdbcType=DECIMAL}
+            </if>
+            <if test="record.southPoint != null">
+                and southPoint = #{record.southPoint,jdbcType=DECIMAL}
+            </if>
+            <if test="record.westPoint != null">
+                and westPoint = #{record.westPoint,jdbcType=DECIMAL}
+            </if>
+            <if test="record.eastPoint != null">
+                and eastPoint = #{record.eastPoint,jdbcType=DECIMAL}
+            </if>
+            <if test="record.type != null">
+                and type = #{record.type,jdbcType=BIT}
+            </if>
+        </trim>
+        limit ${start},10
+    </select>
+
+</mapper>

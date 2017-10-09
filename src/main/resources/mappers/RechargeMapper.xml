@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhd.mapper.RechargeMapper">
+  <resultMap id="BaseResultMap" type="com.zhd.pojo.Recharge">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="uid" jdbcType="CHAR" property="uid" />
+    <result column="type" jdbcType="BIT" property="type" />
+    <result column="rechargeTime" jdbcType="TIMESTAMP" property="rechargeTime" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="pid" jdbcType="VARCHAR" property="pid" />
+    <result column="purl" jdbcType="VARCHAR" property="purl" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, uid, type, rechargeTime, amount, pid, purl, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from recharges
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from recharges
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zhd.pojo.Recharge">
+    insert into recharges (id, uid, type, rechargeTime, 
+      amount, pid, purl, 
+      status)
+    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=CHAR}, #{type,jdbcType=BIT}, #{rechargeTime,jdbcType=TIMESTAMP}, 
+      #{amount,jdbcType=DECIMAL}, #{pid,jdbcType=VARCHAR}, #{purl,jdbcType=VARCHAR}, 
+      #{status,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zhd.pojo.Recharge">
+    insert into recharges
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="uid != null">
+        uid,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="rechargeTime != null">
+        rechargeTime,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+      <if test="pid != null">
+        pid,
+      </if>
+      <if test="purl != null">
+        purl,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null">
+        #{uid,jdbcType=CHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=BIT},
+      </if>
+      <if test="rechargeTime != null">
+        #{rechargeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="pid != null">
+        #{pid,jdbcType=VARCHAR},
+      </if>
+      <if test="purl != null">
+        #{purl,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zhd.pojo.Recharge">
+    update recharges
+    <set>
+      <if test="uid != null">
+        uid = #{uid,jdbcType=CHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=BIT},
+      </if>
+      <if test="rechargeTime != null">
+        rechargeTime = #{rechargeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="pid != null">
+        pid = #{pid,jdbcType=VARCHAR},
+      </if>
+      <if test="purl != null">
+        purl = #{purl,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zhd.pojo.Recharge">
+    update recharges
+    set uid = #{uid,jdbcType=CHAR},
+      type = #{type,jdbcType=BIT},
+      rechargeTime = #{rechargeTime,jdbcType=TIMESTAMP},
+      amount = #{amount,jdbcType=DECIMAL},
+      pid = #{pid,jdbcType=VARCHAR},
+      purl = #{purl,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

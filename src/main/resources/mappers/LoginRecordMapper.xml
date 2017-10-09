@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhd.mapper.LoginRecordMapper">
+  <resultMap id="BaseResultMap" type="com.zhd.pojo.LoginRecord">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="uid" jdbcType="CHAR" property="uid" />
+    <result column="loginTime" jdbcType="TIMESTAMP" property="loginTime" />
+    <result column="loginIP" jdbcType="VARCHAR" property="loginIP" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, uid, loginTime, loginIP
+  </sql>
+
+  <insert id="insert" parameterType="com.zhd.pojo.LoginRecord">
+    insert into login_records (id, uid, loginTime, 
+      loginIP)
+    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=CHAR}, #{loginTime,jdbcType=TIMESTAMP}, 
+      #{loginIP,jdbcType=VARCHAR})
+  </insert>
+
+  <select id="selectCount" resultMap="BaseResultMap">
+    select
+    count(*)
+    from login_records
+    <trim prefix="where" prefixOverrides="and">
+      <if test="record.id != null">
+        id = #{record.id}
+      </if>
+      <if test="record.uid != null">
+        and uid = #{record.uid}
+      </if>
+      <if test="record.loginTime != null">
+        and loginTime = #{record.loginTime}
+      </if>
+      <if test="record.loginIP != null">
+        and loginIP = #{record.loginIP}
+      </if>
+    </trim>
+  </select>
+
+  <select id="selectLoginRecords" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from login_records
+    <trim prefix="where" prefixOverrides="and">
+      <if test="record.id != null">
+        id = #{record.id}
+      </if>
+      <if test="record.uid != null">
+        and uid = #{record.uid}
+      </if>
+      <if test="record.loginTime != null">
+        and loginTime = #{record.loginTime}
+      </if>
+      <if test="record.loginIP != null">
+        and loginIP = #{record.loginIP}
+      </if>
+    </trim>
+    limit ${start}, 10
+  </select>
+
+</mapper>

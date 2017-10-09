@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhd.mapper.JourneyMapper">
+  <resultMap id="BaseResultMap" type="com.zhd.pojo.Journey">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="uid" jdbcType="CHAR" property="uid" />
+    <result column="bid" jdbcType="BIGINT" property="bid" />
+    <result column="startTime" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="rideTime" jdbcType="INTEGER" property="rideTime" />
+    <result column="distance" jdbcType="INTEGER" property="distance" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, uid, bid, startTime, rideTime, distance, amount
+  </sql>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from journeys
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zhd.pojo.Journey">
+    insert into journeys (id, uid, bid, startTime,
+      rideTime, distance, amount
+      )
+    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=CHAR}, #{bid,jdbcType=BIGINT}, #{startTime,jdbcType=TIMESTAMP}, 
+      #{rideTime,jdbcType=INTEGER}, #{distance,jdbcType=INTEGER}, #{amount,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.zhd.pojo.Journey">
+    insert into journeys
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="uid != null">
+        uid,
+      </if>
+      <if test="bid != null">
+        bid,
+      </if>
+      <if test="startTime != null">
+        startTime,
+      </if>
+      <if test="rideTime != null">
+        rideTime,
+      </if>
+      <if test="distance != null">
+        distance,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null">
+        #{uid,jdbcType=CHAR},
+      </if>
+      <if test="bid != null">
+        #{bid,jdbcType=BIGINT},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rideTime != null">
+        #{rideTime,jdbcType=INTEGER},
+      </if>
+      <if test="distance != null">
+        #{distance,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zhd.pojo.Journey">
+    update journeys
+    <set>
+      <if test="uid != null">
+        uid = #{uid,jdbcType=CHAR},
+      </if>
+      <if test="bid != null">
+        bid = #{bid,jdbcType=BIGINT},
+      </if>
+      <if test="startTime != null">
+        startTime = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rideTime != null">
+        rideTime = #{rideTime,jdbcType=INTEGER},
+      </if>
+      <if test="distance != null">
+        distance = #{distance,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zhd.pojo.Journey">
+    update journeys
+    set uid = #{uid,jdbcType=CHAR},
+      bid = #{bid,jdbcType=BIGINT},
+      startTime = #{startTime,jdbcType=TIMESTAMP},
+      rideTime = #{rideTime,jdbcType=INTEGER},
+      distance = #{distance,jdbcType=INTEGER},
+      amount = #{amount,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from journeys
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+
+
+
+</mapper>

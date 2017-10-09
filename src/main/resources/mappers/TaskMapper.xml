@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhd.mapper.TaskMapper">
+  <resultMap id="BaseResultMap" type="com.zhd.pojo.Task">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="type" jdbcType="BIT" property="type" />
+    <result column="uid" jdbcType="CHAR" property="uid" />
+    <result column="startLocationX" jdbcType="DECIMAL" property="startLocationX" />
+    <result column="startLocationY" jdbcType="DECIMAL" property="startLocationY" />
+    <result column="endLocationX" jdbcType="DECIMAL" property="endLocationX" />
+    <result column="endLocationY" jdbcType="DECIMAL" property="endLocationY" />
+    <result column="bids" jdbcType="VARCHAR" property="bids" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="startTime" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="endTime" jdbcType="TIMESTAMP" property="endTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, type, uid, startLocationX, startLocationY, endLocationX, endLocationY, 
+    bids, status, startTime, endTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tasks
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tasks
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zhd.pojo.Task">
+    insert into tasks (id, name, type, uid, 
+      startLocationX, startLocationY, endLocationX, 
+      endLocationY, bids, status, 
+      startTime, endTime)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{type,jdbcType=BIT}, #{uid,jdbcType=CHAR}, 
+      #{startLocationX,jdbcType=DECIMAL}, #{startLocationY,jdbcType=DECIMAL}, #{endLocationX,jdbcType=DECIMAL}, 
+      #{endLocationY,jdbcType=DECIMAL}, #{bids,jdbcType=VARCHAR}, #{status,jdbcType=BIT}, 
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zhd.pojo.Task">
+    insert into tasks
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="uid != null">
+        uid,
+      </if>
+      <if test="startLocationX != null">
+        startLocationX,
+      </if>
+      <if test="startLocationY != null">
+        startLocationY,
+      </if>
+      <if test="endLocationX != null">
+        endLocationX,
+      </if>
+      <if test="endLocationY != null">
+        endLocationY,
+      </if>
+      <if test="bids != null">
+        bids,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="startTime != null">
+        startTime,
+      </if>
+      <if test="endTime != null">
+        endTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=BIT},
+      </if>
+      <if test="uid != null">
+        #{uid,jdbcType=CHAR},
+      </if>
+      <if test="startLocationX != null">
+        #{startLocationX,jdbcType=DECIMAL},
+      </if>
+      <if test="startLocationY != null">
+        #{startLocationY,jdbcType=DECIMAL},
+      </if>
+      <if test="endLocationX != null">
+        #{endLocationX,jdbcType=DECIMAL},
+      </if>
+      <if test="endLocationY != null">
+        #{endLocationY,jdbcType=DECIMAL},
+      </if>
+      <if test="bids != null">
+        #{bids,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zhd.pojo.Task">
+    update tasks
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=BIT},
+      </if>
+      <if test="uid != null">
+        uid = #{uid,jdbcType=CHAR},
+      </if>
+      <if test="startLocationX != null">
+        startLocationX = #{startLocationX,jdbcType=DECIMAL},
+      </if>
+      <if test="startLocationY != null">
+        startLocationY = #{startLocationY,jdbcType=DECIMAL},
+      </if>
+      <if test="endLocationX != null">
+        endLocationX = #{endLocationX,jdbcType=DECIMAL},
+      </if>
+      <if test="endLocationY != null">
+        endLocationY = #{endLocationY,jdbcType=DECIMAL},
+      </if>
+      <if test="bids != null">
+        bids = #{bids,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="startTime != null">
+        startTime = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        endTime = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zhd.pojo.Task">
+    update tasks
+    set name = #{name,jdbcType=VARCHAR},
+      type = #{type,jdbcType=BIT},
+      uid = #{uid,jdbcType=CHAR},
+      startLocationX = #{startLocationX,jdbcType=DECIMAL},
+      startLocationY = #{startLocationY,jdbcType=DECIMAL},
+      endLocationX = #{endLocationX,jdbcType=DECIMAL},
+      endLocationY = #{endLocationY,jdbcType=DECIMAL},
+      bids = #{bids,jdbcType=VARCHAR},
+      status = #{status,jdbcType=BIT},
+      startTime = #{startTime,jdbcType=TIMESTAMP},
+      endTime = #{endTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

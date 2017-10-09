@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhd.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="com.zhd.pojo.User">
+    <id column="id" jdbcType="CHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+    <result column="credit" jdbcType="TINYINT" property="credit" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="accountBalance" jdbcType="DECIMAL" property="accountBalance" />
+    <result column="redBalance" jdbcType="DECIMAL" property="redBalance" />
+    <result column="coupons" jdbcType="INTEGER" property="coupons" />
+    <result column="dates" jdbcType="TIMESTAMP" property="dates" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, avatar, credit, status, accountBalance, redBalance, coupons,
+    dates
+  </sql>
+  <sql id="Detail_Column_List">
+    id, name, password, type, avatar, credit, status, accountBalance, redBalance, coupons, dates
+  </sql>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from users
+    where id = #{id,jdbcType=CHAR}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.zhd.pojo.User">
+    insert into users
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="avatar != null">
+        avatar,
+      </if>
+      <if test="credit != null">
+        credit,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="accountBalance != null">
+        accountBalance,
+      </if>
+      <if test="redBalance != null">
+        redBalance,
+      </if>
+      <if test="coupons != null">
+        coupons,
+      </if>
+      <if test="dates != null">
+        dates,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=CHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="avatar != null">
+        #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="credit != null">
+        #{credit,jdbcType=TINYINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="accountBalance != null">
+        #{accountBalance,jdbcType=DECIMAL},
+      </if>
+      <if test="redBalance != null">
+        #{redBalance,jdbcType=DECIMAL},
+      </if>
+      <if test="coupons != null">
+        #{coupons,jdbcType=INTEGER},
+      </if>
+      <if test="dates != null">
+        #{dates,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.zhd.pojo.User">
+    update users
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="avatar != null">
+        avatar = #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="credit != null">
+        credit = #{credit,jdbcType=TINYINT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="accountBalance != null">
+        accountBalance = #{accountBalance,jdbcType=DECIMAL},
+      </if>
+      <if test="redBalance != null">
+        redBalance = #{redBalance,jdbcType=DECIMAL},
+      </if>
+      <if test="coupons != null">
+        coupons = #{coupons,jdbcType=INTEGER},
+      </if>
+      <if test="dates != null">
+        dates = #{dates,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=CHAR}
+  </update>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from users
+    where id = #{id,jdbcType=CHAR}
+  </select>
+
+  <select id="selectSimpleUser" parameterType="com.zhd.pojo.User" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from users
+    <trim prefix="where" prefixOverrides="and">
+      <if test="id != null">
+        id = #{id}
+      </if>
+      <if test="name != null">
+        and name = #{name}
+      </if>
+      <if test="password != null">
+        and password = #{password}
+      </if>
+      <if test="type != null">
+        and type = #{type}
+      </if>
+      <if test="avatar != null">
+        and avatar = #{avatar}
+      </if>
+      <if test="credit != null">
+        and credit = #{credit}
+      </if>
+      <if test="status != null">
+        and status = #{status}
+      </if>
+      <if test="accountBalance != null">
+        and accountBalance = #{accountBalance}
+      </if>
+      <if test="redBalance != null">
+        and redBalance = #{redBalance}
+      </if>
+      <if test="coupons != null">
+        and coupons = #{coupons}
+      </if>
+      <if test="dates != null">
+        and dates = #{dates}
+      </if>
+    </trim>
+  </select>
+
+  <select id="selectDetailUser" parameterType="com.zhd.pojo.User" resultMap="BaseResultMap">
+    select
+    <include refid="Detail_Column_List" />
+    from users
+    <trim prefix="where" prefixOverrides="and">
+      <if test="id != null">
+        id = #{id}
+      </if>
+      <if test="name != null">
+        and name = #{name}
+      </if>
+      <if test="password != null">
+        and password = #{password}
+      </if>
+      <if test="type != null">
+        and type = #{type}
+      </if>
+      <if test="avatar != null">
+        and avatar = #{avatar}
+      </if>
+      <if test="credit != null">
+        and credit = #{credit}
+      </if>
+      <if test="status != null">
+        and status = #{status}
+      </if>
+      <if test="accountBalance != null">
+        and accountBalance = #{accountBalance}
+      </if>
+      <if test="redBalance != null">
+        and redBalance = #{redBalance}
+      </if>
+      <if test="coupons != null">
+        and coupons = #{coupons}
+      </if>
+      <if test="dates != null">
+        and dates = #{dates}
+      </if>
+    </trim>
+  </select>
+
+  <select id="selectCount" resultType="java.lang.Integer">
+    select count(*)
+    from users
+    <trim prefix="where" prefixOverrides="and">
+      <if test="record.id != null">
+        id = #{record.id}
+      </if>
+      <if test="record.name != null">
+        and name = #{record.name}
+      </if>
+      <if test="record.password != null">
+        and password = #{record.password}
+      </if>
+      <if test="record.type != null">
+        and type = #{record.type}
+      </if>
+      <if test="record.avatar != null">
+        and avatar = #{record.avatar}
+      </if>
+      <if test="record.credit != null">
+        and credit = #{record.credit}
+      </if>
+      <if test="record.status != null">
+        and status = #{record.status}
+      </if>
+      <if test="record.accountBalance != null">
+        and accountBalance = #{record.accountBalance}
+      </if>
+      <if test="record.redBalance != null">
+        and redBalance = #{record.redBalance}
+      </if>
+      <if test="record.coupons != null">
+        and coupons = #{record.coupons}
+      </if>
+      <if test="record.dates != null">
+        and dates = #{record.dates}
+      </if>
+    </trim>
+  </select>
+
+  <select id="selectUsers" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from users
+    <trim prefix="where" prefixOverrides="and">
+      <if test="record.id != null">
+        id = #{record.id}
+      </if>
+      <if test="record.name != null">
+        and name = #{record.name}
+      </if>
+      <if test="record.password != null">
+        and password = #{record.password}
+      </if>
+      <if test="record.type != null">
+        and type = #{record.type}
+      </if>
+      <if test="record.avatar != null">
+        and avatar = #{record.avatar}
+      </if>
+      <if test="record.credit != null">
+        and credit = #{record.credit}
+      </if>
+      <if test="record.status != null">
+        and status = #{record.status}
+      </if>
+      <if test="record.accountBalance != null">
+        and accountBalance = #{record.accountBalance}
+      </if>
+      <if test="record.redBalance != null">
+        and redBalance = #{record.redBalance}
+      </if>
+      <if test="record.coupons != null">
+        and coupons = #{record.coupons}
+      </if>
+      <if test="record.dates != null">
+        and dates = #{record.dates}
+      </if>
+    </trim>
+    limit ${start},10
+  </select>
+
+</mapper>

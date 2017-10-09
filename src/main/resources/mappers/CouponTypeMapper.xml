@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhd.mapper.CouponTypeMapper">
+  <resultMap id="BaseResultMap" type="com.zhd.pojo.CouponType">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="parValue" jdbcType="DECIMAL" property="parValue" />
+    <result column="conditionAmount" jdbcType="DECIMAL" property="conditionAmount" />
+    <result column="startTime" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="endTime" jdbcType="TIMESTAMP" property="endTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, parValue, conditionAmount, startTime, endTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coupon_types
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from coupon_types
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zhd.pojo.CouponType">
+    insert into coupon_types (id, name, parValue, 
+      conditionAmount, startTime, endTime
+      )
+    Values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{parValue,jdbcType=DECIMAL}, 
+      #{conditionAmount,jdbcType=DECIMAL}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.zhd.pojo.CouponType">
+    insert into coupon_types
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="parValue != null">
+        parValue,
+      </if>
+      <if test="conditionAmount != null">
+        conditionAmount,
+      </if>
+      <if test="startTime != null">
+        startTime,
+      </if>
+      <if test="endTime != null">
+        endTime,
+      </if>
+    </trim>
+    <trim prefix="Values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="parValue != null">
+        #{parValue,jdbcType=DECIMAL},
+      </if>
+      <if test="conditionAmount != null">
+        #{conditionAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zhd.pojo.CouponType">
+    update coupon_types
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="parValue != null">
+        parValue = #{parValue,jdbcType=DECIMAL},
+      </if>
+      <if test="conditionAmount != null">
+        conditionAmount = #{conditionAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="startTime != null">
+        startTime = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        endTime = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zhd.pojo.CouponType">
+    update coupon_types
+    set name = #{name,jdbcType=VARCHAR},
+      parValue = #{parValue,jdbcType=DECIMAL},
+      conditionAmount = #{conditionAmount,jdbcType=DECIMAL},
+      startTime = #{startTime,jdbcType=TIMESTAMP},
+      endTime = #{endTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
