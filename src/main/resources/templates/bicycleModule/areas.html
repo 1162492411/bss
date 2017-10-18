@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>共享单车管理平台--区域管理</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/font-awesome.min.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/ionicons.min.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/dataTables.bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/AdminLTE.min.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/skins/skin-blue.min.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/bss.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/pagination.css}" />
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+    <header th:replace="header :: commonHeader"></header>
+
+    <aside th:replace="aside :: commonAside"></aside>
+
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                区域列表
+                <button class="Button Button--blue" data-toggle="modal" data-target="#add-area-modal">添加</button>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> 车辆模块</a></li>
+                <li class="active">区域管理</li>
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content container-fluid">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-body">
+                            <table id="areaTable" class="table table-bordered table-hover">
+                            </table>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- 分页按钮 -->
+            <nav><ul class="pagination" id="areasPagination"></ul></nav>
+        </section>
+        <!-- /.content -->
+
+    </div>
+    <footer th:replace="footer :: commonFooter"></footer>
+
+    <aside th:replace="sidebar :: commonSidebar"></aside>
+
+    <!-- Add the sidebar's background. This div must be placed
+immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+
+    <!-- 修改区域 -->
+    <div class="modal" id="update-area-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">修改区域</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="box-body">
+                            <!-- 编号 -->
+                            <div class="form-group">
+                                <label for="update-area-modal-id" class="col-sm-2 control-label">编号</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="update-area-modal-id" placeholder="编号" disabled="disabled" />
+                                </div>
+                            </div>
+                            <!-- 区域名 -->
+                            <div class="form-group">
+                                <label for="update-area-modal-name" class="col-sm-2 control-label">区域名</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="update-area-modal-name" placeholder="区域名" />
+                                </div>
+                            </div>
+                            <!-- 区域最北部 -->
+                            <div class="form-group">
+                                <label for="update-area-modal-northPoint" class="col-sm-2 control-label">区域最北部</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="update-area-modal-northPoint" placeholder="区域最北部" />
+                                </div>
+                            </div>
+                            <!-- 区域最南部 -->
+                            <div class="form-group">
+                                <label for="update-area-modal-southPoint" class="col-sm-2 control-label">区域最南部</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="update-area-modal-southPoint" placeholder="区域最南部" />
+                                </div>
+                            </div>
+                            <!-- 区域最西部 -->
+                            <div class="form-group">
+                                <label for="update-area-modal-westPoint" class="col-sm-2 control-label">区域最西部</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="update-area-modal-westPoint" placeholder="区域最西部" />
+                                </div>
+                            </div>
+                            <!-- 区域最东部 -->
+                            <div class="form-group">
+                                <label for="update-area-modal-eastPoint" class="col-sm-2 control-label">区域最东部</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="update-area-modal-eastPoint" placeholder="区域最东部" />
+                                </div>
+                            </div>
+                            <!-- 区域类型 -->
+                            <div class="form-group">
+                                <label for="update-area-modal-type" class="col-sm-2 control-label">区域类型</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="update-area-modal-type" placeholder="区域类型" />
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.box-body -->
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">放弃</button>
+                    <button type="button" class="btn btn-primary" onclick="doUpdateArea()">修改</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 修改区域结束 -->
+
+    <!-- 添加区域 -->
+    <div class="modal" id="add-area-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">添加区域</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="box-body">
+                            <!-- 编号 -->
+                            <div class="form-group">
+                                <label for="add-area-modal-id" class="col-sm-2 control-label">编号</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="add-area-modal-id" placeholder="编号" disabled="disabled" />
+                                </div>
+                            </div>
+                            <!-- 区域名 -->
+                            <div class="form-group">
+                                <label for="add-area-modal-name" class="col-sm-2 control-label">区域名</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="add-area-modal-name" placeholder="区域名" />
+                                </div>
+                            </div>
+                            <!-- 区域最北部 -->
+                            <div class="form-group">
+                                <label for="add-area-modal-northPoint" class="col-sm-2 control-label">区域最北部</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="add-area-modal-northPoint" placeholder="区域最北部" />
+                                </div>
+                            </div>
+                            <!-- 区域最南部 -->
+                            <div class="form-group">
+                                <label for="add-area-modal-southPoint" class="col-sm-2 control-label">区域最南部</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="add-area-modal-southPoint" placeholder="区域最南部" />
+                                </div>
+                            </div>
+                            <!-- 区域最西部 -->
+                            <div class="form-group">
+                                <label for="add-area-modal-westPoint" class="col-sm-2 control-label">区域最西部</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="add-area-modal-westPoint" placeholder="区域最西部" />
+                                </div>
+                            </div>
+                            <!-- 区域最东部 -->
+                            <div class="form-group">
+                                <label for="add-area-modal-eastPoint" class="col-sm-2 control-label">区域最东部</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="add-area-modal-eastPoint" placeholder="区域最东部" />
+                                </div>
+                            </div>
+                            <!-- 区域类型 -->
+                            <div class="form-group">
+                                <label for="add-area-modal-type" class="col-sm-2 control-label">区域类型</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="add-area-modal-type" placeholder="区域类型" />
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.box-body -->
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">放弃</button>
+                    <button type="button" class="btn btn-primary" onclick="addArea()">添加</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 添加区域结束 -->
+
+</div>
+<script th:src="@{/static/js/jquery.min.js}"></script>
+<script th:src="@{/static/js/bootstrap.min.js}"></script>
+<script th:src="@{/static/js/jquery.dataTables.min.js}"></script>
+<script th:src="@{/static/js/dataTables.bootstrap.min.js}"></script>
+<script th:src="@{/static/js/adminlte.min.js}"></script>
+<script th:src="@{/static/js/bss.js}"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        loadAreas(1);
+    });
+</script>
+</body>
+</html>

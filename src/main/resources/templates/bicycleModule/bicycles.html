@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>共享单车管理平台--用户管理</title>
+    <title>共享单车管理平台--车辆管理</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
     <link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}" />
@@ -27,12 +27,12 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                用户列表
-                <button class="Button Button--blue" data-toggle="modal" data-target="#add-user-modal">添加</button>
+                车辆列表
+                <button class="Button Button--blue" data-toggle="modal" data-target="#add-bicycle-modal">添加</button>
             </h1>
             <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> 用户模块</a></li>
-                <li class="active">用户管理</li>
+                <li><a href="#"><i class="fa fa-dashboard"></i> 车辆模块</a></li>
+                <li class="active">车辆管理</li>
             </ol>
         </section>
 
@@ -42,7 +42,7 @@
                 <div class="col-xs-12">
                     <div class="box">
                         <div class="box-body">
-                            <table id="userTable" class="table table-bordered table-hover">
+                            <table id="bicycleTable" class="table table-bordered table-hover">
                             </table>
                         </div>
                         <!-- /.box-body -->
@@ -52,7 +52,7 @@
                 <!-- /.col -->
             </div>
             <!-- 分页按钮 -->
-            <nav><ul class="pagination" id="usersPagination"></ul></nav>
+            <nav><ul class="pagination" id="bicyclesPagination"></ul></nav>
         </section>
         <!-- /.content -->
 
@@ -64,37 +64,49 @@
     <!-- Add the sidebar's background. This div must be placed
 immediately after the control sidebar -->
     <div class="control-sidebar-bg"></div>
-
-    <!-- 修改用户 -->
-    <div class="modal" id="update-user-modal" tabindex="-1" role="dialog">
+    
+    <!-- 添加车辆 -->
+    <div class="modal" id="add-bicycle-modal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">修改用户</h4>
+                    <h4 class="modal-title">添加车辆</h4>
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal">
                         <div class="box-body">
                             <!-- 编号 -->
                             <div class="form-group">
-                                <label for="update-user-modal-id" class="col-sm-2 control-label">编号</label>
+                                <label for="add-bicycle-modal-id" class="col-sm-2 control-label">编号</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="update-user-modal-id" placeholder="编号" disabled="disabled" />
+                                    <input type="text" class="form-control" id="add-bicycle-modal-id" placeholder="编号" disabled="disabled" />
                                 </div>
                             </div>
-                            <!-- 昵称 -->
+                            <!-- 型号 -->
                             <div class="form-group">
-                                <label for="update-user-modal-name" class="col-sm-2 control-label">昵称</label>
+                                <label for="add-bicycle-modal-type" class="col-sm-2 control-label">型号</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="update-user-modal-name" placeholder="昵称" />
+                                    <select class="form-control" id="add-bicycle-modal-type">
+                                <option value="0">一代经典版</option>
+                                <option value="1">一代轻骑版</option>
+                                <option value="2">一代豪华版</option>
+                                    </select>
+                                    <!--<input type="text" class="form-control" id="add-bicycle-modal-type" placeholder="型号"/>-->
                                 </div>
                             </div>
-                            <!-- 信用分 -->
+                            <!-- 生产批次 -->
                             <div class="form-group">
-                                <label for="update-user-modal-credit" class="col-sm-2 control-label">信用分</label>
+                                <label for="add-bicycle-modal-batch" class="col-sm-2 control-label">生产批次</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="update-user-modal-credit" placeholder="信用分" />
+                                    <input type="text" class="form-control" id="add-bicycle-modal-batch" placeholder="生产批次" />
+                                </div>
+                            </div>
+                            <!-- 供应商 -->
+                            <div class="form-group">
+                                <label for="add-bicycle-modal-sid" class="col-sm-2 control-label">供应商</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="add-bicycle-modal-sid" placeholder="供应商" />
                                 </div>
                             </div>
                         </div>
@@ -103,60 +115,12 @@ immediately after the control sidebar -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">放弃</button>
-                    <button type="button" class="btn btn-primary" onclick="doUpdateUser()">修改</button>
+                    <button type="button" class="btn btn-primary" onclick="addBicycle()">添加</button>
                 </div>
             </div>
         </div>
     </div>
-    <!-- 修改用户结束 -->
-
-    <!-- 添加用户 -->
-    <div class="modal" id="add-user-modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">添加用户</h4>
-                </div>
-                <div class="modal-body">
-                    <form class="form-horizontal">
-                        <div class="box-body">
-                            <!-- 编号 -->
-                            <div class="form-group">
-                                <label for="add-user-modal-id" class="col-sm-2 control-label">编号</label>
-
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="add-user-modal-id" placeholder="编号" />
-                                </div>
-                            </div>
-                            <!-- 昵称 -->
-                            <div class="form-group">
-                                <label for="add-user-modal-name" class="col-sm-2 control-label">昵称</label>
-
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="add-user-modal-name" placeholder="昵称" />
-                                </div>
-                            </div>
-                            <!--  信用分 -->
-                            <div class="form-group">
-                                <label for="add-user-modal-credit" class="col-sm-2 control-label">信用分</label>
-
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="add-user-modal-credit" placeholder="信用分" />
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /.box-body -->
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">放弃</button>
-                    <button type="button" class="btn btn-primary" onclick="addUser()">添加</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- 添加用户结束 -->
+    <!-- 添加车辆结束 -->
 
 </div>
 <script th:src="@{/static/js/jquery.min.js}"></script>
@@ -167,7 +131,7 @@ immediately after the control sidebar -->
 <script th:src="@{/static/js/bss.js}"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        loadUsers(1);
+        loadBicycles(1);
     });
 </script>
 </body>

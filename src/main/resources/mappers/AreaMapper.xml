@@ -20,9 +20,6 @@
   </delete>
 
     <insert id="insert" parameterType="com.zhd.pojo.Area" >
-    <selectKey resultType="int" keyProperty="id" order="AFTER" >
-       SELECT LAST_INSERT_ID() AS id
-    </selectKey>
     insert into areas (id, name, northPoint,
       southPoint, westPoint, eastPoint,
       type)

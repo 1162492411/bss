@@ -24,14 +24,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping
-    public String toLogin(){
-        System.out.println("进入了登录");
-        return "login";
-    }
-
     /**
      * 用户登录
+     * @param user 登录信息
+     * @param request 请求
+     * @param model model
+     * @return 返回的页面
      */
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public @ResponseBody String login(@RequestBody User user, HttpServletRequest request, Model model){
@@ -48,58 +46,73 @@ public class UserController {
             return "login";
     }
 
-    @RequestMapping("home")
-    public  String toHome(Model model){
-        model.addAttribute("userid","home1111");
-        return "home";
-    }
-
-    @RequestMapping("userModule/users")
-    public String toUsers(){
-        return "userModule/users";
-    }
-
-    @RequestMapping("users")
-    public @ResponseBody Page defaults(User user, Page result){
-        return users(1, user, result);
-    }
-
-    @RequestMapping("users/{page}")
-    public @ResponseBody Page users(@PathVariable int page, User user, Page result){
-        return result.setDatas(userService.selectUsers(result.setTotalCount(userService.selectCount(user)).setCurrentPage(page).getStart(),user));
-    }
-
 
     /**
      * 用户注销
+     * TODO:二次完善
+     */
+
+    /**
+     * 用户修改密码
+     * TODO:二次完善
      */
 
     /**
      * 添加用户
      */
-
-    /**
-     * 删除用户
-     */
+    @RequestMapping(value = "users" , method = RequestMethod.POST)
+    public @ResponseBody Boolean add(@RequestBody User record){
+        return userService.insert(record.defaultAddUser());
+    }
 
     /**
      * 更新用户基本信息
-     * 可更新的字段 : name/avatar
+     * 可更新的字段 : name/credit
      */
-
-    /**
-     * 更新用户密码
-     */
+    @RequestMapping(value = "users", method = RequestMethod.PUT)
+    public @ResponseBody Boolean update(@RequestBody User record){
+        return userService.update(record);
+    }
 
     /**
      * 封禁用户
      */
+    @RequestMapping(value = "users/block", method = RequestMethod.POST)
+    public @ResponseBody Boolean block(@RequestBody User record){
+        if(!userService.selectById(record.getId()).getStatus())
+            return userService.update(record);
+        else return false;
+    }
 
     /**
-     * 分页查看用户信息
+     * 删除用户
      */
+    @RequestMapping(value = "users", method = RequestMethod.DELETE)
+    public @ResponseBody Boolean delete(@RequestBody User record){
+        return userService.delete(record);
+    }
 
     /**
-     * 分页查看符合条件的用户信息
+     * 查看用户列表
+     * @param record 条件用户
+     * @param result 存储结果的分页对象
+     * @return 分页数据
      */
+    @RequestMapping("users")
+    public @ResponseBody Page defaults(User record, Page result){
+        return users(1, record, result);
+    }
+
+    /**
+     * 分页查看用户列表
+     * @param page 前台请求的分页数
+     * @param record 条件用户
+     * @param result 存储结果的分页对象
+     * @return 分页数据
+     */
+    @RequestMapping("users/{page}")
+    public @ResponseBody Page users(@PathVariable int page, User record, Page result){
+        return result.setDatas(userService.selectUsers(result.setTotalCount(userService.selectCount(record)).setCurrentPage(page).getStart(),record)).setKeys(record.getKeys()).setNames(record.getNames());
+    }
+
 }

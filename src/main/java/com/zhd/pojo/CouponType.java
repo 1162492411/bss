@@ -20,47 +20,53 @@ public class CouponType {
         return id;
     }
 
-    public void setId(Integer id) {
+    public CouponType setId(Integer id) {
         this.id = id;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public CouponType setName(String name) {
         this.name = name == null ? null : name.trim();
+        return this;
     }
 
     public BigDecimal getParValue() {
         return parValue;
     }
 
-    public void setParValue(BigDecimal parValue) {
+    public CouponType setParValue(BigDecimal parValue) {
         this.parValue = parValue;
+        return this;
     }
 
     public BigDecimal getConditionAmount() {
         return conditionAmount;
     }
 
-    public void setConditionAmount(BigDecimal conditionAmount) {
+    public CouponType setConditionAmount(BigDecimal conditionAmount) {
         this.conditionAmount = conditionAmount;
+        return this;
     }
 
     public Date getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public CouponType setStartTime(Date startTime) {
         this.startTime = startTime;
+        return this;
     }
 
     public Date getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Date endTime) {
+    public CouponType setEndTime(Date endTime) {
         this.endTime = endTime;
+        return this;
     }
 }

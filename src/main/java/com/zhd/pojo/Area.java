@@ -15,68 +15,78 @@ public class Area {
 
     private BigDecimal eastPoint;
 
-    private Boolean type;
+    private Byte type;
 
     public Integer getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public Area setId(Integer id) {
         this.id = id;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public Area setName(String name) {
         this.name = name == null ? null : name.trim();
+        return this;
     }
 
     public BigDecimal getNorthPoint() {
         return northPoint;
     }
 
-    public void setNorthPoint(BigDecimal northPoint) {
+    public Area setNorthPoint(BigDecimal northPoint) {
         this.northPoint = northPoint;
+        return this;
     }
 
     public BigDecimal getSouthPoint() {
         return southPoint;
     }
 
-    public void setSouthPoint(BigDecimal southPoint) {
+    public Area setSouthPoint(BigDecimal southPoint) {
         this.southPoint = southPoint;
+        return this;
     }
 
     public BigDecimal getWestPoint() {
         return westPoint;
     }
 
-    public void setWestPoint(BigDecimal westPoint) {
+    public Area setWestPoint(BigDecimal westPoint) {
         this.westPoint = westPoint;
+        return this;
     }
 
     public BigDecimal getEastPoint() {
         return eastPoint;
     }
 
-    public void setEastPoint(BigDecimal eastPoint) {
+    public Area setEastPoint(BigDecimal eastPoint) {
         this.eastPoint = eastPoint;
+        return this;
     }
 
-    public Boolean getType() {
+    public Byte getType() {
         return type;
     }
 
-    public void setType(Boolean type) {
+    public Area setType(Byte type) {
         this.type = type;
+        return this;
     }
 
-    public Area() {
+    public String[] getKeys(){
+        return new String[]{"id", "name", "northPoint", "southPoint", "westPoint", "eastPoint", "type"};
     }
 
-
+    public String[] getNames(){
+        return new String[]{"编号","区域名","区域最北部","区域最南部","区域最西部","区域最东部","类型"};
+    }
 
     @Override
     public String toString() {

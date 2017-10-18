@@ -9,44 +9,28 @@
   <sql id="Base_Column_List">
     id, name, address
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Short" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from suppliers
-    where id = #{id,jdbcType=SMALLINT}
-  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Short">
     delete from suppliers
     where id = #{id,jdbcType=SMALLINT}
   </delete>
-  <insert id="insert" parameterType="com.zhd.pojo.Supplier">
-    insert into suppliers (id, name, address
-      )
-    values (#{id,jdbcType=SMALLINT}, #{name,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}
-      )
-  </insert>
+
   <insert id="insertSelective" parameterType="com.zhd.pojo.Supplier">
     insert into suppliers
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="name != null">
         name,
       </if>
       <if test="address != null">
-        address,
+        address
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=SMALLINT},
-      </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
       <if test="address != null">
-        #{address,jdbcType=VARCHAR},
+        #{address,jdbcType=VARCHAR}
       </if>
     </trim>
   </insert>
@@ -62,10 +46,40 @@
     </set>
     where id = #{id,jdbcType=SMALLINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.zhd.pojo.Supplier">
-    update suppliers
-    set name = #{name,jdbcType=VARCHAR},
-      address = #{address,jdbcType=VARCHAR}
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Short" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from suppliers
     where id = #{id,jdbcType=SMALLINT}
-  </update>
+  </select>
+
+  <select id="selectCount" parameterType="com.zhd.pojo.Supplier" resultType="java.lang.Integer">
+    select count(*)
+    from suppliers
+    <trim prefix="where" prefixOverrides="and">
+      <if test="record.name != null">
+        name = ${record.name}
+      </if>
+      <if test="record.address != null">
+        and address = #{record.address}
+      </if>
+    </trim>
+  </select>
+
+  <select id="selectSuppliers" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from suppliers
+    <trim prefix="where" prefixOverrides="and">
+      <if test="record.name != null">
+        name = ${record.name}
+      </if>
+      <if test="record.address != null">
+        and address = #{record.address}
+      </if>
+    </trim>
+    limit ${start},10
+  </select>
+
 </mapper>

@@ -45,12 +45,12 @@ public class AreaService {
     }
 
     /**
-     * 返回新增的区域的主键
+     * 返回是否成功新增区域
      * @param area 新增的区域信息
      * @return 数据库影响行数是否大于0
      */
-    public int insert(Area area){
-        return areaMapper.insert(area);
+    public boolean insert(Area area){
+        return areaMapper.insert(area) > 0;
     }
 
     /**

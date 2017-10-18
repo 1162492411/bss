@@ -17,6 +17,10 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
+    public User selectById(String id){
+        return userMapper.selectByPrimaryKey(id);
+    }
+
     /**
      * 查询用户的简略信息
      * @param record 待查找的用户
@@ -60,8 +64,8 @@ public class UserService {
      * @param User 新增的用户信息
      * @return 新增的用户的主键
      */
-    public int insert(User User){
-        return userMapper.insertSelective(User);
+    public boolean insert(User User){
+        return userMapper.insertSelective(User) > 0;
     }
 
     /**

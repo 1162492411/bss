@@ -369,6 +369,7 @@ li {
 
 /*--------------- button ------------------*/
 .Button {
+    background: white;
     display: inline-block;
     padding: 0 16px;
     font-size: 14px;

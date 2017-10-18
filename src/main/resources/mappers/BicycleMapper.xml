@@ -7,7 +7,7 @@
     <result column="type" jdbcType="TINYINT" property="type" />
     <result column="locationX" jdbcType="DECIMAL" property="locationX" />
     <result column="locationY" jdbcType="DECIMAL" property="locationY" />
-    <result column="batch" jdbcType="INTEGER" property="batch" />
+    <result column="batch" jdbcType="VARCHAR" property="batch" />
     <result column="sid" jdbcType="SMALLINT" property="sid" />
     <result column="serviceTime" jdbcType="BIGINT" property="serviceTime" />
     <result column="investmentTime" jdbcType="TIMESTAMP" property="investmentTime" />
@@ -17,26 +17,12 @@
     id, status, type, locationX, locationY, batch, sid, serviceTime, investmentTime, 
     mileage
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from bicycles
-    where id = #{id,jdbcType=BIGINT}
-  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from bicycles
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.zhd.pojo.Bicycle">
-    insert into bicycles (id, status, type, 
-      locationX, locationY, batch, 
-      sid, serviceTime, investmentTime, 
-      mileage)
-    values (#{id,jdbcType=BIGINT}, #{status,jdbcType=BIT}, #{type,jdbcType=TINYINT}, 
-      #{locationX,jdbcType=DECIMAL}, #{locationY,jdbcType=DECIMAL}, #{batch,jdbcType=INTEGER}, 
-      #{sid,jdbcType=SMALLINT}, #{serviceTime,jdbcType=BIGINT}, #{investmentTime,jdbcType=TIMESTAMP}, 
-      #{mileage,jdbcType=INTEGER})
-  </insert>
+
   <insert id="insertSelective" parameterType="com.zhd.pojo.Bicycle">
     insert into bicycles
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -88,7 +74,7 @@
         #{locationY,jdbcType=DECIMAL},
       </if>
       <if test="batch != null">
-        #{batch,jdbcType=INTEGER},
+        #{batch,jdbcType=VARCHAR},
       </if>
       <if test="sid != null">
         #{sid,jdbcType=SMALLINT},
@@ -104,6 +90,7 @@
       </if>
     </trim>
   </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.zhd.pojo.Bicycle">
     update bicycles
     <set>
@@ -120,7 +107,7 @@
         locationY = #{locationY,jdbcType=DECIMAL},
       </if>
       <if test="batch != null">
-        batch = #{batch,jdbcType=INTEGER},
+        batch = #{batch,jdbcType=VARCHAR},
       </if>
       <if test="sid != null">
         sid = #{sid,jdbcType=SMALLINT},
@@ -137,17 +124,82 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.zhd.pojo.Bicycle">
-    update bicycles
-    set status = #{status,jdbcType=BIT},
-      type = #{type,jdbcType=TINYINT},
-      locationX = #{locationX,jdbcType=DECIMAL},
-      locationY = #{locationY,jdbcType=DECIMAL},
-      batch = #{batch,jdbcType=INTEGER},
-      sid = #{sid,jdbcType=SMALLINT},
-      serviceTime = #{serviceTime,jdbcType=BIGINT},
-      investmentTime = #{investmentTime,jdbcType=TIMESTAMP},
-      mileage = #{mileage,jdbcType=INTEGER}
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from bicycles
     where id = #{id,jdbcType=BIGINT}
-  </update>
+  </select>
+
+  <select id="selectCount" parameterType="com.zhd.pojo.Bicycle" resultType="java.lang.Integer">
+    select count(*)
+    from bicycles
+    <trim prefix="where" prefixOverrides="and">
+      <if test="record.status != null">
+        status = ${record.status}
+      </if>
+      <if test="record.type != null">
+        and type = #{record.type}
+      </if>
+      <if test="record.locationX != null">
+        and locationX = #{record.locationX}
+      </if>
+      <if test="record.locationY != null">
+        and locationY = #{record.locationY}
+      </if>
+      <if test="record.batch != null">
+        and batch = #{record.batch}
+      </if>
+      <if test="record.sid != null">
+        and sid = #{record.sid}
+      </if>
+      <if test="record.serviceTime != null">
+        and serviceTime = #{record.serviceTime}
+      </if>
+      <if test="record.investmentTime != null">
+        and investmentTime = #{record.investmentTime}
+      </if>
+      <if test="record.mileage != null">
+        and mileage = #{record.mileage}
+      </if>
+    </trim>
+  </select>
+
+  <select id="selectBicycles" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from bicycles
+    <trim prefix="where" prefixOverrides="and">
+      <if test="record.status != null">
+        status = ${record.status}
+      </if>
+      <if test="record.type != null">
+        and type = #{record.type}
+      </if>
+      <if test="record.locationX != null">
+        and locationX = #{record.locationX}
+      </if>
+      <if test="record.locationY != null">
+        and locationY = #{record.locationY}
+      </if>
+      <if test="record.batch != null">
+        and batch = #{record.batch}
+      </if>
+      <if test="record.sid != null">
+        and sid = #{record.sid}
+      </if>
+      <if test="record.serviceTime != null">
+        and serviceTime = #{record.serviceTime}
+      </if>
+      <if test="record.investmentTime != null">
+        and investmentTime = #{record.investmentTime}
+      </if>
+      <if test="record.mileage != null">
+        and mileage = #{record.mileage}
+      </if>
+    </trim>
+    limit ${start},10
+  </select>
+
 </mapper>

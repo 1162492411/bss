@@ -20,7 +20,9 @@ public class Page implements Serializable{
 
     private List datas;//分页的数据
 
-    private List keys;//键列表
+    private String[] keys;//键列表
+
+    private String[] names;//键名列表
 
     public int getTotalCount() {
         return totalCount;
@@ -70,17 +72,26 @@ public class Page implements Serializable{
         return datas;
     }
 
-    public List getKeys() {
+    public Page setDatas(List datas) {
+        this.datas = datas;
+        return this;
+    }
+
+    public String[] getKeys() {
         return keys;
     }
 
-    public Page setKeys(List keys) {
+    public Page setKeys(String[] keys) {
         this.keys = keys;
         return this;
     }
 
-    public Page setDatas(List datas) {
-        this.datas = datas;
+    public String[] getNames() {
+        return names;
+    }
+
+    public Page setNames(String[] names) {
+        this.names = names;
         return this;
     }
 
@@ -88,4 +99,5 @@ public class Page implements Serializable{
     public int getStart(){
         return currentPage <= 0 ? 0 : (currentPage - 1) * pageSize;
     }
+
 }

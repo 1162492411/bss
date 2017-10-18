@@ -19,47 +19,66 @@ public class Consumption {
         return id;
     }
 
-    public void setId(Integer id) {
+    public Consumption setId(Integer id) {
         this.id = id;
+        return this;
     }
 
     public Integer getOid() {
         return oid;
     }
 
-    public void setOid(Integer oid) {
+    public Consumption setOid(Integer oid) {
         this.oid = oid;
+        return this;
     }
 
     public String getUid() {
         return uid;
     }
 
-    public void setUid(String uid) {
+    public Consumption setUid(String uid) {
         this.uid = uid == null ? null : uid.trim();
+        return this;
     }
 
     public BigDecimal getConAmount() {
         return conAmount;
     }
 
-    public void setConAmount(BigDecimal conAmount) {
+    public Consumption setConAmount(BigDecimal conAmount) {
         this.conAmount = conAmount;
+        return this;
     }
 
     public BigDecimal getPayAmount() {
         return payAmount;
     }
 
-    public void setPayAmount(BigDecimal payAmount) {
+    public Consumption setPayAmount(BigDecimal payAmount) {
         this.payAmount = payAmount;
+        return this;
     }
 
     public Integer getCid() {
         return cid;
     }
 
-    public void setCid(Integer cid) {
+    public Consumption setCid(Integer cid) {
         this.cid = cid;
+        return this;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Consumption{" +
+                "id=" + id +
+                ", oid=" + oid +
+                ", uid='" + uid + '\'' +
+                ", conAmount=" + conAmount +
+                ", payAmount=" + payAmount +
+                ", cid=" + cid +
+                '}';
     }
 }

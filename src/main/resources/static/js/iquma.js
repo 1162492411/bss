@@ -1,6 +1,6 @@
 //------------------------- 公共函数 ---------------------------//
 
-rootPath = "http://localhost:8080";
+var rootPath = "http://localhost:8080";
 
 //公共函数--返回用户主页的list的路径--用于用户主页的tutorials/questions/articles/codes/ntfs
 function getUserSecPath(uid,sec) {

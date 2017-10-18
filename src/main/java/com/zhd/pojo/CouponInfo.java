@@ -11,23 +11,26 @@ public class CouponInfo {
         return id;
     }
 
-    public void setId(Integer id) {
+    public CouponInfo setId(Integer id) {
         this.id = id;
+        return this;
     }
 
     public Integer getCid() {
         return cid;
     }
 
-    public void setCid(Integer cid) {
+    public CouponInfo setCid(Integer cid) {
         this.cid = cid;
+        return this;
     }
 
     public String getUid() {
         return uid;
     }
 
-    public void setUid(String uid) {
+    public CouponInfo setUid(String uid) {
         this.uid = uid == null ? null : uid.trim();
+        return this;
     }
 }

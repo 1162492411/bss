@@ -13,12 +13,20 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 public class ConfigureAdapter extends WebMvcConfigurerAdapter {
 
+    /**
+     * 配置拦截器
+     * @param registry
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         super.addInterceptors(registry);
         registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/**");
     }
 
+    /**
+     * 配置静态资源
+     * @param registry
+     */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         super.addResourceHandlers(registry);

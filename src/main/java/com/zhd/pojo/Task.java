@@ -32,95 +32,125 @@ public class Task {
         return id;
     }
 
-    public void setId(Integer id) {
+    public Task setId(Integer id) {
         this.id = id;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public Task setName(String name) {
         this.name = name == null ? null : name.trim();
+        return this;
     }
 
     public Boolean getType() {
         return type;
     }
 
-    public void setType(Boolean type) {
+    public Task setType(Boolean type) {
         this.type = type;
+        return this;
     }
 
     public String getUid() {
         return uid;
     }
 
-    public void setUid(String uid) {
+    public Task setUid(String uid) {
         this.uid = uid == null ? null : uid.trim();
+        return this;
     }
 
     public BigDecimal getStartLocationX() {
         return startLocationX;
     }
 
-    public void setStartLocationX(BigDecimal startLocationX) {
+    public Task setStartLocationX(BigDecimal startLocationX) {
         this.startLocationX = startLocationX;
+        return this;
     }
 
     public BigDecimal getStartLocationY() {
         return startLocationY;
     }
 
-    public void setStartLocationY(BigDecimal startLocationY) {
+    public Task setStartLocationY(BigDecimal startLocationY) {
         this.startLocationY = startLocationY;
+        return this;
     }
 
     public BigDecimal getEndLocationX() {
         return endLocationX;
     }
 
-    public void setEndLocationX(BigDecimal endLocationX) {
+    public Task setEndLocationX(BigDecimal endLocationX) {
         this.endLocationX = endLocationX;
+        return this;
     }
 
     public BigDecimal getEndLocationY() {
         return endLocationY;
     }
 
-    public void setEndLocationY(BigDecimal endLocationY) {
+    public Task setEndLocationY(BigDecimal endLocationY) {
         this.endLocationY = endLocationY;
+        return this;
     }
 
     public String getBids() {
         return bids;
     }
 
-    public void setBids(String bids) {
+    public Task setBids(String bids) {
         this.bids = bids == null ? null : bids.trim();
+        return this;
     }
 
     public Boolean getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public Task setStatus(Boolean status) {
         this.status = status;
+        return this;
     }
 
     public Date getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public Task setStartTime(Date startTime) {
         this.startTime = startTime;
+        return this;
     }
 
     public Date getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Date endTime) {
+    public Task setEndTime(Date endTime) {
         this.endTime = endTime;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                ", uid='" + uid + '\'' +
+                ", startLocationX=" + startLocationX +
+                ", startLocationY=" + startLocationY +
+                ", endLocationX=" + endLocationX +
+                ", endLocationY=" + endLocationY +
+                ", bids='" + bids + '\'' +
+                ", status=" + status +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                '}';
     }
 }

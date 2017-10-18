@@ -16,32 +16,36 @@ public class LoginRecord {
         return id;
     }
 
-    public void setId(Integer id) {
+    public LoginRecord setId(Integer id) {
         this.id = id;
+        return this;
     }
 
     public String getUid() {
         return uid;
     }
 
-    public void setUid(String uid) {
+    public LoginRecord setUid(String uid) {
         this.uid = uid == null ? null : uid.trim();
+        return this;
     }
 
     public LocalDateTime getLoginTime() {
         return loginTime;
     }
 
-    public void setLoginTime(LocalDateTime loginTime) {
+    public LoginRecord setLoginTime(LocalDateTime loginTime) {
         this.loginTime = loginTime;
+        return this;
     }
 
     public String getLoginIP() {
         return loginIP;
     }
 
-    public void setLoginIP(String loginIP) {
+    public LoginRecord setLoginIP(String loginIP) {
         this.loginIP = loginIP == null ? null : loginIP.trim();
+        return this;
     }
 
     public LoginRecord() {

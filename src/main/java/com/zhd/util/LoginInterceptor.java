@@ -5,6 +5,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * 请求拦截类,解决跨域
@@ -21,7 +22,14 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 //        response.setHeader("Access-Control-Allow-Origin", "http://localhost:8002");
 //        response.setHeader("Access-Control-Max-Age","86400");//设置最大有效时间
 //        System.out.println("preHandleDone.......");
-        return true;
+        String uri = request.getRequestURI();
+        HttpSession session = request.getSession();
+        System.out.println("uri ----->" + uri);
+        System.out.println("session-userid ----> " + session.getAttribute("userid"));
+        if(uri.equals("/") || uri.equals("/login"))
+            return true;
+        else return session.getAttribute("userid") != null;
+
     }
 
 
