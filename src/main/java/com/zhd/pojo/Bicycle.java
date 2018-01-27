@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class Bicycle {
-    private Long id;
+    private Integer id;
 
-    private Boolean status;
+    private Byte status;
 
     private Byte type;
 
@@ -18,26 +18,26 @@ public class Bicycle {
 
     private Short sid;
 
-    private Long serviceTime;
+    private Integer serviceTime;
 
     private Date investmentTime;
 
     private Integer mileage;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public Bicycle setId(Long id) {
+    public Bicycle setId(Integer id) {
         this.id = id;
         return this;
     }
 
-    public Boolean getStatus() {
+    public Byte getStatus() {
         return status;
     }
 
-    public Bicycle setStatus(Boolean status) {
+    public Bicycle setStatus(Byte status) {
         this.status = status;
         return this;
     }
@@ -87,11 +87,11 @@ public class Bicycle {
         return this;
     }
 
-    public Long getServiceTime() {
+    public Integer getServiceTime() {
         return serviceTime;
     }
 
-    public Bicycle setServiceTime(Long serviceTime) {
+    public Bicycle setServiceTime(Integer serviceTime) {
         this.serviceTime = serviceTime;
         return this;
     }
@@ -114,11 +114,11 @@ public class Bicycle {
         return this;
     }
 
-    public String[] getKeys(){
+    public static String[] getKeys(){
         return new String[]{"id", "status", "type","batch","serviceTime","mileage","investmentTime"};
     }
 
-    public String[] getNames(){
+    public static String[] getNames(){
         return new String[]{"编号","状态","类型","生产批次","总使用时间","总行驶里程","投产时间"};
     }
 

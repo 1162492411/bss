@@ -6,16 +6,18 @@ import java.util.List;
 
 public interface BicycleMapper {
 
-    int deleteByPrimaryKey(Long id);
+    int deleteByPrimaryKey(Integer id);
 
     int insertSelective(Bicycle record);
 
     int updateByPrimaryKeySelective(Bicycle record);
 
-    Bicycle selectByPrimaryKey(Long id);
+    Bicycle selectByPrimaryKey(Integer id);
 
     int selectCount(@Param("record")Bicycle record);
 
     List<Bicycle> selectBicycles(@Param("start")Integer start, @Param("record")Bicycle record);
+
+    List<Bicycle> selectAll();
 
 }

@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <title>共享单车管理平台--供应商管理</title>
     <!-- Tell the browser to be responsive to screen width -->
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
-    <link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}" />
-    <link rel="stylesheet" th:href="@{/static/css/font-awesome.min.css}" />
-    <link rel="stylesheet" th:href="@{/static/css/ionicons.min.css}" />
-    <link rel="stylesheet" th:href="@{/static/css/dataTables.bootstrap.min.css}" />
-    <link rel="stylesheet" th:href="@{/static/css/AdminLTE.min.css}" />
-    <link rel="stylesheet" th:href="@{/static/css/skins/skin-blue.min.css}" />
-    <link rel="stylesheet" th:href="@{/static/css/bss.css}" />
-    <link rel="stylesheet" th:href="@{/static/css/pagination.css}" />
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/static/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" th:href="@{/static/css/ionicons.min.css}"/>
+    <link rel="stylesheet" th:href="@{/static/css/dataTables.bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/static/css/AdminLTE.min.css}"/>
+    <link rel="stylesheet" th:href="@{/static/css/skins/skin-blue.min.css}"/>
+    <link rel="stylesheet" th:href="@{/static/css/bss.css}"/>
+    <link rel="stylesheet" th:href="@{/static/css/pagination.css}"/>
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
@@ -31,7 +31,7 @@
                 <button class="Button Button--blue" data-toggle="modal" data-target="#add-supplier-modal">添加</button>
             </h1>
             <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> 车辆模块</a></li>
+                <li><a href="#"><i class="fa fa-bicycle"></i> 车辆模块</a></li>
                 <li class="active">供应商管理</li>
             </ol>
         </section>
@@ -52,7 +52,9 @@
                 <!-- /.col -->
             </div>
             <!-- 分页按钮 -->
-            <nav><ul class="pagination" id="suppliersPagination"></ul></nav>
+            <nav>
+                <ul class="pagination" id="suppliersPagination"></ul>
+            </nav>
         </section>
         <!-- /.content -->
 
@@ -70,40 +72,44 @@ immediately after the control sidebar -->
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">修改供应商</h4>
                 </div>
                 <div class="modal-body">
-                    <form class="form-horizontal">
+                    <form class="form-horizontal" id="update-supplier-form">
                         <div class="box-body">
                             <!-- 编号 -->
                             <div class="form-group">
-                                <label for="update-supplier-modal-id" class="col-sm-2 control-label">编号</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="update-supplier-modal-id" placeholder="编号" disabled="disabled" />
+                                <label for="update-supplier-modal-id" class="col-sm-3 control-label">编号</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="col-sm-10 form-control" id="update-supplier-modal-id"
+                                           placeholder="编号" disabled="disabled"/>
                                 </div>
                             </div>
                             <!-- 供应商名 -->
                             <div class="form-group">
-                                <label for="update-supplier-modal-name" class="col-sm-2 control-label">供应商名</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="update-supplier-modal-name" placeholder="供应商名" />
+                                <label for="update-supplier-modal-name" class="col-sm-3 control-label">供应商名</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="col-sm-10 form-control" id="update-supplier-modal-name" name="updateName"
+                                           placeholder="供应商名"/>
                                 </div>
                             </div>
                             <!-- 供应商地址 -->
                             <div class="form-group">
-                                <label for="update-supplier-modal-address" class="col-sm-2 control-label">供应商地址</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="update-supplier-modal-address" placeholder="供应商地址" />
+                                <label for="update-supplier-modal-address" class="col-sm-3 control-label">供应商地址</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="col-sm-10 form-control" id="update-supplier-modal-address" name="updateAddress"
+                                           placeholder="供应商地址"/>
                                 </div>
                             </div>
                         </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">放弃</button>
+                            <button type="button" class="btn btn-primary" onclick="doUpdateSupplier()">修改</button>
+                        </div>
                         <!-- /.box-body -->
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">放弃</button>
-                    <button type="button" class="btn btn-primary" onclick="doUpdateSupplier()">修改</button>
                 </div>
             </div>
         </div>
@@ -115,40 +121,38 @@ immediately after the control sidebar -->
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">添加供应商</h4>
                 </div>
                 <div class="modal-body">
-                    <form class="form-horizontal">
+                    <form class="form-horizontal" id="add-supplier-form">
                         <div class="box-body">
                             <!-- 编号 -->
-                            <div class="form-group">
-                                <label for="add-supplier-modal-id" class="col-sm-2 control-label">编号</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="add-supplier-modal-id" placeholder="编号" disabled="disabled" />
-                                </div>
-                            </div>
+                            <input type="hidden" id="add-supplier-modal-id" />
                             <!-- 供应商名 -->
                             <div class="form-group">
-                                <label for="add-supplier-modal-name" class="col-sm-2 control-label">供应商名</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="add-supplier-modal-name" placeholder="供应商名" />
+                                <label for="add-supplier-modal-name" class="col-sm-3 control-label">供应商名</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="col-sm-10 form-control" id="add-supplier-modal-name"
+                                           name="name" placeholder="供应商名"/>
                                 </div>
                             </div>
                             <!-- 供应商地址 -->
                             <div class="form-group">
-                                <label for="add-supplier-modal-address" class="col-sm-2 control-label">供应商地址</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="add-supplier-modal-address" placeholder="供应商地址" />
+                                <label for="add-supplier-modal-address" class="col-sm-3 control-label">供应商地址</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class=" col-sm-10 form-control" id="add-supplier-modal-address"
+                                           name="address" placeholder="供应商地址"/>
                                 </div>
                             </div>
                         </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">放弃</button>
+                        <button type="button" class="btn btn-primary" onclick="addSupplier()">添加</button>
+                        </div>
                         <!-- /.box-body -->
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">放弃</button>
-                    <button type="button" class="btn btn-primary" onclick="addSupplier()">添加</button>
                 </div>
             </div>
         </div>
@@ -158,13 +162,48 @@ immediately after the control sidebar -->
 </div>
 <script th:src="@{/static/js/jquery.min.js}"></script>
 <script th:src="@{/static/js/bootstrap.min.js}"></script>
-<script th:src="@{/static/js/jquery.dataTables.min.js}"></script>
-<script th:src="@{/static/js/dataTables.bootstrap.min.js}"></script>
 <script th:src="@{/static/js/adminlte.min.js}"></script>
+<script th:src="@{/static/js/jquery.validate.min.js}"></script>
+<script th:src="@{/static/js/messages_zh.min.js}"></script>
+<script th:src="@{/static/js/data.js}"></script>
 <script th:src="@{/static/js/bss.js}"></script>
 <script type="text/javascript">
+    $.validator.setDefaults({
+        errorElement: "em",
+        success: function (label) {
+            label.text("ok!").addClass("success");
+        }
+    });
     $(document).ready(function () {
         loadSuppliers(1);
+        $("#add-supplier-form").validate({
+            rules :{
+//                name: {
+//                    required : {
+//                        depends:function(){
+//                            $(this).val($.trim($(this).val()));
+//                            return true;
+//                        }
+//                    }
+//                },
+//                address: {
+//                    required : {
+//                        depends:function(){
+//                            $(this).val($.trim($(this).val()));
+//                            return true;
+//                        }
+//                    }
+//                }
+                name : "required",
+                address : "required"
+            }
+        });
+        $("#update-supplier-form").validate({
+            rules :{
+                updateName : "required",
+                updateAddress : "required"
+            }
+        });
     });
 </script>
 </body>

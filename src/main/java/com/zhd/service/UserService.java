@@ -42,48 +42,48 @@ public class UserService {
 
     /**
      * 查询符合条件的用户的总数
-     * @param user 指定条件的用户信息
+     * @param record 指定条件的用户信息
      * @return 符合条件的用户的总数
      */
-    public int selectCount(User user){
-        return userMapper.selectCount(user);
+    public int selectCount(User record){
+        return userMapper.selectCount(record);
     }
 
     /**
      * 返回分页的符合条件的用户信息
      * @param start 数据库中用户的起始行数
-     * @param User 指定条件的用户信息
+     * @param record 指定条件的用户信息
      * @return 分页后的符合条件的用户信息集合
      */
-    public List<User> selectUsers(Integer start, User User){
-        return userMapper.selectUsers(start,User);
+    public List<User> selectUsers(Integer start, User record){
+        return userMapper.selectUsers(start,record);
     }
 
     /**
      * 返回新增的用户的主键
-     * @param User 新增的用户信息
+     * @param record 新增的用户信息
      * @return 新增的用户的主键
      */
-    public boolean insert(User User){
-        return userMapper.insertSelective(User) > 0;
+    public boolean insert(User record){
+        return userMapper.insertSelective(record) > 0;
     }
 
     /**
      * 返回删除指定用户的结果
-     * @param User 待删除的用户
+     * @param record 待删除的用户
      * @return 是否已删除指定用户
      */
-    public boolean delete(User User){
-        return userMapper.deleteByPrimaryKey(User.getId()) > 0;
+    public boolean delete(User record){
+        return userMapper.deleteByPrimaryKey(record.getId()) > 0;
     }
 
     /**
      * 返回修改指定用户的结果
-     * @param User 待修改的用户信息
+     * @param record 待修改的用户信息
      * @return 是否已修改指定用户
      */
-    public boolean update(User User){
-        return userMapper.updateByPrimaryKeySelective(User) > 0;
+    public boolean update(User record){
+        return userMapper.updateByPrimaryKeySelective(record) > 0;
     }
     
 }

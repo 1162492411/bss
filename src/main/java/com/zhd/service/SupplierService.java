@@ -69,5 +69,13 @@ public class SupplierService {
     public boolean update(Supplier record){
         return supplierMapper.updateByPrimaryKeySelective(record) > 0;
     }
-    
+
+
+    /**
+     * 返回所有供应商简略信息
+     * @return 所有供应商的简略信息
+     */
+    public List<Supplier> selectAll(){
+        return supplierMapper.selectAll();
+    }
 }

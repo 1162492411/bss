@@ -1,32 +1,31 @@
 package com.zhd.pojo;
 
-import java.math.BigDecimal;
-import java.util.Date;
+
 
 public class Task {
     private Integer id;
 
     private String name;
 
-    private Boolean type;
+    private Byte type;
 
     private String uid;
 
-    private BigDecimal startLocationX;
+//    private BigDecimal startLocationX;
+//
+//    private BigDecimal startLocationY;
+//
+//    private BigDecimal endLocationX;
+//
+//    private BigDecimal endLocationY;
 
-    private BigDecimal startLocationY;
-
-    private BigDecimal endLocationX;
-
-    private BigDecimal endLocationY;
-
-    private String bids;
+    private Long bid;
 
     private Boolean status;
 
-    private Date startTime;
+    private String startTime;
 
-    private Date endTime;
+    private String endTime;
 
     public Integer getId() {
         return id;
@@ -46,11 +45,11 @@ public class Task {
         return this;
     }
 
-    public Boolean getType() {
+    public Byte getType() {
         return type;
     }
 
-    public Task setType(Boolean type) {
+    public Task setType(Byte type) {
         this.type = type;
         return this;
     }
@@ -64,48 +63,48 @@ public class Task {
         return this;
     }
 
-    public BigDecimal getStartLocationX() {
-        return startLocationX;
+//    public BigDecimal getStartLocationX() {
+//        return startLocationX;
+//    }
+//
+//    public Task setStartLocationX(BigDecimal startLocationX) {
+//        this.startLocationX = startLocationX;
+//        return this;
+//    }
+//
+//    public BigDecimal getStartLocationY() {
+//        return startLocationY;
+//    }
+//
+//    public Task setStartLocationY(BigDecimal startLocationY) {
+//        this.startLocationY = startLocationY;
+//        return this;
+//    }
+//
+//    public BigDecimal getEndLocationX() {
+//        return endLocationX;
+//    }
+//
+//    public Task setEndLocationX(BigDecimal endLocationX) {
+//        this.endLocationX = endLocationX;
+//        return this;
+//    }
+//
+//    public BigDecimal getEndLocationY() {
+//        return endLocationY;
+//    }
+//
+//    public Task setEndLocationY(BigDecimal endLocationY) {
+//        this.endLocationY = endLocationY;
+//        return this;
+//    }
+
+    public Long getBid() {
+        return bid;
     }
 
-    public Task setStartLocationX(BigDecimal startLocationX) {
-        this.startLocationX = startLocationX;
-        return this;
-    }
-
-    public BigDecimal getStartLocationY() {
-        return startLocationY;
-    }
-
-    public Task setStartLocationY(BigDecimal startLocationY) {
-        this.startLocationY = startLocationY;
-        return this;
-    }
-
-    public BigDecimal getEndLocationX() {
-        return endLocationX;
-    }
-
-    public Task setEndLocationX(BigDecimal endLocationX) {
-        this.endLocationX = endLocationX;
-        return this;
-    }
-
-    public BigDecimal getEndLocationY() {
-        return endLocationY;
-    }
-
-    public Task setEndLocationY(BigDecimal endLocationY) {
-        this.endLocationY = endLocationY;
-        return this;
-    }
-
-    public String getBids() {
-        return bids;
-    }
-
-    public Task setBids(String bids) {
-        this.bids = bids == null ? null : bids.trim();
+    public Task setBid(Long bid) {
+        this.bid = bid;
         return this;
     }
 
@@ -118,22 +117,30 @@ public class Task {
         return this;
     }
 
-    public Date getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public Task setStartTime(Date startTime) {
+    public Task setStartTime(String startTime) {
         this.startTime = startTime;
         return this;
     }
 
-    public Date getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
-    public Task setEndTime(Date endTime) {
+    public Task setEndTime(String endTime) {
         this.endTime = endTime;
         return this;
+    }
+
+    public static String[] getKeys(){
+        return new String[]{"id", "name", "type","status","uid", "bid", "startTime","endTime"};
+    }
+
+    public static String[] getNames(){
+        return new String[]{"编号","任务名称","任务类型","任务状态","操作人", "处理车辆","创建时间","完成时间"};
     }
 
     @Override
@@ -143,11 +150,11 @@ public class Task {
                 ", name='" + name + '\'' +
                 ", type=" + type +
                 ", uid='" + uid + '\'' +
-                ", startLocationX=" + startLocationX +
-                ", startLocationY=" + startLocationY +
-                ", endLocationX=" + endLocationX +
-                ", endLocationY=" + endLocationY +
-                ", bids='" + bids + '\'' +
+//                ", startLocationX=" + startLocationX +
+//                ", startLocationY=" + startLocationY +
+//                ", endLocationX=" + endLocationX +
+//                ", endLocationY=" + endLocationY +
+                ", bid='" + bid + '\'' +
                 ", status=" + status +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +

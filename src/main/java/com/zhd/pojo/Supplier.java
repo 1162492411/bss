@@ -34,14 +34,21 @@ public class Supplier {
         return this;
     }
 
-    public String[] getKeys(){
+    public static String[] getSimpleKeys(){
+        return new String[]{"id", "name"};
+    }
+
+    public static String[] getKeys(){
         return new String[]{"id", "name", "address"};
     }
 
-    public String[] getNames(){
+    public static String[] getNames(){
         return new String[]{"编号","供应商名","供应商地址"};
     }
 
+    public static String[] getSimpleNames(){
+        return new String[]{"编号","供应商名"};
+    }
     @Override
     public String toString() {
         return "Supplier{" +

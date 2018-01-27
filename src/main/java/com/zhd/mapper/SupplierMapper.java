@@ -19,4 +19,6 @@ public interface SupplierMapper {
 
     List<Supplier> selectSuppliers(@Param("start")Integer start, @Param("record")Supplier supplier);
 
+    List<Supplier> selectAll();
+
 }

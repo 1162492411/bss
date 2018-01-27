@@ -12,6 +12,8 @@ public class Journey {
 
     private Date startTime;
 
+    private Date endTime;
+
     private Integer rideTime;
 
     private Integer distance;
@@ -54,6 +56,15 @@ public class Journey {
         return this;
     }
 
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public Journey setEndTime(Date endTime) {
+        this.endTime = endTime;
+        return this;
+    }
+
     public Integer getRideTime() {
         return rideTime;
     }
@@ -79,5 +90,27 @@ public class Journey {
     public Journey setAmount(BigDecimal amount) {
         this.amount = amount;
         return this;
+    }
+
+    public static String[] getKeys(){
+        return new String[]{"id", "uid", "bid","startTime","endTime","rideTime","distance","amount"};
+    }
+
+    public static String[] getNames(){
+        return new String[]{"行程编号","用户编号","车辆编号","起始时间","结束时间","骑行时间","骑行距离/m","骑行花费/元"};
+    }
+
+    @Override
+    public String toString() {
+        return "Journey{" +
+                "id=" + id +
+                ", uid='" + uid + '\'' +
+                ", bid=" + bid +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", rideTime=" + rideTime +
+                ", distance=" + distance +
+                ", amount=" + amount +
+                '}';
     }
 }

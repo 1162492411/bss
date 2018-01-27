@@ -100,4 +100,14 @@ public class Page implements Serializable{
         return currentPage <= 0 ? 0 : (currentPage - 1) * pageSize;
     }
 
+    @Override
+    public String toString() {
+        return "Page{" +
+                "totalCount=" + totalCount +
+                ", pageSize=" + pageSize +
+                ", totalPage=" + totalPage +
+                ", currentPage=" + currentPage +
+                ", datas=" + datas +
+                '}';
+    }
 }

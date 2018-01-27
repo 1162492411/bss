@@ -82,4 +82,7 @@
     limit ${start},10
   </select>
 
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id,name from suppliers
+  </select>
 </mapper>

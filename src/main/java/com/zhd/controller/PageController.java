@@ -49,4 +49,23 @@ public class PageController {
      */
     @RequestMapping("bicycleModule/bicycles")
     public void toBicycles(){}
+
+    /**
+     * 前往--订单模块-行程管理
+     */
+    @RequestMapping("orderModule/journeys")
+    public void toJourneys(){}
+
+
+    /**
+     * 前往--任务模块-车辆分布
+     */
+    @RequestMapping("taskModule/map")
+    public void toMap(){}
+
+    /**
+     * 前往--任务模块-任务管理
+     */
+    @RequestMapping("taskModule/tasks")
+    public void toTasks(){}
 }

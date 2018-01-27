@@ -5,6 +5,8 @@ import com.zhd.pojo.Area;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -27,48 +29,48 @@ public class AreaService {
 
     /**
      * 查询符合条件的区域的总数
-     * @param area 指定条件的区域信息
+     * @param record 指定条件的区域信息
      * @return 符合条件的区域的总数
      */
-    public int selectCount(Area area){
-        return areaMapper.selectCount(area);
+    public int selectCount(Area record){
+        return areaMapper.selectCount(record);
     }
 
     /**
      * 返回分页的符合条件的区域信息
      * @param start 数据库中区域的起始行数
-     * @param area 指定条件的区域信息
+     * @param record 指定条件的区域信息
      * @return 分页后的符合条件的区域信息集合
      */
-    public List<Area> selectAreas(Integer start, Area area){
-        return areaMapper.selectAreas(start,area);
+    public List<Area> selectAreas(Integer start, Area record){
+        return areaMapper.selectAreas(start,record);
     }
 
     /**
      * 返回是否成功新增区域
-     * @param area 新增的区域信息
+     * @param record 新增的区域信息
      * @return 数据库影响行数是否大于0
      */
-    public boolean insert(Area area){
-        return areaMapper.insert(area) > 0;
+    public boolean insert(Area record){
+        return areaMapper.insert(record) > 0;
     }
 
     /**
      * 返回删除指定区域的结果
-     * @param area 待删除的区域
+     * @param record 待删除的区域
      * @return 是否已删除指定区域
      */
-    public boolean delete(Area area){
-        return areaMapper.deleteByPrimaryKey(area.getId()) > 0;
+    public boolean delete(Area record){
+        return areaMapper.deleteByPrimaryKey(record.getId()) > 0;
     }
 
     /**
      * 返回修改指定区域的结果
-     * @param area 待修改的区域信息
+     * @param record 待修改的区域信息
      * @return 是否已修改指定区域
      */
-    public boolean update(Area area){
-        return areaMapper.updateByPrimaryKeySelective(area) > 0;
+    public boolean update(Area record){
+        return areaMapper.updateByPrimaryKeySelective(record) > 0;
     }
 
 }

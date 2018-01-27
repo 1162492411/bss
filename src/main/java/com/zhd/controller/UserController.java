@@ -40,6 +40,7 @@ public class UserController {
             System.out.println("检索出用户" + user);
             System.out.println("session中的值是" + session.getAttribute("userid"));
             model.addAttribute("userid", user.getId());
+            System.out.println("登录成功,即将返回管理主页");
             return "home";
         }
         else

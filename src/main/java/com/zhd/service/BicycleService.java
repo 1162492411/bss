@@ -20,7 +20,7 @@ public class BicycleService {
      * @param id 车辆的主键
      * @return 车辆信息
      */
-    public Bicycle searchById(Long id){
+    public Bicycle searchById(Integer id){
         return bicycleMapper.selectByPrimaryKey(id);
     }
 
@@ -41,6 +41,14 @@ public class BicycleService {
      */
     public List<Bicycle> selectBicycles(Integer start, Bicycle record){
         return bicycleMapper.selectBicycles(start,record);
+    }
+
+    /**
+     * 返回所有车辆的简略信息
+     * @return 所有车辆的简略信息
+     */
+    public List<Bicycle> selectAll(){
+        return bicycleMapper.selectAll();
     }
 
     /**

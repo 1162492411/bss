@@ -67,7 +67,19 @@ public class SupplierController {
     @RequestMapping(value = "{page}", method = RequestMethod.GET)
     public Page suppliers(@PathVariable int page, Supplier record, Page result){
         System.out.println("接收到参数" + page + record);
-        return result.setDatas(supplierService.selectSuppliers(result.setTotalCount(supplierService.selectCount(record)).setCurrentPage(page).getStart(),record)).setKeys(record.getKeys()).setNames(record.getNames());
+        return result.setDatas(supplierService.selectSuppliers(result.setTotalCount(supplierService.selectCount(record)).setCurrentPage(page).getStart(),record)).setKeys(Supplier.getKeys()).setNames(Supplier.getNames());
+
     }
+
+    /**
+     * 返回所有供应商的简略信息
+     * @param result 包含供应商信息的分页对象
+     * @return 包含供应商信息的分页对象
+     */
+    @RequestMapping("/all")
+    public Page all(Page result){
+        return result.setDatas(supplierService.selectAll());
+    }
+
 
 }

@@ -66,7 +66,13 @@ public class BicycleController {
      */
     @RequestMapping(value = "{page}", method = RequestMethod.GET)
     public Page Bicycles(@PathVariable int page, Bicycle record, Page result){
-        return result.setDatas(bicycleService.selectBicycles(result.setTotalCount(bicycleService.selectCount(record)).setCurrentPage(page).getStart(),record)).setKeys(record.getKeys()).setNames(record.getNames());
+        return result.setDatas(bicycleService.selectBicycles(result.setTotalCount(bicycleService.selectCount(record)).setCurrentPage(page).getStart(),record)).setKeys(Bicycle.getKeys()).setNames(Bicycle.getNames());
     }
-    
+
+    @RequestMapping("all")
+    public Page AllSimpleBicycles(Page result){
+        return result.setDatas(bicycleService.selectAll());
+    }
+
+
 }

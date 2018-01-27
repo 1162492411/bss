@@ -1,44 +1,44 @@
 /**
  * Created by Mo on 2017/10/2.
  */
-/*-----------------全局变量---------------*/
-const userMethods = [
-    {"name" : "更新","method" : "updateUser"},
-    {"name" : "封禁","method" : "blockUser"},
-    {"name" : "删除","method" : "deleteUser"}
-];//用户管理的方法
-const areaMethods = [
-    {"name" : "更新" , "method" : "updateArea"},
-    {"name" : "删除" , "method" : "deleteArea"}
-];//区域管理的方法
-const supplierMethods = [
-    {"name" : "更新" , "method" : "updateSupplier"},
-    {"name" : "删除" , "method" : "deleteSupplier"}
-];//供应商管理的方法
-const bicycleMethods = [
-    {"name" : "封禁" , "method" : "blockBicycle"},
-    {"name" : "删除" , "method" : "deleteBicycle"}
-];
+/*----------------扩展函数--------------*/
+Date.prototype.format = function (format) {
+    let o = {
+        "M+": this.getMonth() + 1,
+        "d+": this.getDate(),
+        "h+": this.getHours(),
+        "m+": this.getMinutes(),
+        "s+": this.getSeconds()
+    };
+    if (/(y+)/.test(format)) format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (let k in o)
+        if (new RegExp("(" + k + ")").test(format)) format = format.replace(RegExp.$1, RegExp.$1.length === 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+    return format
+};
 
-const rootPath = "http://localhost:8080";//网站根目录
-const usersPath = rootPath + "/users";//获取用户数据的根目录
-const areasPath = rootPath + "/areas";//获取区域信息的根目录
-const suppliersPath = rootPath + "/suppliers";//获取供应商信息的根目录
-const bicyclesPath = rootPath + "/bicycles";//获取车辆信息的根目录
+/**
+ * 扩展jquery Validation,除去每个输入框的空格
+ */
+(function ($) {
 
-const userModalKeys = ["id","name","credit"];//修改用户模态框的键列表
-const areaModalKeys = ["id","name","northPoint","southPoint","westPoint","eastPoint","type"];//修改区域模态框的键列表
-const supplierModalKeys = ["id","name","address"];//修改供应商模态框的键列表
-const bicycleModalKeys = ["id","type","batch","sid"];//添加车辆的键列表
-// const
+    $.each($.validator.methods, function (key, value) {
+        $.validator.methods[key] = function () {
+            if(arguments.length > 0) {
+                arguments[0] = $.trim(arguments[0]);
+            }
+
+            return value.apply(this, arguments);
+        };
+    });
+} (jQuery));
 
 /*---------------公共函数----------------*/
 /**
  * 页面跳转
  * @param data 待跳转的页面
  */
-function pageJump(data){
-    if(! checkDataEmpty(data)){
+function pageJump(data) {
+    if (!checkDataEmpty(data)) {
         self.location.href = data;
     }
 }
@@ -58,7 +58,7 @@ function checkElementEmpty(id) {
  * TODO:此方法需扩充
  */
 function checkDataEmpty(data) {
-    return data == "" || data == undefined || data == "[]";
+    return data === "" || data === undefined || data === "[]" || data === NaN || data === emptyDataValue || data === null;
 }
 
 /**
@@ -66,8 +66,21 @@ function checkDataEmpty(data) {
  * @param div
  */
 function resetDiv(div) {
-   if(!checkElementEmpty(div))
-       $("#" + div).empty();
+    if (!checkElementEmpty(div))
+        $("#" + div).empty();
+}
+
+/**
+ * 重置模态框
+ * @param div 模态框的id
+ */
+function resetModal(div) {
+    if (!checkElementEmpty(div)) {
+        let $modal = $("#" + div);
+        $modal.find("[id]").each(function () {
+            $(this).empty();
+        });
+    }
 }
 
 /**
@@ -76,16 +89,16 @@ function resetDiv(div) {
  * @param data 待填充的数据
  * @param 每行数据待设置的操作
  */
-function generateTable(div,data,methods) {
-    if(! checkElementEmpty(div)){
+function generateTable(div, data, methods) {
+    if (!checkElementEmpty(div)) {
         let $div = $("#" + div);
-        if(!checkDataEmpty(data)){
+        if (!checkDataEmpty(data)) {
             //设置表头
-            if(!checkDataEmpty(data.names))
+            if (!checkDataEmpty(data.names))
                 $div.append(generateBatchTableHeader(data.names));
             //设置数据
-            if(!checkDataEmpty(data.datas) && !checkDataEmpty(data.keys))
-                $div.append(generateBatchTableData(div,data.datas,data.keys,methods));
+            if (!checkDataEmpty(data.datas) && !checkDataEmpty(data.keys))
+                $div.append(generateBatchTableData(div, data.datas, data.keys, methods));
         }
     }
 }
@@ -95,11 +108,11 @@ function generateTable(div,data,methods) {
  * @param header 待填充的表头数据
  * @return {string} 设置好的表头
  */
-function generateBatchTableHeader(header){
+function generateBatchTableHeader(header) {
     let strPre = "<thead><tr>";
     let strData = "";
-    for(let i = 0; i < header.length; i++){
-        strData += "<th>" +  header[i] + "</th>";
+    for (let i = 0; i < header.length; i++) {
+        strData += "<th>" + header[i] + "</th>";
     }
     strData += "<th>操作</th>";
     let strSuf = "</tr></thead>";
@@ -114,11 +127,13 @@ function generateBatchTableHeader(header){
  * @param methods 表格每行的方法列
  * @return  {string} 设置好的表格数据
  */
-function generateBatchTableData(div,data,keys,methods){
+function generateBatchTableData(div, data, keys, methods) {
     let strPre = "<tbody id='" + div + "Body'>";
     let strData = "";
-    for(let i = 0; i < data.length; i++){
-        strData += generateSingleTableData(div, data[i], keys, methods);
+    if (!checkDataEmpty(data)) {
+        for (let i = 0; i < data.length; i++) {
+            strData += generateSingleTableData(div, data[i], keys, methods);
+        }
     }
     let strSuf = "</tbody>";
     return strPre + strData + strSuf;
@@ -132,14 +147,31 @@ function generateBatchTableData(div,data,keys,methods){
  * @param methods 表格每行的方法列
  * @returns {string} 设置好的单行表格数据
  */
-function generateSingleTableData(div, data, keys, methods){
-    let strPre = "<tr id='" + div + "TR-" + data.id + "'>";
-    let strData = "";
-    for(let i = 0; i < keys.length; i++){
-        strData += "<td id='" + div + "TD-" + data.id + "-" + keys[i] + "'>" + data[keys[i]] + "</td>";
+function generateSingleTableData(div, data, keys, methods) {
+    if (!checkDataEmpty(data) && !checkDataEmpty(keys)) {
+        let strPre = "<tr id='" + div + "TR-" + data.id + "'>";
+        let strData = "";
+        for (let i = 0; i < keys.length; i++) {
+            strData += generateSingleTD(div + "TD-" + data.id + "-" + keys[i], data[keys[i]]);
+            // "<td id='" + div + "TD-" + data.id + "-" + keys[i] + "'>" + data[keys[i]] + "</td>";
+        }
+        strData += generateSingleTableMethods(div, data, methods);
+        let strSuf = "</tr>";
+        return strPre + strData + strSuf;
     }
-    strData += generateSingleTableMethods(div,data,methods);
-    let strSuf = "</tr>";
+}
+
+/**
+ * 生成单个TD数据
+ * @param idValue 待插入的ID值
+ * @param data 待插入的数据
+ * @return {string} 设置好的单个TD数据
+ */
+function generateSingleTD(idValue, data) {
+    let dataEmpty = checkDataEmpty(data);
+    let strPre = dataEmpty ? "<td  id='" + idValue + "' style='text-align: center;line-height: 100%'>" : "<td id='" + idValue + "'>";
+    let strData = dataEmpty ? emptyDataValue : data;
+    let strSuf = "</td>";
     return strPre + strData + strSuf;
 }
 
@@ -150,12 +182,16 @@ function generateSingleTableData(div, data, keys, methods){
  * @param methods 待添加的数据操作方法及按钮名
  * @return {string} 设置好的单行数据的操作列
  */
-function generateSingleTableMethods(div,data,methods){
-    let strPre = "<td>";
+function generateSingleTableMethods(div, data, methods) {
+    let strPre = !checkDataEmpty(methods) ? "<td id='" + div + "-" + data.id +  "-Btn" + "'>" : "<td id=' " + div + "-" + data.id + "-Btn" +"' style='text-align: center;line-height: 100%'>";
     let strData = "";
-    for(let i = 0; i < methods.length; i++){
-       strData += "<button class='Button Button--blue' id='" + div + "BlockBtn-" + data.id + "' onclick='" + methods[i].method + "(" + JSON.stringify(data) + ")'>" + methods[i].name + "</button> ";
+    if (!checkDataEmpty(methods)) {
+        for (let i = 0; i < methods.length; i++) {
+            strData += "<button class='Button Button--blue' id='" + div + "BlockBtn-" + data.id + "' onclick='" + methods[i].method + "(" + JSON.stringify(data) + ")'>" + methods[i].name + "</button> ";
+        }
     }
+    else
+        strData = emptyDataValue;
     let strSuf = "</td>";
     return strPre + strData + strSuf;
 }
@@ -167,39 +203,39 @@ function generateSingleTableMethods(div,data,methods){
  * @param id 分页的ID
  * @param method 每个分页按钮触发的函数
  */
-function initPag(currentPage,totalPage,id,method){
+function initPag(currentPage, totalPage, id, method) {
     let c = parseInt(currentPage);
     let t = parseInt(totalPage);
     let prevString = "";
     let suffString = "";
-    if(t <=1 ) {//总页数过少时移除分页
+    if (t <= 1) {//总页数过少时移除分页
         $("#" + id).remove();
-        return ;
+        return;
     }
 //处理"上一页"
-    if(c > 1)  $("#" + id).append("<li id='pagLast'><span onclick=" + method + "(" + (c - 1) + ")> << </span></li>");
+    if (c > 1) $("#" + id).append("<li id='pagLast'><span onclick=" + method + "(" + (c - 1) + ")> << </span></li>");
 //添加当前页码前的页数
-    if(c > 3) {
+    if (c > 3) {
         prevString += "<li><a>...</a></li>";
-        for(let i = c - 3; i < c; i++) prevString += "<li><span onclick=" + method + "(" + i  +")>" + i + "</span></li>";
+        for (let i = c - 3; i < c; i++) prevString += "<li><span onclick=" + method + "(" + i + ")>" + i + "</span></li>";
         $("#" + id).append(prevString);
     }
-    else{
-        for(let i = 1; i < c; i++) prevString += "<li><span onclick=" + method + "(" + i  +")>" + i + "</span></li>";
+    else {
+        for (let i = 1; i < c; i++) prevString += "<li><span onclick=" + method + "(" + i + ")>" + i + "</span></li>";
         $("#" + id).append(prevString);
     }
 //添加当前页码
     $("#" + id).append("<li id='pageCurrent' class='active'><span>" + c + "</span></li>");
 //添加当前页码后的页数
-    if(c < t-3){
-        for(let j = c + 1; j <= c + 3; j++) suffString += "<li><span onclick=" + method + "(" + j  +")>" + j + "</span></li>";
-        suffString +="<li><a>...</a></li>";
+    if (c < t - 3) {
+        for (let j = c + 1; j <= c + 3; j++) suffString += "<li><span onclick=" + method + "(" + j + ")>" + j + "</span></li>";
+        suffString += "<li><a>...</a></li>";
     }
     else
-        for(let j = c + 1; j <= t; j++) suffString += "<li><span onclick=" + method + "(" + j  +")>" + j + "</span></li>";
+        for (let j = c + 1; j <= t; j++) suffString += "<li><span onclick=" + method + "(" + j + ")>" + j + "</span></li>";
     $("#" + id).append(suffString);
 //处理"下一页"
-    if(c < t) $("#" + id).append("<li id='pagNext'><span onclick=" + method + "(" + (c + 1)  +")> >> </span></li>");
+    if (c < t) $("#" + id).append("<li id='pagNext'><span onclick=" + method + "(" + (c + 1) + ")> >> </span></li>");
 }
 
 /**
@@ -217,9 +253,10 @@ function internalLoadDatas(baseUrl, page, tableDiv, pagDiv, methods, reloadMetho
     $.ajax({
         type: 'GET',
         url: baseUrl + "/" + page,
-        success: function(data) {
-            generateTable(tableDiv,data,methods);
-            initPag(data.currentPage,data.totalPage,pagDiv,reloadMethod);
+        async: false,
+        success: function (data) {
+            generateTable(tableDiv, data, methods);
+            initPag(data.currentPage, data.totalPage, pagDiv, reloadMethod);
         }
     });
 }
@@ -231,10 +268,10 @@ function internalLoadDatas(baseUrl, page, tableDiv, pagDiv, methods, reloadMetho
  * @param data 修改的数据
  * @param keys 修改的数据的key
  */
-function initModal(pojo,data,keys) {
+function initModal(pojo, data, keys) {
     let $modal = $("#update-" + pojo + "-modal");
     $modal.on('show.bs.modal', function (event) {
-        for(let i =0 ;i < keys.length; i++)
+        for (let i = 0; i < keys.length; i++)
             $("#update-" + pojo + "-modal-" + keys[i]).val(data[keys[i]]);
     });
     $modal.modal("show");
@@ -246,15 +283,15 @@ function initModal(pojo,data,keys) {
  * @param id 数据的主键
  * @param sendUrl 数据的后台URL
  */
-function internalDeleteData(div,id,sendUrl){
-    let sendData = {"id" : id};
+function internalDeleteData(div, id, sendUrl) {
+    let sendData = {"id": id};
     $.ajax({
         type: 'DELETE',
         url: sendUrl,
         data: JSON.stringify(sendData),
         contentType: 'application/json',
-        success: function(data) {
-            if(data === true){
+        success: function (data) {
+            if (data === true) {
                 $("#" + div + "TR-" + sendData.id).empty();
                 window.location.reload();
             }
@@ -268,25 +305,28 @@ function internalDeleteData(div,id,sendUrl){
  * @param sendUrl 数据的后台URL
  * @param keys 修改的实体的键
  */
-function internalAddData(pojo,sendUrl,keys){
-    let sendData = {};
-    for(let i = 0; i < keys.length ; i++)
-        sendData[keys[i]] = $("#add-" + pojo + "-modal-" + keys[i]).val();
-    $.ajax({
-        type: 'POST',
-        url: sendUrl,
-        data: JSON.stringify(sendData),
-        contentType: 'application/json',
-        success: function(data) {
-            if(data === true){
-                alert("添加数据成功");
-                $("#add-" + pojo + "-modal").modal("hide");
-                window.location.reload();
+function internalAddData(pojo, sendUrl, keys) {
+    if(checkElementEmpty("add-" + pojo + "-form") || $("#add-" + pojo + "-form").valid()){
+        //if中的第一个条件是考虑到bicycles页面addTask表单不能设置id的情况，此情况待解决
+        let sendData = {};
+        for (let i = 0; i < keys.length; i++)
+            sendData[keys[i]] = $("#add-" + pojo + "-modal-" + keys[i]).val();
+        $.ajax({
+            type: 'POST',
+            url: sendUrl,
+            data: JSON.stringify(sendData),
+            contentType: 'application/json',
+            success: function (data) {
+                if (data === true) {
+                    alert("添加数据成功");
+                    $("#add-" + pojo + "-modal").modal("hide");
+                    window.location.reload();
+                }
+                else
+                    alert("未成功添加数据");
             }
-            else
-                alert("未成功添加数据");
-        }
-    });
+        });
+    }
 }
 
 /**
@@ -295,28 +335,113 @@ function internalAddData(pojo,sendUrl,keys){
  * @param sendUrl 修改的数据后台的Url
  * @param keys 修改的实体的键
  */
-function internalUpdateData(pojo,sendUrl,keys){
-    let sendData = {};
-    for(let i = 0; i < keys.length ; i++)
-        sendData[keys[i]] = $("#update-" + pojo + "-modal-" + keys[i]).val();
-    $.ajax({
-        type: 'PUT',
-        url: sendUrl,
-        data: JSON.stringify(sendData),
-        contentType: 'application/json',
-        success: function(data) {
-            if(data === true){
-                $("#update-" + pojo + "-modal").modal("hide");
-                let $base = "#" + pojo + "TableTD-" + sendData.id + "-";
-                for(let i = 1; i < keys.length ; i++)
-                    $($base + keys[i]).text(sendData[keys[i]]);
-                window.location.reload();
+function internalUpdateData(pojo, sendUrl, keys) {
+    if($("#update-" + pojo + "-form").valid()){
+        let sendData = {};
+        for (let i = 0; i < keys.length; i++)
+            sendData[keys[i]] = $("#update-" + pojo + "-modal-" + keys[i]).val();
+        $.ajax({
+            type: 'PUT',
+            url: sendUrl,
+            data: JSON.stringify(sendData),
+            contentType: 'application/json',
+            success: function (data) {
+                if (data === true) {
+                    $("#update-" + pojo + "-modal").modal("hide");
+                    let $base = "#" + pojo + "TableTD-" + sendData.id + "-";
+                    for (let i = 1; i < keys.length; i++)
+                        $($base + keys[i]).text(sendData[keys[i]]);
+                    window.location.reload();
+                }
             }
-        }
-    });
+        });
+    }
 }
 
+/**
+ * 为选择框添加数据
+ * @param div 选择框的Id
+ * @param data 待添加的数据
+ */
+function initSelection(div, data) {
+    let $div = $("#" + div);
+    let str = "";
+    for (let i = 0; i < data.length; i++)
+        str += "<option value='" + data[i].id + "'>" + data[i].name + "</option>";
+    $div.append(str);
+}
 
+/**
+ * 将秒数格式化为合适的时间
+ * @param div 待格式化的Div的Id
+ */
+function formatSeconds(div) {
+    let result = "";
+    if (!checkElementEmpty(div)) {
+        let val = parseInt($("#" + div).text());
+        if (!checkDataEmpty(val)) {
+            let min = Math.floor(val / 60),
+                second = val % 60,
+                day = 0, hour = 0;
+
+            if (min >= 60) {
+                hour = Math.floor(min / 60);
+                min = min % 60;
+            }
+            else {
+                hour = 0;
+            }
+            if (hour >= 24) {
+                day = Math.floor(hour / 24);
+                hour = hour % 24;
+            }
+            else {
+                day = 0;
+            }
+            if(day > 0) result = day + "天";
+            if(hour > 0) result += hour + "小时";
+            if(min > 0 ) result += min + "分";
+            if(second > 0) result += second + "秒";
+        }
+        $("#" + div).text(val >0 ? result : emptyDataValue);
+    }
+}
+
+/**
+ * 将ID格式化为对应的文字显示
+ * @param div 待格式化的Div
+ * @param names ID文字对应的数组
+ */
+function formateIndexToName(div,names) {
+    let result = emptyDataValue;
+    if (!checkElementEmpty(div)) {
+        let index = "";
+        if($("#" + div).text() === 'true')
+            index = 1;
+        else if($("#" + div).text() === 'false')
+            index = 0;
+        else
+            index = parseInt($("#" + div).text());
+        if (!checkDataEmpty(index)) result = names[index].name;
+        $("#" + div).text(result);
+        $("#" + div).parent().attr("class",names[index].class);
+    }
+}
+
+/**
+ * 将带年月日时分秒的时间格式化
+ * @param 待格式化的Div的Id
+ */
+function formatDateTime(div) {
+    if (!checkElementEmpty(div)) {
+        let $div = $("#" + div), $val = $div.text();
+        if (!checkDataEmpty($val)) {
+            $div.text(new Date($val).format("yyyy-MM-dd hh:mm:ss"));
+        }
+        else
+            $div.text(emptyDataValue);
+    }
+}
 
 /*-----------登录登出部分-----------*/
 /**
@@ -324,15 +449,15 @@ function internalUpdateData(pojo,sendUrl,keys){
  */
 function login() {
     let data = {
-        "id" : $("#id").val(),
-        "password" : $("#pass").val()
+        "id": $("#id").val(),
+        "password": $("#pass").val()
     };
     $.ajax({
         type: 'POST',
         url: '/login',
         data: JSON.stringify(data),
         contentType: 'application/json',
-        success: function(data) {
+        success: function (data) {
             pageJump(data);
         }
     });
@@ -344,35 +469,38 @@ function login() {
  * @param page 请求的页数
  */
 function loadUsers(page) {
-    internalLoadDatas(usersPath,page,"userTable","usersPagination",userMethods,"loadUsers");
+    internalLoadDatas(usersPath, page, "userTable", "usersPagination", userMethods, "loadUsers");
+    $("#userTableBody").find("[id$='status']").each(function () {
+        formateIndexToName($(this).attr("id"),allUserStatus);
+    });
 }
 
 /**
  * 显示修改用户的modal
  */
 function updateUser(data) {
-    initModal("user",data,userModalKeys);
+    initModal("user", data, userModalKeys);
 }
 
 /**
  * 修改用户
  */
-function doUpdateUser(){
-    internalUpdateData("user",usersPath,userModalKeys);
+function doUpdateUser() {
+    internalUpdateData("user", usersPath, userModalKeys);
 }
 
 /**
  * 封禁用户
  */
-function blockUser(data){
-    let sendData = {"id" : data.id,"status" : true};
+function blockUser(data) {
+    let sendData = {"id": data.id, "status": true};
     $.ajax({
         type: 'PUT',
         url: '/users',
         data: JSON.stringify(sendData),
         contentType: 'application/json',
-        success: function(data) {
-            if(data === true){
+        success: function (data) {
+            if (data === true) {
                 $("#userTableTD-" + sendData.id + "-status").text(true);
             }
         }
@@ -382,15 +510,15 @@ function blockUser(data){
 /**
  * 删除用户
  */
-function deleteUser(data){
-    internalDeleteData("userTable",data.id,usersPath);
+function deleteUser(data) {
+    internalDeleteData("userTable", data.id, usersPath);
 }
 
 /**
  * 添加用户
  */
-function addUser(){
-    internalAddData("user",usersPath,userModalKeys);
+function addUser() {
+    internalAddData("user", usersPath, userModalKeys);
 }
 
 /*----------------车辆模块部分-------------------------*/
@@ -399,112 +527,324 @@ function addUser(){
  * 加载区域列表的数据
  * @param page 请求的页数
  */
-function loadAreas(page){
-    internalLoadDatas(areasPath,page,"areaTable","areasPagination",areaMethods,"loadAreas");
+function loadAreas(page) {
+    internalLoadDatas(areasPath, page, "areaTable", "areasPagination", areaMethods, "loadAreas");
+    $("#areaTableBody").find("[id$='type']").each(function () {
+        formateIndexToName($(this).attr("id"),allAreaType);
+    });
 }
 
 /**
  * 显示修改区域的modal
  */
 function updateArea(data) {
-    initModal("area",data,areaModalKeys);
+    initModal("area", data, areaModalKeys);
 }
 
 /**
  * 修改区域
  */
-function doUpdateArea(){
-    internalUpdateData("area",areasPath,areaModalKeys);
+function doUpdateArea() {
+    internalUpdateData("area", areasPath, areaModalKeys);
 }
 
 /**
  * 删除区域
  */
-function deleteArea(data){
-    internalDeleteData("areaTable",data.id,areasPath);
+function deleteArea(data) {
+    internalDeleteData("areaTable", data.id, areasPath);
 }
 
 /**
  * 添加区域
  */
-function addArea(){
-    internalAddData("area",areasPath,areaModalKeys);
+function addArea() {
+    internalAddData("area", areasPath, areaModalKeys);
 }
 
 /**
  * 加载供应商列表的数据
  * @param page 请求的页数
  */
-function loadSuppliers(page){
-    internalLoadDatas(suppliersPath,page,"supplierTable","suppliersPagination",supplierMethods,"loadSuppliers");
+function loadSuppliers(page) {
+    internalLoadDatas(suppliersPath, page, "supplierTable", "suppliersPagination", supplierMethods, "loadSuppliers");
 }
 
 /**
  * 显示修改供应商的modal
  */
 function updateSupplier(data) {
-    initModal("supplier",data,supplierModalKeys);
+    initModal("supplier", data, supplierModalKeys);
 }
 
 /**
  * 修改供应商
  */
-function doUpdateSupplier(){
-    internalUpdateData("supplier",suppliersPath,supplierModalKeys);
+function doUpdateSupplier() {
+    internalUpdateData("supplier", suppliersPath, supplierModalKeys);
 }
 
 /**
- * 加载供应商列表的数据
- * @param page 请求的页数
+ * 删除供应商
  */
-function loadSuppliers(page){
-    internalLoadDatas(suppliersPath,page,"supplierTable","suppliersPagination",supplierMethods,"loadSuppliers");
+function deleteSupplier(data) {
+    internalDeleteData("supplierTable", data.id, suppliersPath);
 }
 
 /**
  * 添加供应商
  */
-function addSupplier(){
-    internalAddData("supplier",suppliersPath,supplierModalKeys);
+function addSupplier() {
+    internalAddData("supplier", suppliersPath, supplierModalKeys);
 }
 
 /**
  * 加载车辆列表的数据
  * @param page 请求的页数
  */
-function loadBicycles(page){
-    internalLoadDatas(bicyclesPath,page,"bicycleTable","bicyclesPagination",bicycleMethods,"loadBicycles");
+function loadBicycles(page) {
+    internalLoadDatas(bicyclesPath, page, "bicycleTable", "bicyclesPagination", bicycleMethods, "loadBicycles");
+    $("#bicycleTableBody").find("[id$='type']").each(function () {
+        formateIndexToName($(this).attr("id"),allBicycleType);
+    });
+    $("#bicycleTableBody").find("[id$='serviceTime']").each(function () {
+        formatSeconds($(this).attr("id"));
+    });
+    $("#bicycleTableBody").find("[id$='status']").each(function () {
+        formateIndexToName($(this).attr("id"),allBicycleStatus);
+    });
+}
+
+/**
+ * 加载移动车辆的函数
+ * @param data 车辆的信息
+ */
+function loadMoveBicycle(data) {
+    moveBicycle(data.id);
+}
+/**
+ * 加载维修车辆函数
+ * @param data 车辆的信息
+ */
+function loadRepairBicycle(data){
+    repairBicycle(data.id);
+}
+
+/**
+ * 加载报废车辆函数
+ * @param data 车辆的信息
+ */
+function loadScrapeBicycle(data) {
+    scrapeBicycle(data.id);
 }
 
 /**
  * 删除车辆
  */
-function deleteBicycle(data){
-    internalDeleteData("bicycleTable",data.id,bicyclesPath);
+function deleteBicycle(data) {
+    internalDeleteData("bicycleTable", data.id, bicyclesPath);
 }
 
 /**
- * 封禁车辆
+ * 添加车辆
  */
-function blockBicycle(data){
-    let sendData = {"id" : data.id,"status" : true};
+function addBicycle() {
+    internalAddData("bicycle", bicyclesPath, bicycleModalKeys);
+}
+
+/*---------------订单模块-----------------*/
+/**
+ * 加载行程列表的数据
+ * @param page 请求的页数
+ */
+function loadJourneys(page) {
+    internalLoadDatas(journeysPath, page, "journeyTable", "journeysPagination", [], "loadJourneys");
+    $("#journeyTableBody").find("[id$='rideTime']").each(function () {
+        formatSeconds($(this).attr("id"));
+    });
+}
+
+/*---------------任务模块----------------*/
+
+/**
+ * 加载所有车辆的位置信息
+ */
+function loadSimpleBicycles() {
+    $.ajax({
+        type: 'GET',
+        url: allBicyclesPath,
+        contentType: 'application/json',
+        success: function (data) {
+            if (!checkDataEmpty(data.datas)) {
+                let result = data.datas;
+                for (let i = 0; i < result.length; i++) {
+                    let marker = new AMap.Marker({
+                        map: map,
+                        position: [result[i].locationX, result[i].locationY]
+                    });
+                    let title = "车辆信息", content = [];
+                    content.push("编号 : " + result[i].id);
+                    let status = "";
+                    status = allBicycleStatus[result[i].status].name;
+                    content.push("状态 : " + status);
+                    content.push("操作 : <button class='Button Button--blue' onclick='moveBicycle(" + result[i].id + ")'>调出</button> <button class=' Button Button--blue' onclick='repairBicycle(" + result[i].id + ")'>维修</button> <button class='Button Button--blue' onclick='scrapeBicycle(" + result[i].id + ")'>报废</button>");
+                    let infoWindow = new AMap.InfoWindow({
+                        isCustom: true,  //使用自定义窗体
+                        content: createInfoWindow(title, content.join("<br/>")),
+                        offset: new AMap.Pixel(0, -30)
+                    });
+                    marker.on('click', function () {
+                        infoWindow.open(map, marker.getPosition());
+                    })
+                }
+            }
+        }
+    });
+}
+
+//构建自定义信息窗体
+function createInfoWindow(title, content) {
+    let info = document.createElement("div");
+    info.className = "info";
+
+    //可以通过下面的方式修改自定义窗体的宽高
+    //info.style.width = "400px";
+    // 定义顶部标题
+    let top = document.createElement("div");
+    let titleD = document.createElement("div");
+    let closeX = document.createElement("img");
+    top.className = "info-top";
+    titleD.innerHTML = title;
+    closeX.src = "http://webapi.amap.com/images/close2.gif";
+    closeX.onclick = closeInfoWindow;
+
+    top.appendChild(titleD);
+    top.appendChild(closeX);
+    info.appendChild(top);
+
+    // 定义中部内容
+    let middle = document.createElement("div");
+    middle.className = "info-middle";
+    middle.style.backgroundColor = 'white';
+    middle.innerHTML = content;
+    info.appendChild(middle);
+
+    return info;
+}
+
+//关闭信息窗体
+function closeInfoWindow() {
+    map.clearInfoWindow();
+}
+
+/**
+ * 移动车辆
+ * @param id 车辆编号
+ */
+function moveBicycle(id) {
+    initAddTaskModal(1, id);
+}
+
+/**
+ * 维修车辆
+ * @param id 车辆编号
+ */
+function repairBicycle(id) {
+    initAddTaskModal(2, id);
+}
+
+/**
+ * 报废车辆
+ * @param id 车辆编号
+ */
+function scrapeBicycle(id) {
+    initAddTaskModal(3, id);
+}
+
+/**
+ * 加载任务信息
+ * @param page 指定的页数
+ */
+function loadTasks(page) {
+    internalLoadDatas(taskPath, page, "taskTable", "tasksPagination", taskMethods, "loadTasks");
+    $("#taskTableBody").find("[id$='status']").each(function () {
+        if($(this).text() === 'true')
+            $(this).parent().find("[id$='Btn']").empty();
+        formateIndexToName($(this).attr("id"),allTaskStatus);
+    });
+    $("#taskTableBody").find("[id$='type']").each(function () {
+        formateIndexToName($(this).attr("id"),allTaskType);
+    });
+}
+
+/**
+ * 完成任务
+ * @param data 传入的任务数据
+ */
+function doneTask(data) {
+        alert("不是该任务的参与人，无法操作！！");
+    let sendData = {"id": data.id, "status": true};
     $.ajax({
         type: 'PUT',
-        url: bicyclesPath,
+        url: taskPath,
         data: JSON.stringify(sendData),
         contentType: 'application/json',
-        success: function(data) {
-            if(data === true){
-                $("#bicycleTableTD-" + sendData.id + "-status").text(true);
+        success: function (data) {
+            if (data === true) {
+                $("#taskTableTD-" + sendData.id + "-status").text(true);
             }
         }
     });
 }
 
 /**
- * 添加车辆
+ * 取消任务
  */
-function addBicycle(){
-    internalAddData("bicycle",bicyclesPath,bicycleModalKeys);
+function cancelTask(data) {
+    internalDeleteData("taskTable", data.id, taskPath);
 }
+
+/**
+ * 添加任务
+ */
+function addTask() {
+    internalAddData("task", taskPath, taskModalKeys);
+}
+
+/**
+ * 显示车辆分布页面的添加任务模态框
+ * @param type 任务类型
+ * @param bid 车辆编号
+ */
+function initAddTaskModal(type, bid) {
+    let $modal = $("#add-task-modal");
+    resetModal("add-task-modal");
+    let modalCount = 0;
+    $modal.on('show.bs.modal', function (event) {
+        if (modalCount===0) {
+            let typeStr = "";
+            switch (type) {
+                case 1 :
+                    typeStr = "<option value='1'>调出</option>";
+                    break;
+                case 2 :
+                    typeStr = "<option value='2'>维修</option>";
+                    break;
+                case 3 :
+                    typeStr = "<option value='3'>报废</option>";
+                    break;
+                default :
+                    typeStr = "<option>请重新选择合适的任务类型</option>";
+                    break;
+            }
+            $("#add-task-modal-type").append(typeStr);
+            $("#add-task-modal-bid").val(bid);
+            modalCount++;
+        }
+    });
+    $modal.modal("show");
+}
+
+
+
 

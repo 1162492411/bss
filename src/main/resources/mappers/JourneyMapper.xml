@@ -6,27 +6,21 @@
     <result column="uid" jdbcType="CHAR" property="uid" />
     <result column="bid" jdbcType="BIGINT" property="bid" />
     <result column="startTime" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="endTime" jdbcType="TIMESTAMP" property="endTime" />
     <result column="rideTime" jdbcType="INTEGER" property="rideTime" />
     <result column="distance" jdbcType="INTEGER" property="distance" />
     <result column="amount" jdbcType="DECIMAL" property="amount" />
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, uid, bid, startTime, rideTime, distance, amount
+    id, uid, bid, startTime, endTime, rideTime, distance, amount
   </sql>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from journeys
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.zhd.pojo.Journey">
-    insert into journeys (id, uid, bid, startTime,
-      rideTime, distance, amount
-      )
-    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=CHAR}, #{bid,jdbcType=BIGINT}, #{startTime,jdbcType=TIMESTAMP}, 
-      #{rideTime,jdbcType=INTEGER}, #{distance,jdbcType=INTEGER}, #{amount,jdbcType=DECIMAL}
-      )
-  </insert>
+
   <insert id="insertSelective" parameterType="com.zhd.pojo.Journey">
     insert into journeys
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -41,6 +35,9 @@
       </if>
       <if test="startTime != null">
         startTime,
+      </if>
+      <if test="endTime != null">
+        endTime,
       </if>
       <if test="rideTime != null">
         rideTime,
@@ -65,6 +62,9 @@
       <if test="startTime != null">
         #{startTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
       <if test="rideTime != null">
         #{rideTime,jdbcType=INTEGER},
       </if>
@@ -88,6 +88,9 @@
       <if test="startTime != null">
         startTime = #{startTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="endTime != null">
+        endTime = #{endTime,jdbcType=TIMESTAMP},
+      </if>
       <if test="rideTime != null">
         rideTime = #{rideTime,jdbcType=INTEGER},
       </if>
@@ -100,16 +103,6 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.zhd.pojo.Journey">
-    update journeys
-    set uid = #{uid,jdbcType=CHAR},
-      bid = #{bid,jdbcType=BIGINT},
-      startTime = #{startTime,jdbcType=TIMESTAMP},
-      rideTime = #{rideTime,jdbcType=INTEGER},
-      distance = #{distance,jdbcType=INTEGER},
-      amount = #{amount,jdbcType=DECIMAL}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -118,7 +111,63 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
+  <select id="selectCount" parameterType="com.zhd.pojo.Journey" resultType="java.lang.Integer">
+    select count(*)
+    from journeys
+    <trim prefix="where" prefixOverrides="and">
+      <if test="record.uid != null">
+        uid = ${record.uid}
+      </if>
+      <if test="record.bid != null">
+        and bid = #{record.bid}
+      </if>
+      <if test="record.startTime != null">
+        and startTime = #{record.startTime}
+      </if>
+      <if test="record.endTime != null">
+        and endTime = #{record.endTime}
+      </if>
+      <if test="record.rideTime != null">
+        and rideTime = #{record.rideTime}
+      </if>
+      <if test="record.distance != null">
+        and distance = #{record.distance}
+      </if>
+      <if test="record.amount != null">
+        and amount = #{record.amount}
+      </if>
+    </trim>
+  </select>
 
+  <select id="selectJourneys" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from journeys
+    <trim prefix="where" prefixOverrides="and">
+      <if test="record.uid != null">
+        uid = ${record.uid}
+      </if>
+      <if test="record.bid != null">
+        and bid = #{record.bid}
+      </if>
+      <if test="record.startTime != null">
+        and startTime = #{record.startTime}
+      </if>
+      <if test="record.endTime != null">
+        and endTime = #{record.endTime}
+      </if>
+      <if test="record.rideTime != null">
+        and rideTime = #{record.rideTime}
+      </if>
+      <if test="record.distance != null">
+        and distance = #{record.distance}
+      </if>
+      <if test="record.amount != null">
+        and amount = #{record.amount}
+      </if>
+    </trim>
+    limit ${start},10
+  </select>
 
 
 </mapper>
