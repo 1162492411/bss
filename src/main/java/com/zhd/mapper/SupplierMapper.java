@@ -1,24 +1,16 @@
 package com.zhd.mapper;
 
-
 import com.zhd.pojo.Supplier;
-import org.apache.ibatis.annotations.Param;
-import java.util.List;
+import com.baomidou.mybatisplus.mapper.BaseMapper;
 
-public interface SupplierMapper {
-
-    int deleteByPrimaryKey(Short id);
-
-    int insertSelective(Supplier record);
-
-    int updateByPrimaryKeySelective(Supplier record);
-
-    Supplier selectByPrimaryKey(Short id);
-
-    int selectCount(@Param("record") Supplier supplier);
-
-    List<Supplier> selectSuppliers(@Param("start")Integer start, @Param("record")Supplier supplier);
-
-    List<Supplier> selectAll();
+/**
+ * <p>
+ * 供应商表 Mapper 接口
+ * </p>
+ *
+ * @author zyg
+ * @since 2018-02-05
+ */
+public interface SupplierMapper extends BaseMapper<Supplier> {
 
 }

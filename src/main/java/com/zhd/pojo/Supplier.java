@@ -1,60 +1,48 @@
 package com.zhd.pojo;
 
-public class Supplier {
-    private Short id;
+import com.baomidou.mybatisplus.enums.IdType;
+import com.baomidou.mybatisplus.annotations.TableId;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.NotBlank;
 
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+
+/**
+ * <p>
+ * 供应商表
+ * </p>
+ *
+ * @author zyg
+ * @since 2018-02-05
+ */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Supplier implements Serializable, BaseModel {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 编号
+     */
+    @TableId(value = "id", type = IdType.AUTO)
+    @NotNull(groups = {Update.class,Delete.class})
+    private Integer id;
+    /**
+     * 供应商名
+     */
+    @NotBlank(groups = {Insert.class, Update.class})
     private String name;
 
+    /**
+     * 供应商地址
+     */
+    @NotBlank(groups = {Insert.class, Update.class})
     private String address;
 
-    public Short getId() {
-        return id;
-    }
-
-    public Supplier setId(Short id) {
-        this.id = id;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Supplier setName(String name) {
-        this.name = name == null ? null : name.trim();
-        return this;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public Supplier setAddress(String address) {
-        this.address = address == null ? null : address.trim();
-        return this;
-    }
-
-    public static String[] getSimpleKeys(){
-        return new String[]{"id", "name"};
-    }
-
-    public static String[] getKeys(){
-        return new String[]{"id", "name", "address"};
-    }
-
-    public static String[] getNames(){
-        return new String[]{"编号","供应商名","供应商地址"};
-    }
-
-    public static String[] getSimpleNames(){
-        return new String[]{"编号","供应商名"};
-    }
-    @Override
-    public String toString() {
-        return "Supplier{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                '}';
-    }
 }

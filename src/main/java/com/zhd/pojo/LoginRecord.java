@@ -1,69 +1,86 @@
 package com.zhd.pojo;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.enums.IdType;
+import java.util.Date;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableName;
+import java.io.Serializable;
 
-public class LoginRecord {
+/**
+ * <p>
+ * 登录记录表
+ * </p>
+ *
+ * @author zyg
+ * @since 2018-02-05
+ */
+@TableName("login_record")
+public class LoginRecord implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 记录编号
+     */
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
+    /**
+     * 账户ID
+     */
+    @TableField("u_id")
+    private String uId;
+    /**
+     * 登录时间
+     */
+    @TableField("login_time")
+    private Date loginTime;
+    /**
+     * 登录IP
+     */
+    @TableField("login_IP")
+    private String loginIp;
 
-    private String uid;
-
-    private LocalDateTime loginTime;
-
-    private String loginIP;
 
     public Integer getId() {
         return id;
     }
 
-    public LoginRecord setId(Integer id) {
+    public void setId(Integer id) {
         this.id = id;
-        return this;
     }
 
-    public String getUid() {
-        return uid;
+    public String getuId() {
+        return uId;
     }
 
-    public LoginRecord setUid(String uid) {
-        this.uid = uid == null ? null : uid.trim();
-        return this;
+    public void setuId(String uId) {
+        this.uId = uId;
     }
 
-    public LocalDateTime getLoginTime() {
+    public Date getLoginTime() {
         return loginTime;
     }
 
-    public LoginRecord setLoginTime(LocalDateTime loginTime) {
+    public void setLoginTime(Date loginTime) {
         this.loginTime = loginTime;
-        return this;
     }
 
-    public String getLoginIP() {
-        return loginIP;
+    public String getLoginIp() {
+        return loginIp;
     }
 
-    public LoginRecord setLoginIP(String loginIP) {
-        this.loginIP = loginIP == null ? null : loginIP.trim();
-        return this;
-    }
-
-    public LoginRecord() {
-    }
-
-    public LoginRecord(String uid, LocalDateTime loginTime, String loginIP) {
-        this.uid = uid;
-        this.loginTime = loginTime;
-        this.loginIP = loginIP;
+    public void setLoginIp(String loginIp) {
+        this.loginIp = loginIp;
     }
 
     @Override
     public String toString() {
         return "LoginRecord{" +
-                "id=" + id +
-                ", uid='" + uid + '\'' +
-                ", loginTime=" + loginTime +
-                ", loginIP='" + loginIP + '\'' +
-                '}';
+        ", id=" + id +
+        ", uId=" + uId +
+        ", loginTime=" + loginTime +
+        ", loginIp=" + loginIp +
+        "}";
     }
 }

@@ -1,18 +1,21 @@
 package com.zhd.controller;
 
+
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import org.springframework.stereotype.Controller;
+
 /**
- * 登录记录控制器
- * Created by Mo on 2017/9/23.
+ * <p>
+ * 登录记录表 前端控制器
+ * </p>
+ *
+ * @author zyg
+ * @since 2018-02-05
  */
+@Controller
+@RequestMapping("/loginRecord")
 public class LoginRecordController {
 
-    /**
-     * 分页查看登录记录
-     */
-
-    /**
-     * 分页查看符合条件的登录记录
-     */
-
-
 }
+

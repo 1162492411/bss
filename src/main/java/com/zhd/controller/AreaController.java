@@ -1,73 +1,95 @@
 package com.zhd.controller;
 
+
+import com.baomidou.mybatisplus.plugins.Page;
+import com.zhd.convert.AreaConvert;
 import com.zhd.pojo.Area;
-import com.zhd.pojo.Page;
-import com.zhd.service.AreaService;
+import com.zhd.pojo.JSONResponse;
+import com.zhd.service.IAreaService;
+import com.zhd.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import java.io.IOException;
 
 /**
- * 区域控制器
- * Created by Mo on 2017/9/23.
+ * <p>
+ * 区域表 前端控制器
+ * </p>
+ *
+ * @author zyg
+ * @since 2018-02-05
  */
 @RestController
-@RequestMapping("areas")
-public class AreaController {
+@RequestMapping("/area")
+public class AreaController extends BaseController {
+
     @Autowired
-    private AreaService areaService;
+    private IAreaService areaService;
 
-    /**
-     * 添加区域信息
-     * @param record  待添加的区域信息
-     * @return 添加后的区域信息/null
-     */
-    @RequestMapping(method = RequestMethod.POST)
-    public boolean add(@RequestBody Area record){
-        return areaService.insert(record);
+    @GetMapping("{id}")
+    public JSONResponse get(Area area){
+        try{
+            return renderSuccess(AreaConvert.convertAreaToVO(areaService.selectById(area.getId())));
+        }catch (Exception e){
+            return renderError(e.getMessage());
+        }
     }
 
-    /**
-     * 删除区域信息
-     * @param record  待删除的区域信息
-     * @return 是否已删除区域
-     */
-    @RequestMapping(method = RequestMethod.DELETE)
-    public boolean delete(@RequestBody Area record){
-        return areaService.delete(record);
+    @GetMapping("list/{current}")
+    public JSONResponse list(@PathVariable("current") int pageNum, Page<Area> page) {
+        try {
+            if(pageNum <= 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+            return renderSuccess(AreaConvert.convertToVOPageInfo(areaService.selectPage(page)));
+        } catch (Exception e) {
+            return renderError(e.getMessage());
+        }
     }
 
-    /**
-     * 修改区域信息
-     * @param record  待修改的区域信息
-     * @return 修改后的区域信息/null
-     */
-    @RequestMapping(method = RequestMethod.PUT)
-    public boolean update(@RequestBody Area record){
-        return areaService.update(record);
+    @PostMapping
+    public JSONResponse insert(@RequestBody @Validated(Area.Insert.class) Area record, BindingResult bindingResult) {
+        try {
+            if (bindingResult.hasErrors()) {
+                return renderError(bindingResult.getFieldError().getDefaultMessage());
+            } else {
+                 return areaService.insert(record) ? renderSuccess(record) : renderError();
+            }
+        } catch (Exception e) {
+            return renderError(e.getMessage());
+        }
     }
 
-    /**
-     * 默认-查看第一页区域信息
-     * @param record  指定条件的区域
-     * @param result 包含分页后的区域信息的分页对象
-     * @return 包含分页后的区域信息的分页对象
-     */
-    @RequestMapping(method = RequestMethod.GET)
-    public @ResponseBody Page defaults(Area record,Page result){
-        return areas(1,record,result);
+    @PutMapping
+    public JSONResponse update(@RequestBody @Validated(Area.Update.class) Area record, BindingResult bindingResult) {
+        try {
+            if (bindingResult.hasErrors()) {
+                return renderError(bindingResult.getFieldError().getDefaultMessage());
+            } else {
+                return areaService.updateById(record) ? renderSuccess(record) : renderError();
+            }
+        } catch (Exception e) {
+            return renderError(e.getMessage());
+        }
     }
 
-    /**
-     * 分页查看区域信息
-     * @param page 前台传入的页数(从1开始)
-     * @param record  指定条件的区域
-     * @param result 包含分页后的区域信息的分页对象
-     * @return 包含分页后的区域信息的分页对象
-     */
-    @RequestMapping(value = "{page}", method = RequestMethod.GET)
-    public @ResponseBody Page areas(@PathVariable int page, Area record, Page result){
-        System.out.println("接收到参数" + page + record);
-        return result.setDatas(areaService.selectAreas(result.setTotalCount(areaService.selectCount(record)).setCurrentPage(page).getStart(),record)).setKeys(record.getKeys()).setNames(record.getNames());
+    @DeleteMapping("{id}")
+    public JSONResponse delete(@Validated(Area.Delete.class) Area record, BindingResult bindingResult){
+        try{
+            if(bindingResult.hasErrors()){
+                return renderError(bindingResult.getFieldError().getDefaultMessage());
+            }
+            else if( (record = areaService.selectById(record.getId()) )  != null){
+                return areaService.deleteById(record.getId()) ? renderSuccess(record) : renderError();
+            }
+            else{
+                return renderError(Constants.TIP_EMPTY_DATA);
+            }
+        }catch (Exception e){
+            return renderError(e.getMessage());
+        }
     }
 
 }
+
+//todo:insert update delete后一般是否需要将数据返回给前台？？返回前台传入的原始数据还是包装后的数据(如AreaVO)

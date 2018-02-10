@@ -1,26 +1,21 @@
 package com.zhd.controller;
 
+
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import org.springframework.stereotype.Controller;
+
 /**
- * 优惠券信息控制器
- * Created by Mo on 2017/9/23.
+ * <p>
+ * 优惠券信息表 前端控制器
+ * </p>
+ *
+ * @author zyg
+ * @since 2018-02-05
  */
+@Controller
+@RequestMapping("/couponInfo")
 public class CouponInfoController {
 
-    /**
-     * 添加优惠券信息
-     */
-
-    /**
-     * 批量添加优惠券信息
-     */
-
-
-    /**
-     * 分页查看优惠券信息
-     */
-
-    /**
-     * 分页查看符合条件的优惠券信息
-     */
-
 }
+

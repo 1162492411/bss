@@ -1,103 +1,81 @@
 package com.zhd.pojo;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.baomidou.mybatisplus.enums.IdType;
 import java.math.BigDecimal;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.zhd.enums.AreaTypeEnum;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.Range;
 
-public class Area {
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+
+/**
+ * <p>
+ * 区域表
+ * </p>
+ *
+ * @author zyg
+ * @since 2018-02-05
+ */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Area implements Serializable,BaseModel {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 区域编号
+     */
+    @TableId(value = "id", type = IdType.AUTO)
+    @NotNull(groups = {Update.class, Delete.class})
     private Integer id;
-
+    /**
+     * 区域名称
+     */
+    @NotBlank(groups = {Insert.class, Update.class})
     private String name;
-
+    /**
+     * 区域最北部
+     */
+    @TableField("north_point")
+    @NotNull(groups = {Insert.class, Update.class})
+    @Range(min = -180, max = 180, groups = {Insert.class, Update.class})
     private BigDecimal northPoint;
-
+    /**
+     * 区域最南部
+     */
+    @TableField("south_point")
+    @NotNull(groups = {Insert.class, Update.class})
+    @Range(min = -180, max = 180, groups = {Insert.class, Update.class})
     private BigDecimal southPoint;
-
+    /**
+     * 区域最西部
+     */
+    @TableField("west_point")
+    @NotNull(groups = {Insert.class, Update.class})
+    @Range(min = -180, max = 180, groups = {Insert.class, Update.class})
     private BigDecimal westPoint;
-
+    /**
+     * 区域最东部
+     */
+    @TableField("east_point")
+    @NotNull(groups = {Insert.class, Update.class})
+    @Range(min = -180, max = 180, groups = {Insert.class, Update.class})
     private BigDecimal eastPoint;
-
-    private Byte type;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public Area setId(Integer id) {
-        this.id = id;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Area setName(String name) {
-        this.name = name == null ? null : name.trim();
-        return this;
-    }
-
-    public BigDecimal getNorthPoint() {
-        return northPoint;
-    }
-
-    public Area setNorthPoint(BigDecimal northPoint) {
-        this.northPoint = northPoint;
-        return this;
-    }
-
-    public BigDecimal getSouthPoint() {
-        return southPoint;
-    }
-
-    public Area setSouthPoint(BigDecimal southPoint) {
-        this.southPoint = southPoint;
-        return this;
-    }
-
-    public BigDecimal getWestPoint() {
-        return westPoint;
-    }
-
-    public Area setWestPoint(BigDecimal westPoint) {
-        this.westPoint = westPoint;
-        return this;
-    }
-
-    public BigDecimal getEastPoint() {
-        return eastPoint;
-    }
-
-    public Area setEastPoint(BigDecimal eastPoint) {
-        this.eastPoint = eastPoint;
-        return this;
-    }
-
-    public Byte getType() {
-        return type;
-    }
-
-    public Area setType(Byte type) {
-        this.type = type;
-        return this;
-    }
-
-    public String[] getKeys(){
-        return new String[]{"id", "name", "northPoint", "southPoint", "westPoint", "eastPoint", "type"};
-    }
-
-    public String[] getNames(){
-        return new String[]{"编号","区域名","区域最北部","区域最南部","区域最西部","区域最东部","类型"};
-    }
-
-    @Override
-    public String toString() {
-        return "Area{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", northPoint=" + northPoint +
-                ", southPoint=" + southPoint +
-                ", westPoint=" + westPoint +
-                ", eastPoint=" + eastPoint +
-                ", type=" + type +
-                '}';
-    }
+    /**
+     * 区域类型：0-普通区;1-红包区;2-禁停区
+     */
+    @NotNull(groups = {Insert.class, Update.class})
+    @Range(min = 0 ,max = 2, groups = {Insert.class, Update.class})
+    private int type;
 }

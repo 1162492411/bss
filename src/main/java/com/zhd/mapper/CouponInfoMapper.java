@@ -1,17 +1,16 @@
 package com.zhd.mapper;
 
 import com.zhd.pojo.CouponInfo;
+import com.baomidou.mybatisplus.mapper.BaseMapper;
 
-public interface CouponInfoMapper {
-    int deleteByPrimaryKey(Integer id);
+/**
+ * <p>
+ * 优惠券信息表 Mapper 接口
+ * </p>
+ *
+ * @author zyg
+ * @since 2018-02-05
+ */
+public interface CouponInfoMapper extends BaseMapper<CouponInfo> {
 
-    int insert(CouponInfo record);
-
-    int insertSelective(CouponInfo record);
-
-    CouponInfo selectByPrimaryKey(Integer id);
-
-    int updateByPrimaryKeySelective(CouponInfo record);
-
-    int updateByPrimaryKey(CouponInfo record);
 }

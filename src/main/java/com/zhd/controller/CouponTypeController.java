@@ -1,24 +1,21 @@
 package com.zhd.controller;
 
-/**优惠券类型控制器
- * Created by Mo on 2017/9/23.
+
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import org.springframework.stereotype.Controller;
+
+/**
+ * <p>
+ * 优惠券类型表 前端控制器
+ * </p>
+ *
+ * @author zyg
+ * @since 2018-02-05
  */
+@Controller
+@RequestMapping("/couponType")
 public class CouponTypeController {
 
-    /**
-     * 添加优惠券类型信息
-     * /
-
-    /**
-     * 删除优惠券类型信息
-     */
-
-    /**
-     * 修改优惠券类型信息
-     */
-
-    /**
-     * 分页车看优惠券类型信息
-     */
-
 }
+

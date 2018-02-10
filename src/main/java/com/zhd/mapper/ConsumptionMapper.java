@@ -1,17 +1,16 @@
 package com.zhd.mapper;
 
 import com.zhd.pojo.Consumption;
+import com.baomidou.mybatisplus.mapper.BaseMapper;
 
-public interface ConsumptionMapper {
-    int deleteByPrimaryKey(Integer id);
+/**
+ * <p>
+ * 消费记录表 Mapper 接口
+ * </p>
+ *
+ * @author zyg
+ * @since 2018-02-05
+ */
+public interface ConsumptionMapper extends BaseMapper<Consumption> {
 
-    int insert(Consumption record);
-
-    int insertSelective(Consumption record);
-
-    Consumption selectByPrimaryKey(Integer id);
-
-    int updateByPrimaryKeySelective(Consumption record);
-
-    int updateByPrimaryKey(Consumption record);
 }

@@ -1,108 +1,139 @@
 package com.zhd.pojo;
 
+import com.baomidou.mybatisplus.enums.IdType;
 import java.math.BigDecimal;
 import java.util.Date;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableField;
+import java.io.Serializable;
 
-public class Recharge {
+/**
+ * <p>
+ * 充值记录表
+ * </p>
+ *
+ * @author zyg
+ * @since 2018-02-05
+ */
+public class Recharge implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 充值记录编号
+     */
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
-
-    private String uid;
-
-    private Boolean type;
-
+    /**
+     * 用户编号
+     */
+    @TableField("u_id")
+    private String uId;
+    /**
+     * 充值类型
+     */
+    private Integer type;
+    /**
+     * 充值时间
+     */
+    @TableField("recharge_time")
     private Date rechargeTime;
-
+    /**
+     * 充值金额
+     */
     private BigDecimal amount;
+    /**
+     * 支付方订单编号
+     */
+    @TableField("p_id")
+    private String pId;
+    /**
+     * 支付方回调URL
+     */
+    @TableField("p_url")
+    private String pUrl;
+    /**
+     * 支付结果
+     */
+    @TableField("p_status")
+    private Integer pStatus;
 
-    private String pid;
-
-    private String purl;
-
-    private Byte status;
 
     public Integer getId() {
         return id;
     }
 
-    public Recharge setId(Integer id) {
+    public void setId(Integer id) {
         this.id = id;
-        return this;
     }
 
-    public String getUid() {
-        return uid;
+    public String getuId() {
+        return uId;
     }
 
-    public Recharge setUid(String uid) {
-        this.uid = uid == null ? null : uid.trim();
-        return this;
+    public void setuId(String uId) {
+        this.uId = uId;
     }
 
-    public Boolean getType() {
+    public Integer getType() {
         return type;
     }
 
-    public Recharge setType(Boolean type) {
+    public void setType(Integer type) {
         this.type = type;
-        return this;
     }
 
     public Date getRechargeTime() {
         return rechargeTime;
     }
 
-    public Recharge setRechargeTime(Date rechargeTime) {
+    public void setRechargeTime(Date rechargeTime) {
         this.rechargeTime = rechargeTime;
-        return this;
     }
 
     public BigDecimal getAmount() {
         return amount;
     }
 
-    public Recharge setAmount(BigDecimal amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
-        return this;
     }
 
-    public String getPid() {
-        return pid;
+    public String getpId() {
+        return pId;
     }
 
-    public Recharge setPid(String pid) {
-        this.pid = pid == null ? null : pid.trim();
-        return this;
+    public void setpId(String pId) {
+        this.pId = pId;
     }
 
-    public String getPurl() {
-        return purl;
+    public String getpUrl() {
+        return pUrl;
     }
 
-    public Recharge setPurl(String purl) {
-        this.purl = purl == null ? null : purl.trim();
-        return this;
+    public void setpUrl(String pUrl) {
+        this.pUrl = pUrl;
     }
 
-    public Byte getStatus() {
-        return status;
+    public Integer getpStatus() {
+        return pStatus;
     }
 
-    public Recharge setStatus(Byte status) {
-        this.status = status;
-        return this;
+    public void setpStatus(Integer pStatus) {
+        this.pStatus = pStatus;
     }
 
     @Override
     public String toString() {
         return "Recharge{" +
-                "id=" + id +
-                ", uid='" + uid + '\'' +
-                ", type=" + type +
-                ", rechargeTime=" + rechargeTime +
-                ", amount=" + amount +
-                ", pid='" + pid + '\'' +
-                ", purl='" + purl + '\'' +
-                ", status=" + status +
-                '}';
+        ", id=" + id +
+        ", uId=" + uId +
+        ", type=" + type +
+        ", rechargeTime=" + rechargeTime +
+        ", amount=" + amount +
+        ", pId=" + pId +
+        ", pUrl=" + pUrl +
+        ", pStatus=" + pStatus +
+        "}";
     }
 }

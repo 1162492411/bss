@@ -1,26 +1,21 @@
 package com.zhd.controller;
 
+
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import org.springframework.stereotype.Controller;
+
 /**
- * 消费记录控制器
- * Created by Mo on 2017/9/23.
+ * <p>
+ * 消费记录表 前端控制器
+ * </p>
+ *
+ * @author zyg
+ * @since 2018-02-05
  */
+@Controller
+@RequestMapping("/consumption")
 public class ConsumptionController {
 
-    /**
-     * 添加消费记录
-     */
-
-    /**
-     * 删除消费记录
-     */
-
-    /**
-     * 分页查看消费记录
-     */
-
-    /**
-     * 分页查看符合条件的消费记录
-     */
-
-
 }
+

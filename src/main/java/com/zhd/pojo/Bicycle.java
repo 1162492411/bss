@@ -1,140 +1,91 @@
 package com.zhd.pojo;
 
+import com.baomidou.mybatisplus.enums.IdType;
 import java.math.BigDecimal;
 import java.util.Date;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.zhd.enums.BicycleStatusEnum;
+import com.zhd.enums.BicycleTypeEnum;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.NotBlank;
 
-public class Bicycle {
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+
+/**
+ * <p>
+ * 车辆表
+ * </p>
+ *
+ * @author zyg
+ * @since 2018-02-05
+ */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Bicycle implements Serializable, BaseModel {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 车辆编号
+     */
+    @TableId(value = "id", type = IdType.AUTO)
+    @NotNull(groups = {Update.class, Delete.class})
     private Integer id;
-
-    private Byte status;
-
-    private Byte type;
-
+    /**
+     * 车辆状态
+     */
+    @NotNull(groups = Update.class)
+    private byte status;
+    /**
+     * 车辆类型
+     */
+    @NotNull(groups = {Insert.class,Update.class})
+    private int type;
+    /**
+     * 当前位置X坐标
+     */
+    @TableField("location_x")
+    @NotNull(groups = {Insert.class, Update.class})
     private BigDecimal locationX;
-
+    /**
+     * 当前位置Y坐标
+     */
+    @TableField("location_y")
+    @NotNull(groups = {Insert.class,Update.class})
     private BigDecimal locationY;
-
+    /**
+     * 生产批次
+     */
+    @NotBlank(groups = {Insert.class, Update.class})
     private String batch;
-
-    private Short sid;
-
-    private Integer serviceTime;
-
+    /**
+     * 供应商ID
+     */
+    @TableField("s_id")
+    @NotNull(groups = {Insert.class, Update.class})
+    private Integer sId;
+    /**
+     * 总使用时间
+     */
+    @TableField("service_time")
+    @NotNull(groups = Update.class)
+    private Long serviceTime;
+    /**
+     * 投产时间
+     */
+    @TableField("investment_time")
+    @NotNull(groups = Insert.class)
     private Date investmentTime;
-
+    /**
+     * 行驶里程
+     */
+    @NotNull(groups = Update.class)
     private Integer mileage;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public Bicycle setId(Integer id) {
-        this.id = id;
-        return this;
-    }
-
-    public Byte getStatus() {
-        return status;
-    }
-
-    public Bicycle setStatus(Byte status) {
-        this.status = status;
-        return this;
-    }
-
-    public Byte getType() {
-        return type;
-    }
-
-    public Bicycle setType(Byte type) {
-        this.type = type;
-        return this;
-    }
-
-    public BigDecimal getLocationX() {
-        return locationX;
-    }
-
-    public Bicycle setLocationX(BigDecimal locationX) {
-        this.locationX = locationX;
-        return this;
-    }
-
-    public BigDecimal getLocationY() {
-        return locationY;
-    }
-
-    public Bicycle setLocationY(BigDecimal locationY) {
-        this.locationY = locationY;
-        return this;
-    }
-
-    public String getBatch() {
-        return batch;
-    }
-
-    public Bicycle setBatch(String batch) {
-        this.batch = batch;
-        return this;
-    }
-
-    public Short getSid() {
-        return sid;
-    }
-
-    public Bicycle setSid(Short sid) {
-        this.sid = sid;
-        return this;
-    }
-
-    public Integer getServiceTime() {
-        return serviceTime;
-    }
-
-    public Bicycle setServiceTime(Integer serviceTime) {
-        this.serviceTime = serviceTime;
-        return this;
-    }
-
-    public Date getInvestmentTime() {
-        return investmentTime;
-    }
-
-    public Bicycle setInvestmentTime(Date investmentTime) {
-        this.investmentTime = investmentTime;
-        return this;
-    }
-
-    public Integer getMileage() {
-        return mileage;
-    }
-
-    public Bicycle setMileage(Integer mileage) {
-        this.mileage = mileage;
-        return this;
-    }
-
-    public static String[] getKeys(){
-        return new String[]{"id", "status", "type","batch","serviceTime","mileage","investmentTime"};
-    }
-
-    public static String[] getNames(){
-        return new String[]{"编号","状态","类型","生产批次","总使用时间","总行驶里程","投产时间"};
-    }
-
-    @Override
-    public String toString() {
-        return "Bicycle{" +
-                "id=" + id +
-                ", status=" + status +
-                ", type=" + type +
-                ", locationX=" + locationX +
-                ", locationY=" + locationY +
-                ", batch=" + batch +
-                ", sid=" + sid +
-                ", serviceTime=" + serviceTime +
-                ", investmentTime=" + investmentTime +
-                ", mileage=" + mileage +
-                '}';
-    }
 }

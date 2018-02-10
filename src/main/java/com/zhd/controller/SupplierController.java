@@ -1,85 +1,94 @@
 package com.zhd.controller;
 
-import com.zhd.pojo.Page;
-import com.zhd.pojo.Supplier;
-import com.zhd.service.SupplierService;
+
+import com.baomidou.mybatisplus.plugins.Page;
+import com.zhd.pojo.*;
+import com.zhd.service.ISupplierService;
+import com.zhd.util.Constants;
+import com.zhd.util.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 供应商控制器
- * Created by Mo on 2017/9/23.
+ * <p>
+ * 供应商表 前端控制器
+ * </p>
+ *
+ * @author zyg
+ * @since 2018-02-05
  */
 @RestController
-@RequestMapping("suppliers")
-public class SupplierController {
+@RequestMapping("/supplier")
+public class SupplierController extends BaseController{
     @Autowired
-    private SupplierService supplierService;
+    private ISupplierService supplierService;
 
-    /**
-     * 添加供应商信息
-     * @param record  待添加的供应商信息
-     * @return 添加后的供应商信息/null
-     */
-    @RequestMapping(method = RequestMethod.POST)
-    public boolean add(@RequestBody Supplier record){
-        return supplierService.insert(record);
+    @GetMapping("{id}")
+    public JSONResponse get(Supplier supplier){
+        try{
+            return renderSuccess(supplierService.selectById(supplier.getId()));
+        }catch (Exception e){
+            return renderError(e.getMessage());
+        }
     }
 
-    /**
-     * 删除供应商信息
-     * @param record  待删除的供应商信息
-     * @return 是否已删除供应商
-     */
-    @RequestMapping(method = RequestMethod.DELETE)
-    public boolean delete(@RequestBody Supplier record){
-        return supplierService.delete(record);
+    @GetMapping("list/{current}")
+    public JSONResponse list(@PathVariable("current") Integer pageNum, Page<Supplier> page, PageInfo pageInfo) {
+        try {
+            if(pageNum <= 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+            return renderSuccess(PageUtil.clonePage(supplierService.selectPage(page), pageInfo));
+        } catch (Exception e) {
+            return renderError(e.getMessage());
+        }
     }
 
-    /**
-     * 修改供应商信息
-     * @param record  待修改的供应商信息
-     * @return 修改后的供应商信息/null
-     */
-    @RequestMapping(method = RequestMethod.PUT)
-    public boolean update(@RequestBody Supplier record){
-        return supplierService.update(record);
+    @PostMapping
+    public JSONResponse insert(@RequestBody @Validated(Supplier.Insert.class) Supplier record, BindingResult bindingResult) {
+        try {
+            if (bindingResult.hasErrors()) {
+                return renderError(bindingResult.getFieldError().getDefaultMessage());
+            } else {
+                return supplierService.insert(record) ? renderSuccess(record) : renderError();
+            }
+        } catch (Exception e) {
+            return renderError(e.getMessage());
+        }
     }
 
-    /**
-     * 默认-查看第一页供应商信息
-     * @param record  指定条件的供应商
-     * @param result 包含分页后的供应商信息的分页对象
-     * @return 包含分页后的供应商信息的分页对象
-     */
-    @RequestMapping(method = RequestMethod.GET)
-    public Page defaults(Supplier record, Page result){
-        return suppliers(1,record,result);
+    @PutMapping
+    public JSONResponse update(@RequestBody @Validated(Supplier.Update.class) Supplier record, BindingResult bindingResult) {
+        try {
+            if (bindingResult.hasErrors()) {
+                return renderError(bindingResult.getFieldError().getDefaultMessage());
+            } else {
+                return supplierService.updateById(record) ? renderSuccess(record) : renderError();
+            }
+        } catch (Exception e) {
+            return renderError(e.getMessage());
+        }
     }
 
-    /**
-     * 分页查看供应商信息
-     * @param page 前台传入的页数(从1开始)
-     * @param record  指定条件的供应商
-     * @param result 包含分页后的供应商信息的分页对象
-     * @return 包含分页后的供应商信息的分页对象
-     */
-    @RequestMapping(value = "{page}", method = RequestMethod.GET)
-    public Page suppliers(@PathVariable int page, Supplier record, Page result){
-        System.out.println("接收到参数" + page + record);
-        return result.setDatas(supplierService.selectSuppliers(result.setTotalCount(supplierService.selectCount(record)).setCurrentPage(page).getStart(),record)).setKeys(Supplier.getKeys()).setNames(Supplier.getNames());
-
+    @DeleteMapping("{id}")
+    public JSONResponse delete(@Validated(Supplier.Delete.class) Supplier record, BindingResult bindingResult){
+        try{
+            if(bindingResult.hasErrors()){
+                return renderError(bindingResult.getFieldError().getDefaultMessage());
+            }
+            else if( (record = supplierService.selectById(record.getId())) != null){
+                return supplierService.deleteById(record.getId()) ? renderSuccess(record) : renderError();
+            }
+            else{
+                return renderError(Constants.TIP_EMPTY_DATA);
+            }
+        }catch (Exception e){
+            return renderError(e.getMessage());
+        }
     }
 
-    /**
-     * 返回所有供应商的简略信息
-     * @param result 包含供应商信息的分页对象
-     * @return 包含供应商信息的分页对象
-     */
-    @RequestMapping("/all")
-    public Page all(Page result){
-        return result.setDatas(supplierService.selectAll());
-    }
+
 
 
 }
+

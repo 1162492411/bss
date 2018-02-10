@@ -1,163 +1,137 @@
 package com.zhd.pojo;
 
+import com.baomidou.mybatisplus.enums.IdType;
+import java.util.Date;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableField;
+import java.io.Serializable;
 
+/**
+ * <p>
+ * 调度任务表
+ * </p>
+ *
+ * @author zyg
+ * @since 2018-02-05
+ */
+public class Task implements Serializable {
 
-public class Task {
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 任务编号
+     */
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
-
+    /**
+     * 任务名称
+     */
     private String name;
+    /**
+     * 任务类型
+     */
+    private Integer type;
+    /**
+     * 任务处理人
+     */
+    @TableField("u_id")
+    private String uId;
+    /**
+     * 任务状态
+     */
+    private Integer status;
+    /**
+     * 任务开始时间
+     */
+    @TableField("start_time")
+    private Date startTime;
+    /**
+     * 任务结束时间
+     */
+    @TableField("end_time")
+    private Date endTime;
+    /**
+     * 车辆编号
+     */
+    @TableField("b_id")
+    private Integer bId;
 
-    private Byte type;
-
-    private String uid;
-
-//    private BigDecimal startLocationX;
-//
-//    private BigDecimal startLocationY;
-//
-//    private BigDecimal endLocationX;
-//
-//    private BigDecimal endLocationY;
-
-    private Long bid;
-
-    private Boolean status;
-
-    private String startTime;
-
-    private String endTime;
 
     public Integer getId() {
         return id;
     }
 
-    public Task setId(Integer id) {
+    public void setId(Integer id) {
         this.id = id;
-        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public Task setName(String name) {
-        this.name = name == null ? null : name.trim();
-        return this;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Byte getType() {
+    public Integer getType() {
         return type;
     }
 
-    public Task setType(Byte type) {
+    public void setType(Integer type) {
         this.type = type;
-        return this;
     }
 
-    public String getUid() {
-        return uid;
+    public String getuId() {
+        return uId;
     }
 
-    public Task setUid(String uid) {
-        this.uid = uid == null ? null : uid.trim();
-        return this;
+    public void setuId(String uId) {
+        this.uId = uId;
     }
 
-//    public BigDecimal getStartLocationX() {
-//        return startLocationX;
-//    }
-//
-//    public Task setStartLocationX(BigDecimal startLocationX) {
-//        this.startLocationX = startLocationX;
-//        return this;
-//    }
-//
-//    public BigDecimal getStartLocationY() {
-//        return startLocationY;
-//    }
-//
-//    public Task setStartLocationY(BigDecimal startLocationY) {
-//        this.startLocationY = startLocationY;
-//        return this;
-//    }
-//
-//    public BigDecimal getEndLocationX() {
-//        return endLocationX;
-//    }
-//
-//    public Task setEndLocationX(BigDecimal endLocationX) {
-//        this.endLocationX = endLocationX;
-//        return this;
-//    }
-//
-//    public BigDecimal getEndLocationY() {
-//        return endLocationY;
-//    }
-//
-//    public Task setEndLocationY(BigDecimal endLocationY) {
-//        this.endLocationY = endLocationY;
-//        return this;
-//    }
-
-    public Long getBid() {
-        return bid;
-    }
-
-    public Task setBid(Long bid) {
-        this.bid = bid;
-        return this;
-    }
-
-    public Boolean getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public Task setStatus(Boolean status) {
+    public void setStatus(Integer status) {
         this.status = status;
-        return this;
     }
 
-    public String getStartTime() {
+    public Date getStartTime() {
         return startTime;
     }
 
-    public Task setStartTime(String startTime) {
+    public void setStartTime(Date startTime) {
         this.startTime = startTime;
-        return this;
     }
 
-    public String getEndTime() {
+    public Date getEndTime() {
         return endTime;
     }
 
-    public Task setEndTime(String endTime) {
+    public void setEndTime(Date endTime) {
         this.endTime = endTime;
-        return this;
     }
 
-    public static String[] getKeys(){
-        return new String[]{"id", "name", "type","status","uid", "bid", "startTime","endTime"};
+    public Integer getbId() {
+        return bId;
     }
 
-    public static String[] getNames(){
-        return new String[]{"编号","任务名称","任务类型","任务状态","操作人", "处理车辆","创建时间","完成时间"};
+    public void setbId(Integer bId) {
+        this.bId = bId;
     }
 
     @Override
     public String toString() {
         return "Task{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", type=" + type +
-                ", uid='" + uid + '\'' +
-//                ", startLocationX=" + startLocationX +
-//                ", startLocationY=" + startLocationY +
-//                ", endLocationX=" + endLocationX +
-//                ", endLocationY=" + endLocationY +
-                ", bid='" + bid + '\'' +
-                ", status=" + status +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
-                '}';
+        ", id=" + id +
+        ", name=" + name +
+        ", type=" + type +
+        ", uId=" + uId +
+        ", status=" + status +
+        ", startTime=" + startTime +
+        ", endTime=" + endTime +
+        ", bId=" + bId +
+        "}";
     }
 }

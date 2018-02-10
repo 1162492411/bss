@@ -1,17 +1,16 @@
 package com.zhd.mapper;
 
 import com.zhd.pojo.Recharge;
+import com.baomidou.mybatisplus.mapper.BaseMapper;
 
-public interface RechargeMapper {
-    int deleteByPrimaryKey(Integer id);
+/**
+ * <p>
+ * 充值记录表 Mapper 接口
+ * </p>
+ *
+ * @author zyg
+ * @since 2018-02-05
+ */
+public interface RechargeMapper extends BaseMapper<Recharge> {
 
-    int insert(Recharge record);
-
-    int insertSelective(Recharge record);
-
-    Recharge selectByPrimaryKey(Integer id);
-
-    int updateByPrimaryKeySelective(Recharge record);
-
-    int updateByPrimaryKey(Recharge record);
 }

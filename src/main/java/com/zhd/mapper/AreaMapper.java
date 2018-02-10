@@ -1,21 +1,15 @@
 package com.zhd.mapper;
 
 import com.zhd.pojo.Area;
-import org.apache.ibatis.annotations.Param;
+import com.baomidou.mybatisplus.mapper.BaseMapper;
 
-import java.util.List;
-
-public interface AreaMapper {
-    int deleteByPrimaryKey(Integer id);
-
-    int insert(Area record);
-
-    int updateByPrimaryKeySelective(Area record);
-
-    Area selectByPrimaryKey(Integer id);
-
-    int selectCount(@Param("record") Area area);
-
-    List<Area> selectAreas(@Param("start")Integer start, @Param("record")Area area);
-
+/**
+ * <p>
+ * 区域表 Mapper 接口
+ * </p>
+ *
+ * @author zyg
+ * @since 2018-02-05
+ */
+public interface AreaMapper extends BaseMapper<Area> {
 }

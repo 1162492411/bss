@@ -1,88 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhd.mapper.SupplierMapper">
-  <resultMap id="BaseResultMap" type="com.zhd.pojo.Supplier">
-    <id column="id" jdbcType="SMALLINT" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="address" jdbcType="VARCHAR" property="address" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, name, address
-  </sql>
 
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Short">
-    delete from suppliers
-    where id = #{id,jdbcType=SMALLINT}
-  </delete>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhd.pojo.Supplier">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="address" property="address" />
+    </resultMap>
 
-  <insert id="insertSelective" parameterType="com.zhd.pojo.Supplier">
-    insert into suppliers
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="name != null">
-        name,
-      </if>
-      <if test="address != null">
-        address
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="address != null">
-        #{address,jdbcType=VARCHAR}
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.zhd.pojo.Supplier">
-    update suppliers
-    <set>
-      <if test="name != null">
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="address != null">
-        address = #{address,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=SMALLINT}
-  </update>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, address
+    </sql>
 
-  <select id="selectByPrimaryKey" parameterType="java.lang.Short" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from suppliers
-    where id = #{id,jdbcType=SMALLINT}
-  </select>
-
-  <select id="selectCount" parameterType="com.zhd.pojo.Supplier" resultType="java.lang.Integer">
-    select count(*)
-    from suppliers
-    <trim prefix="where" prefixOverrides="and">
-      <if test="record.name != null">
-        name = ${record.name}
-      </if>
-      <if test="record.address != null">
-        and address = #{record.address}
-      </if>
-    </trim>
-  </select>
-
-  <select id="selectSuppliers" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List"/>
-    from suppliers
-    <trim prefix="where" prefixOverrides="and">
-      <if test="record.name != null">
-        name = ${record.name}
-      </if>
-      <if test="record.address != null">
-        and address = #{record.address}
-      </if>
-    </trim>
-    limit ${start},10
-  </select>
-
-  <select id="selectAll" resultMap="BaseResultMap">
-    select id,name from suppliers
-  </select>
 </mapper>

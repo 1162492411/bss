@@ -1,23 +1,21 @@
 package com.zhd.controller;
 
+
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import org.springframework.stereotype.Controller;
+
 /**
- * 充值记录控制器
- * Created by Mo on 2017/9/23.
+ * <p>
+ * 充值记录表 前端控制器
+ * </p>
+ *
+ * @author zyg
+ * @since 2018-02-05
  */
+@Controller
+@RequestMapping("/recharge")
 public class RechargeController {
 
-    //TODO:此处需接入第三方支付系统
-
-    /**
-     * 添加充值记录
-     */
-
-    /**
-     * 分页查看充值记录
-     */
-
-    /**
-     * 分页查看符合条件的充值记录
-     */
-
 }
+

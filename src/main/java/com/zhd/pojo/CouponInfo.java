@@ -1,36 +1,71 @@
 package com.zhd.pojo;
 
-public class CouponInfo {
+import com.baomidou.mybatisplus.enums.IdType;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableName;
+import java.io.Serializable;
+
+/**
+ * <p>
+ * 优惠券信息表
+ * </p>
+ *
+ * @author zyg
+ * @since 2018-02-05
+ */
+@TableName("coupon_info")
+public class CouponInfo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 记录编号
+     */
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
+    /**
+     * 优惠券类型编号
+     */
+    @TableField("c_d")
+    private Integer cD;
+    /**
+     * 用户编号
+     */
+    @TableField("u_id")
+    private String uId;
 
-    private Integer cid;
-
-    private String uid;
 
     public Integer getId() {
         return id;
     }
 
-    public CouponInfo setId(Integer id) {
+    public void setId(Integer id) {
         this.id = id;
-        return this;
     }
 
-    public Integer getCid() {
-        return cid;
+    public Integer getcD() {
+        return cD;
     }
 
-    public CouponInfo setCid(Integer cid) {
-        this.cid = cid;
-        return this;
+    public void setcD(Integer cD) {
+        this.cD = cD;
     }
 
-    public String getUid() {
-        return uid;
+    public String getuId() {
+        return uId;
     }
 
-    public CouponInfo setUid(String uid) {
-        this.uid = uid == null ? null : uid.trim();
-        return this;
+    public void setuId(String uId) {
+        this.uId = uId;
+    }
+
+    @Override
+    public String toString() {
+        return "CouponInfo{" +
+        ", id=" + id +
+        ", cD=" + cD +
+        ", uId=" + uId +
+        "}";
     }
 }

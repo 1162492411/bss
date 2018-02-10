@@ -1,19 +1,16 @@
 package com.zhd.mapper;
 
 import com.zhd.pojo.Journey;
-import org.apache.ibatis.annotations.Param;
-import java.util.List;
+import com.baomidou.mybatisplus.mapper.BaseMapper;
 
-public interface JourneyMapper {
-    int deleteByPrimaryKey(Integer id);
+/**
+ * <p>
+ * 行程记录表 Mapper 接口
+ * </p>
+ *
+ * @author zyg
+ * @since 2018-02-05
+ */
+public interface JourneyMapper extends BaseMapper<Journey> {
 
-    int insertSelective(Journey record);
-
-    int updateByPrimaryKeySelective(Journey record);
-
-    Journey selectByPrimaryKey(Integer id);
-
-    int selectCount(@Param("record")Journey journey);
-
-    List<Journey> selectJourneys(@Param("start")Integer start, @Param("record")Journey journey);
 }
