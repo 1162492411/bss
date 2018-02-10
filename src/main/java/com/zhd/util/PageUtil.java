@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * 分页工具类
  */
-@Component
+//@Component
 public class PageUtil {
 
     /**
