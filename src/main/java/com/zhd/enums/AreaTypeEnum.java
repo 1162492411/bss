@@ -21,7 +21,7 @@ public enum AreaTypeEnum implements IEnum{
         for (AreaTypeEnum areaTypeEnum: values()) {
             if(code == areaTypeEnum.getCode())  return  areaTypeEnum;
         }
-        return AreaTypeEnum.UNKNOWN;
+        return UNKNOWN;
     }
 
     private int code;

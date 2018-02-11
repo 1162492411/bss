@@ -8,7 +8,6 @@ import com.zhd.util.Constants;
 import com.zhd.util.PageUtil;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -29,7 +28,7 @@ public class AreaConvert{
      * @throws NoSuchMethodException
      * @throws InvocationTargetException
      */
-    public static Map convertAreaToVO(Area area) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public static Map convertToVO(Area area) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         if(area == null) throw new NullPointerException(Constants.TIP_EMPTY_DATA);
         Map map = BeanUtils.describe(area);
         map.remove("class");
@@ -50,7 +49,7 @@ public class AreaConvert{
         PageInfo<Map> resultPage = new PageInfo<>();
         List<Map> resultList = new ArrayList<>();
         for (Area area :areaPage.getRecords()) {
-            resultList.add(convertAreaToVO(area));
+            resultList.add(convertToVO(area));
         }
         resultPage.setRecords(resultList);
         PageUtil.copyPage(areaPage,resultPage);

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import java.io.IOException;
 
 /**
  * <p>
@@ -29,9 +28,9 @@ public class AreaController extends BaseController {
     private IAreaService areaService;
 
     @GetMapping("{id}")
-    public JSONResponse get(Area area){
+    public JSONResponse get(Area record){
         try{
-            return renderSuccess(AreaConvert.convertAreaToVO(areaService.selectById(area.getId())));
+            return renderSuccess(AreaConvert.convertToVO(areaService.selectById(record.getId())));
         }catch (Exception e){
             return renderError(e.getMessage());
         }

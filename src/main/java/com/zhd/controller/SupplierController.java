@@ -26,9 +26,9 @@ public class SupplierController extends BaseController{
     private ISupplierService supplierService;
 
     @GetMapping("{id}")
-    public JSONResponse get(Supplier supplier){
+    public JSONResponse get(Supplier record){
         try{
-            return renderSuccess(supplierService.selectById(supplier.getId()));
+            return renderSuccess(supplierService.selectById(record.getId()));
         }catch (Exception e){
             return renderError(e.getMessage());
         }

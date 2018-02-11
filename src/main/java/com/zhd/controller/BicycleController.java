@@ -33,11 +33,11 @@ public class BicycleController extends BaseController{
     private ISupplierService supplierService;
 
     @GetMapping("{id}")
-    public JSONResponse get(@PathVariable Integer id){
+    public JSONResponse get(Bicycle record){
         try{
-            Bicycle bicycle = bicycleService.selectById(id);
-            Supplier supplier = supplierService.selectById(bicycle.getSId());
-            return renderSuccess(BicycleConvert.convertToVO(bicycle, supplier));
+            record = bicycleService.selectById(record.getId());
+            Supplier supplier = supplierService.selectById(record.getSId());
+            return renderSuccess(BicycleConvert.convertToVO(record, supplier));
         }catch (Exception e){
             return renderError(e.getMessage());
         }
