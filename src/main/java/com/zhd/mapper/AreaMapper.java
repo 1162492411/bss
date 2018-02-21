@@ -2,6 +2,11 @@ package com.zhd.mapper;
 
 import com.zhd.pojo.Area;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import javax.annotation.security.PermitAll;
+import java.math.BigDecimal;
 
 /**
  * <p>
@@ -12,4 +17,8 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @since 2018-02-05
  */
 public interface AreaMapper extends BaseMapper<Area> {
+
+    @Select("select id,name,type from area where ${x} between west_point and east_point and ${y} between north_point and south_point")
+    Area findArea(@Param("x") BigDecimal locationX, @Param("y") BigDecimal locationY);
+
 }

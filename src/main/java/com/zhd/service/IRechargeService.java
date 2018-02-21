@@ -13,4 +13,6 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IRechargeService extends IService<Recharge> {
 
+    boolean checkRecharge(Integer id);
+
 }

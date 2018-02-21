@@ -1,33 +1,39 @@
 package com.zhd.enums;
 
+/**
+ * Created by Mo on 2018/2/16.
+ */
+
 import com.baomidou.mybatisplus.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.io.Serializable;
 
-@AllArgsConstructor
+/**
+ * 押金操作类型枚举类
+ */
 @Getter
-public enum UserStatusEnum implements IEnum{
+@AllArgsConstructor
+public enum DepositTypeEnum implements IEnum{
 
     UNKNOWN(0,"未知"),
 
-    NORMAL(1,"正常"),
+    IN(1,"存入"),
 
-    TEMP_BAN(2,"临时封禁"),
-
-    DISABLED(3,"停用");
+    OUT(2,"取出");
 
     private int code;
-    private String status;
+    private String type;
 
-    public static UserStatusEnum getByCode(int code){
+    public static DepositTypeEnum getByCode(int code){
         if(code <= 0) return UNKNOWN;
-        for (UserStatusEnum userStatusEnum : values()) {
-            if(code == userStatusEnum.getCode()) return userStatusEnum;
+        for (DepositTypeEnum depositTypeEnum : values()){
+            if(code == depositTypeEnum.getCode()) return depositTypeEnum;
         }
         return UNKNOWN;
     }
+
 
     @Override
     public Serializable getValue() {
@@ -36,6 +42,6 @@ public enum UserStatusEnum implements IEnum{
 
     @Override
     public String toString() {
-        return this.status;
+        return this.type;
     }
 }

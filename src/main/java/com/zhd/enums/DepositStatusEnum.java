@@ -1,30 +1,37 @@
 package com.zhd.enums;
 
+/**
+ * Created by Mo on 2018/2/16.
+ */
+
 import com.baomidou.mybatisplus.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.io.Serializable;
 
-@AllArgsConstructor
+/**
+ * 押金状态枚举类
+ */
 @Getter
-public enum UserStatusEnum implements IEnum{
+@AllArgsConstructor
+public enum DepositStatusEnum implements IEnum{
 
-    UNKNOWN(0,"未知"),
+    UNKNOWN(0,"异常"),
 
-    NORMAL(1,"正常"),
+    UN_HANDLED(1,"未执行"),
 
-    TEMP_BAN(2,"临时封禁"),
+    HANDLING(2,"执行中"),
 
-    DISABLED(3,"停用");
+    HANDLED(3,"已完成");
 
     private int code;
     private String status;
 
-    public static UserStatusEnum getByCode(int code){
+    public static DepositStatusEnum getByCode(int code){
         if(code <= 0) return UNKNOWN;
-        for (UserStatusEnum userStatusEnum : values()) {
-            if(code == userStatusEnum.getCode()) return userStatusEnum;
+        for (DepositStatusEnum depositStatusEnum : values()){
+            if(code == depositStatusEnum.getCode()) return depositStatusEnum;
         }
         return UNKNOWN;
     }

@@ -18,7 +18,7 @@ public enum BicycleStatusEnum implements IEnum{
 
     UNUSED(Byte.valueOf("1"),"空闲中"),
 
-    USED(Byte.valueOf("2"),"使用中"),
+    USING(Byte.valueOf("2"),"使用中"),
 
     WAIT_MOVE(Byte.valueOf("3"),"待移动"),
 
@@ -30,6 +30,7 @@ public enum BicycleStatusEnum implements IEnum{
     private String status;
 
     public static BicycleStatusEnum getByCode(byte code){
+        if(code <= 0) return UNKNOWN;
         for (BicycleStatusEnum bicycleStatusEnum : values()) {
             if(code == bicycleStatusEnum.getCode()) return bicycleStatusEnum;
         }

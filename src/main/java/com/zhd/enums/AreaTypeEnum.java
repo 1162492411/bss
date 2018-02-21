@@ -17,15 +17,16 @@ public enum AreaTypeEnum implements IEnum{
     RED(2,"红包区"),
     BAN(3,"禁停区");
 
+    private int code;
+    private String areaType;
+
     public static AreaTypeEnum getByCode(int code){
+        if(code <= 0) return UNKNOWN;
         for (AreaTypeEnum areaTypeEnum: values()) {
             if(code == areaTypeEnum.getCode())  return  areaTypeEnum;
         }
         return UNKNOWN;
     }
-
-    private int code;
-    private String areaType;
 
     @Override
     public Serializable getValue() {

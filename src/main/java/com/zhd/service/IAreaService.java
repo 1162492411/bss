@@ -2,6 +2,9 @@ package com.zhd.service;
 
 import com.zhd.pojo.Area;
 import com.baomidou.mybatisplus.service.IService;
+
+import java.math.BigDecimal;
+
 /**
  * <p>
  * 区域表 服务类
@@ -11,5 +14,7 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-02-05
  */
 public interface IAreaService extends IService<Area> {
+
+    Area findArea(BigDecimal locationX, BigDecimal locationY);
 
 }

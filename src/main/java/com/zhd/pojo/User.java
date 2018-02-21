@@ -74,15 +74,22 @@ public class User implements Serializable,BaseModel {
     /**
      * 账户余额
      */
-    @Range(min = 0, groups = {Insert.class, Update.class})
+    @Range(min = 0, groups = {Update.class})
     @TableField("account_balance")
     private BigDecimal accountBalance;
     /**
      * 红包余额
      */
-    @Range( min = 0, groups = {Insert.class, Update.class})
+    @Range( min = 0, groups = {Update.class})
     @TableField("red_balance")
     private BigDecimal redBalance;
+
+    /**
+     * 押金余额
+     */
+    @TableId("deposit_balance")
+    private BigDecimal depositBalance;
+
     /**
      * 优惠券数量
      */
@@ -92,5 +99,5 @@ public class User implements Serializable,BaseModel {
      * 包月截止时间
      */
     @NotNull(groups = {Insert.class, Update.class})
-    private Date dates;
+    private long dates;
 }

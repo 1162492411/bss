@@ -5,6 +5,12 @@ import java.math.BigDecimal;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -15,89 +21,57 @@ import java.io.Serializable;
  * @author zyg
  * @since 2018-02-05
  */
-public class Deposit implements Serializable {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Deposit implements Serializable, BaseModel{
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 记录编号
+     */
     @TableId(value = "id", type = IdType.AUTO)
+    @NotNull(groups = {Update.class, Delete.class})
     private Integer id;
+    /**
+     * 押金金额
+     */
+    @NotNull(groups = {Insert.class, Update.class})
     private BigDecimal amount;
+
+    /**
+     * 操作类型
+     */
+    @NotNull(groups = {Insert.class, Update.class})
     private Integer type;
+
+    /**
+     * 用户编号
+     */
     @TableField("u_id")
+    @NotNull(groups = {Insert.class, Update.class})
     private String uId;
+
+    /**
+     * 押金状态
+     */
+    @NotNull(groups = {Insert.class, Update.class})
     private Integer status;
+
+    /**
+     * 开始时间
+     */
     @TableField("start_time")
+    @NotNull(groups = {Insert.class, Update.class})
     private Date startTime;
+
+    /**
+     * 结束时间
+     */
+    @NotNull(groups = {Update.class})
     @TableField("end_time")
     private Date endTime;
 
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public String getuId() {
-        return uId;
-    }
-
-    public void setuId(String uId) {
-        this.uId = uId;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Date getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
-
-    public Date getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
-
-    @Override
-    public String toString() {
-        return "Deposit{" +
-        ", id=" + id +
-        ", amount=" + amount +
-        ", type=" + type +
-        ", uId=" + uId +
-        ", status=" + status +
-        ", startTime=" + startTime +
-        ", endTime=" + endTime +
-        "}";
-    }
 }

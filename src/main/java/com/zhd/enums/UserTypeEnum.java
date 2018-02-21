@@ -25,6 +25,7 @@ public enum UserTypeEnum implements IEnum{
     private String type;
 
     public static UserTypeEnum getByCode(byte code){
+        if(code <= 0) return UNKNOWN;
         for (UserTypeEnum userTypeEnum : values()) {
             if(code == userTypeEnum.getCode()) return userTypeEnum;
         }

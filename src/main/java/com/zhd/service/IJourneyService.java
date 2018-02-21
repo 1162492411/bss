@@ -13,4 +13,7 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IJourneyService extends IService<Journey> {
 
+    boolean checkJourney(Integer id);
+
+
 }

@@ -13,13 +13,14 @@
         <result column="status" property="status" />
         <result column="account_balance" property="accountBalance" />
         <result column="red_balance" property="redBalance" />
+        <result column="deposit_balance" property="depositBalance" />
         <result column="coupons" property="coupons" />
         <result column="dates" property="dates" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, password, type, avatar, credit, status, account_balance AS accountBalance, red_balance AS redBalance, coupons, dates
+        id, name, password, type, avatar, credit, status, account_balance AS accountBalance, red_balance AS redBalance, deposit_balance AS depositBalance, coupons, dates
     </sql>
 
 </mapper>

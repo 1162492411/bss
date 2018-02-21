@@ -47,7 +47,7 @@ public class AreaController extends BaseController {
     }
 
     @PostMapping
-    public JSONResponse insert(@RequestBody @Validated(Area.Insert.class) Area record, BindingResult bindingResult) {
+    public JSONResponse insert(@RequestBody @Validated(Area.Insert.class)Area record, BindingResult bindingResult) {
         try {
             if (bindingResult.hasErrors()) {
                 return renderError(bindingResult.getFieldError().getDefaultMessage());

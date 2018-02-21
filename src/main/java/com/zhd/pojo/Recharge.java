@@ -5,6 +5,12 @@ import java.math.BigDecimal;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -15,7 +21,11 @@ import java.io.Serializable;
  * @author zyg
  * @since 2018-02-05
  */
-public class Recharge implements Serializable {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Recharge implements Serializable, BaseModel{
 
     private static final long serialVersionUID = 1L;
 
@@ -23,24 +33,29 @@ public class Recharge implements Serializable {
      * 充值记录编号
      */
     @TableId(value = "id", type = IdType.AUTO)
+    @NotNull(groups = {Update.class, Delete.class})
     private Integer id;
     /**
      * 用户编号
      */
     @TableField("u_id")
+    @NotNull(groups = {Insert.class ,Update.class})
     private String uId;
     /**
      * 充值类型
      */
+    @NotNull(groups = {Insert.class, Update.class})
     private Integer type;
     /**
      * 充值时间
      */
     @TableField("recharge_time")
+    @NotNull(groups = {Insert.class, Update.class})
     private Date rechargeTime;
     /**
      * 充值金额
      */
+    @NotNull(groups = {Insert.class, Update.class})
     private BigDecimal amount;
     /**
      * 支付方订单编号
@@ -58,82 +73,4 @@ public class Recharge implements Serializable {
     @TableField("p_status")
     private Integer pStatus;
 
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getuId() {
-        return uId;
-    }
-
-    public void setuId(String uId) {
-        this.uId = uId;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public Date getRechargeTime() {
-        return rechargeTime;
-    }
-
-    public void setRechargeTime(Date rechargeTime) {
-        this.rechargeTime = rechargeTime;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public String getpId() {
-        return pId;
-    }
-
-    public void setpId(String pId) {
-        this.pId = pId;
-    }
-
-    public String getpUrl() {
-        return pUrl;
-    }
-
-    public void setpUrl(String pUrl) {
-        this.pUrl = pUrl;
-    }
-
-    public Integer getpStatus() {
-        return pStatus;
-    }
-
-    public void setpStatus(Integer pStatus) {
-        this.pStatus = pStatus;
-    }
-
-    @Override
-    public String toString() {
-        return "Recharge{" +
-        ", id=" + id +
-        ", uId=" + uId +
-        ", type=" + type +
-        ", rechargeTime=" + rechargeTime +
-        ", amount=" + amount +
-        ", pId=" + pId +
-        ", pUrl=" + pUrl +
-        ", pStatus=" + pStatus +
-        "}";
-    }
 }

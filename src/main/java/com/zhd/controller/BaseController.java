@@ -10,12 +10,13 @@ import org.apache.commons.lang.StringUtils;
  */
 public class BaseController {
 
+
     /**
      * 渲染失败数据
      * @return result 响应结果
      */
     protected JSONResponse renderError() {
-        return renderResult(ResponseCodeEnum.FAILURE.getCode(), ResponseCodeEnum.FAILURE.getMsg(), StringUtils.EMPTY);
+        return renderResult(ResponseCodeEnum.FAILURE.getCode(), ResponseCodeEnum.FAILURE.getMsg(), Constants.UNKNOWN_EXCEPTION);
     }
 
     /**

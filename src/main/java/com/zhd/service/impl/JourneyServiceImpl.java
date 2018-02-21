@@ -4,6 +4,7 @@ import com.zhd.pojo.Journey;
 import com.zhd.mapper.JourneyMapper;
 import com.zhd.service.IJourneyService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,5 +17,13 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class JourneyServiceImpl extends ServiceImpl<JourneyMapper, Journey> implements IJourneyService {
+
+    @Autowired
+    private JourneyMapper journeyMapper;
+
+    @Override
+    public boolean checkJourney(Integer id) {
+        return journeyMapper.selectById(id) != null;
+    }
 
 }

@@ -19,6 +19,7 @@ public enum TaskStatusEnum implements IEnum{
     private String status;
 
     public static TaskStatusEnum getByCode(int code){
+        if(code <= 0) return UNKNOWN;
         for (TaskStatusEnum taskStatusEnum : values()) {
             if(code == taskStatusEnum.getCode()) return taskStatusEnum;
         }

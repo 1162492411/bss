@@ -13,4 +13,6 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface ISupplierService extends IService<Supplier> {
 
+    boolean checkSupplier(Integer id);
+
 }

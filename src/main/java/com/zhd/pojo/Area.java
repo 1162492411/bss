@@ -1,19 +1,15 @@
 package com.zhd.pojo;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.enums.IdType;
 import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
-import com.zhd.enums.AreaTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
-
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 

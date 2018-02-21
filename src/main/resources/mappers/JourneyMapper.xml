@@ -12,11 +12,15 @@
         <result column="distance" property="distance" />
         <result column="amount" property="amount" />
         <result column="end_time" property="endTime" />
+        <result column="start_location_x" property="startLocationX" />
+        <result column="start_location_y" property="startLocationY" />
+        <result column="end_location_x" property="endLocationX" />
+        <result column="end_location_y" property="endLocationY" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, u_id AS uId, b_id AS bId, start_time AS startTime, ride_time AS rideTime, distance, amount, end_time AS endTime
+        id, u_id AS uId, b_id AS bId, start_time AS startTime, ride_time AS rideTime, distance, amount, end_time AS endTime, start_location_x as startLocationX, start_location_y as startLocationY, end_location_x as endLocationX, end_location_y as endLocationY
     </sql>
 
 </mapper>

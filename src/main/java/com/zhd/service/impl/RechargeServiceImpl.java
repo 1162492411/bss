@@ -4,6 +4,7 @@ import com.zhd.pojo.Recharge;
 import com.zhd.mapper.RechargeMapper;
 import com.zhd.service.IRechargeService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,4 +18,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class RechargeServiceImpl extends ServiceImpl<RechargeMapper, Recharge> implements IRechargeService {
 
+    @Autowired
+    private RechargeMapper rechargeMapper;
+
+    @Override
+    public boolean checkRecharge(Integer id) {
+        return rechargeMapper.selectById(id) != null;
+    }
 }

@@ -13,4 +13,6 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface ITaskService extends IService<Task> {
 
+    boolean checkTask(Integer id);
+
 }

@@ -4,6 +4,7 @@ import com.zhd.pojo.Task;
 import com.zhd.mapper.TaskMapper;
 import com.zhd.service.ITaskService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,4 +18,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements ITaskService {
 
+    @Autowired
+    private TaskMapper taskMapper;
+
+    @Override
+    public boolean checkTask(Integer id) {
+        return taskMapper.selectById(id) != null;
+    }
 }

@@ -1,32 +1,40 @@
 package com.zhd.enums;
 
+/**
+ * Created by Mo on 2018/2/14.
+ */
+
 import com.baomidou.mybatisplus.enums.IEnum;
-import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.io.Serializable;
 
 /**
- *  车辆类型枚举类
+ * 充值类型枚举类
  */
-@AllArgsConstructor
 @Getter
-public enum BicycleTypeEnum implements IEnum{
+@AllArgsConstructor
+public enum RechargeTypeEnum implements IEnum{
 
-    UNKNOWN(0,"未知类型"),
+    UNKNOWN(0,"未知"),
 
-    FIRST_GENERATION_CLASSICS(1,"一代经典版"),
+    VIRTUAL(1,"虚拟"),
 
-    FIRST_GENERATION_LITE(2,"一代轻骑版");
+    CARD(2," 银行卡"),
+
+    ALIPAY(3,"支付宝"),
+
+    WEIXIN(4,"微信");
 
     private int code;
+
     private String type;
 
-    public static BicycleTypeEnum getByCode(int code){
+    public static RechargeTypeEnum getByCode(int code){
         if(code <= 0) return UNKNOWN;
-        for (BicycleTypeEnum bicycleTypeEnum : values()) {
-            if(code == bicycleTypeEnum.getCode()) return bicycleTypeEnum;
+        for (RechargeTypeEnum rechargeTypeEnum : values()) {
+            if(code == rechargeTypeEnum.getCode()) return rechargeTypeEnum;
         }
         return UNKNOWN;
     }
