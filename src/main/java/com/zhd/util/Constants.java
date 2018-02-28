@@ -42,8 +42,8 @@ public class Constants {
     public static final String[] SUPPLIER_NAMES = {"编号","名称","地址"};
 
     //bicycle
-    public static final String[] BICYCLE_KEYS = {"id","status","type","locationX","locationY","batch","supplier","serviceTime","investmentTime","mileage"};
-    public static final String[] BICYCLE_NAMES = {"编号","状态","类型","当前位置X","当前位置Y","生产批次","供应商","运行时间","投产时间","运行里程"};
+    public static final String[] BICYCLE_KEYS = {"id","status","type","serviceTime","investmentTime","mileage","batch","supplier"};
+    public static final String[] BICYCLE_NAMES = {"编号","状态","类型","运行时间","投产时间","运行里程","生产批次","供应商"};
 
     //task
     public static final String[] TASK_KEYS = {"id","name","user","bicycle","type","status"};

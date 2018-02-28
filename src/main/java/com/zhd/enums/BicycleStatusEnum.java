@@ -24,7 +24,9 @@ public enum BicycleStatusEnum implements IEnum{
 
     WAIT_REPAIR(4,"待维修"),
 
-    WAIT_SCRAP(5,"待报废");
+    WAIT_SCRAP(5,"待报废"),
+
+    WAIT_DELETE(6,"待删除");
 
     private int code;
     private String status;

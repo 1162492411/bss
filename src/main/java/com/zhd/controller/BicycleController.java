@@ -1,6 +1,8 @@
 package com.zhd.controller;
 
 
+import com.alibaba.fastjson.util.TypeUtils;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.zhd.convert.BicycleConvert;
 import com.zhd.enums.BicycleStatusEnum;
@@ -46,7 +48,7 @@ public class BicycleController extends BaseController{
     public JSONResponse list(@PathVariable("current") Integer pageNum, Page<Bicycle> page) {
         try {
             if(pageNum <= 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
-            page = bicycleService.selectPage(page);
+            page = bicycleService.selectPage(page, new EntityWrapper<Bicycle>().orderBy("status", false));
             List<Supplier> supplierList = supplierService.selectList(null);
             return renderSuccess(BicycleConvert.convertToVOPageInfo(page,supplierList));
         } catch (Exception e) {
@@ -58,10 +60,9 @@ public class BicycleController extends BaseController{
     public JSONResponse insert(@RequestBody @Validated(Bicycle.Insert.class) Bicycle record, BindingResult bindingResult) {
         try {
             if (bindingResult.hasErrors()) {
-                System.out.println(bindingResult.getAllErrors());
                 return renderError(bindingResult.getFieldError().getDefaultMessage());
             } else {
-                record.setInvestmentTime(System.currentTimeMillis() + "");
+                record.setInvestmentTime(TypeUtils.castToString(System.currentTimeMillis()));
                 return bicycleService.insert(record) ? renderSuccess(record) : renderError();
             }
         } catch (Exception e) {
@@ -83,7 +84,7 @@ public class BicycleController extends BaseController{
     }
 
     @DeleteMapping("")
-    public JSONResponse delete(@Validated(Bicycle.Delete.class) Bicycle record, BindingResult bindingResult){
+    public JSONResponse delete(@RequestBody @Validated(Bicycle.Delete.class) Bicycle record, BindingResult bindingResult){
         try{
             if(bindingResult.hasErrors()){
                 return renderError(bindingResult.getFieldError().getDefaultMessage());

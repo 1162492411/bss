@@ -38,17 +38,17 @@ public class Task implements Serializable,BaseModel {
     /**
      * 任务名称
      */
-    @NotBlank(groups = {Insert.class, Update.class})
+    @NotBlank(groups = {Insert.class})
     private String name;
     /**
      * 任务类型
      */
-    @NotNull(groups = {Insert.class, Update.class})
+    @NotNull(groups = {Insert.class})
     private Integer type;
     /**
      * 任务处理人
      */
-    @NotBlank(groups = {Insert.class, Update.class})
+    @NotBlank(groups = {Insert.class})
     private String user;
     /**
      * 任务状态
@@ -59,20 +59,18 @@ public class Task implements Serializable,BaseModel {
      * 任务开始时间
      */
     @TableField("start_time")
-    @NotNull(groups = {Insert.class})
     private String startTime;
 
     /**
      * 任务结束时间
      */
     @TableField("end_time")
-    @NotNull(groups = {Update.class})
     private String endTime;
 
     /**
      * 车辆编号
      */
-    @NotNull(groups = {Insert.class, Update.class})
+    @NotNull(groups = {Insert.class})
     private Integer bicycle;
 
 }

@@ -28,7 +28,6 @@
         <section class="content-header">
             <h1>
                 任务列表
-                <button class="Button Button--blue" data-toggle="modal" data-target="#add-task-modal">添加</button>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-tasks"></i> 任务模块</a></li>
@@ -66,59 +65,61 @@ immediately after the control sidebar -->
     <div class="control-sidebar-bg"></div>
 
     <!-- 添加任务 -->
-    <div class="modal" id="add-task-modal" tabindex="-1" role="dialog">
+
+    <div class="modal" id="update-task-modal" tabindex="-1" role="dialog">
+        <!--<div id="modal-2">-->
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">添加任务</h4>
+                    <h4 class="modal-title">分配任务</h4>
                 </div>
                 <div class="modal-body">
-                    <form class="form-horizontal" id="add-task-form">
+                    <form class="form-horizontal" id="update-task-form">
                         <div class="box-body">
                             <!-- 编号 -->
-                            <input type="hidden" id="add-task-modal-id" />
+                            <input type="hidden" id="update-task-modal-id" />
                             <!-- 任务名 -->
                             <div class="form-group">
-                                <label for="add-task-modal-name" class="col-sm-3 control-label">任务名</label>
+                                <label for="update-task-modal-name" class="col-sm-3 control-label">任务名</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="col-sm-9 form-control" id="add-task-modal-name" name="addName" placeholder="任务名" />
+                                    <input type="text" class="form-control" id="update-task-modal-name" name="taskName" placeholder="任务名" />
                                 </div>
                             </div>
                             <!-- 类别 -->
                             <div class="form-group">
-                                <label for="add-task-modal-type" class="col-sm-3 control-label">类别</label>
+                                <label for="update-task-modal-type" class="col-sm-3 control-label">类别</label>
                                 <div class="col-sm-9">
-                                    <select class="col-sm-9 form-control" id="add-task-modal-type">
-                                    </select>
+                                    <select class="form-control" id="update-task-modal-type" disabled="disabled"></select>
                                 </div>
                             </div>
                             <!-- 状态 -->
-                            <input type="hidden" id="add-task-modal-status" value="1" />
+                            <input type="hidden" id="update-task-modal-status" value="2"/>
                             <!-- 操作人 -->
                             <div class="form-group">
-                                <label for="add-task-modal-user" class="col-sm-3 control-label">操作人</label>
+                                <label for="update-task-modal-user" class="col-sm-3 control-label">操作人</label>
                                 <div class="col-sm-9">
-                                    <select class="col-sm-9 form-control" id="add-task-modal-user" name="addUser"></select>
+                                    <select class=" form-control" id="update-task-modal-user" name="updateUser"></select>
                                 </div>
                             </div>
                             <!-- 操作车辆 -->
                             <div class="form-group">
-                                <label for="add-task-modal-bicycle" class="col-sm-3 control-label">操作车辆</label>
+                                <label for="update-task-modal-bicycle" class="col-sm-3 control-label">操作车辆</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="col-sm-9 form-control" id="add-task-modal-bicycle" name="addBicycle" placeholder="操作车辆" />
+                                    <input type="text" class="form-control" id="update-task-modal-bicycle" placeholder="操作车辆" disabled="disabled" />
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">放弃</button>
-                            <button type="button" class="btn btn-primary" onclick="addTask()">添加</button>
+                            <button type="button" class="btn btn-primary" onclick="doDispatchTask()">分配</button>
                         </div>
                         <!-- /.box-body -->
                     </form>
                 </div>
             </div>
         </div>
+        <!--</div>-->
     </div>
     <!-- 添加任务结束 -->
 
@@ -133,16 +134,9 @@ immediately after the control sidebar -->
 <script type="text/javascript">
     $(document).ready(function () {
         loadTasks(1);
-        initSelection("add-task-modal-type",allTaskType);
-        initTaskUser();
-        $("#add-task-form").validate({
+        $("#update-task-form").validate({
             rules :{
-                addName : "required",
-                addUser : "required",
-                addBicycle : {
-                    required : true,
-                    number : true
-                }
+                updateUser : "required"
             },
             errorElement: "em",
             success: function (label) {

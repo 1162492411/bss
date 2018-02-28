@@ -283,9 +283,7 @@ function internalLoadDatas(baseUrl, page, tableDiv, pagDiv, methods, reloadMetho
  */
 function initUpdateModal(pojo, data) {
     let $modal = $("#update-" + pojo + "-modal");
-    $modal.on('show.bs.modal', function (event) {
-        // for (let i = 0; i < keys.length; i++)
-        //     $("#update-" + pojo + "-modal-" + keys[i]).val(data[keys[i]]);
+    $modal.on('show.bs.modal', function () {
         for(let key in data)
             $("#update-" + pojo + "-modal-" + key).val(data[key]);
     });
@@ -300,20 +298,22 @@ function initUpdateModal(pojo, data) {
  */
 function internalDeleteData(div, id, sendUrl) {
     let sendData = {"id": id};
-    $.ajax({
-        type: 'DELETE',
-        url: sendUrl,
-        data: JSON.stringify(sendData),
-        contentType: 'application/json',
-        success: function (data) {
-            if (data.code == successCode) {
-                $("#" + div + "TR-" + sendData.id).empty();
-                window.location.reload();
+    if(confirm("是否删除数据?")){
+        $.ajax({
+            type: 'DELETE',
+            url: sendUrl,
+            data: JSON.stringify(sendData),
+            contentType: 'application/json',
+            success: function (data) {
+                if (data.code == successCode) {
+                    window.location.reload();
+                }
+                else{
+                    showErrorData(data);
+                }
             }
-            else
-                showErrorData(data);
-        }
-    });
+        });
+    }
 }
 
 /**
@@ -323,15 +323,16 @@ function internalDeleteData(div, id, sendUrl) {
  * @param keys 修改的实体的键
  */
 function internalAddData(pojo, sendUrl) {
-    if(checkElementEmpty("add-" + pojo + "-form") || $("#add-" + pojo + "-form").valid()){
-        //if中的第一个条件是考虑到bicycles页面addTask表单不能设置id的情况，此情况待解决
+    // checkElementEmpty("add-" + pojo + "-form") ||
+    if(pojo == "task" || $("#add-" + pojo + "-form").valid()){
         let sendData = {};
         let subLength = ("add-" + pojo + "-modal-").length;
-        $("#add-" + pojo + "-form").find("[id^=add-" + pojo + "-modal-]").each(function () {
+        $("#add-" + pojo + "-modal").find("[id^=add-" + pojo + "-modal-]").each(function () {
             let originId = $(this).attr("id");
             let key = originId.substring(subLength,originId.length);
             sendData[key] = $(this).val();
         });
+        alert("to be added-->" + JSON.stringify(sendData));
         $.ajax({
             type: 'POST',
             url: sendUrl,
@@ -356,10 +357,10 @@ function internalAddData(pojo, sendUrl) {
  * @param keys 修改的实体的键
  */
 function internalUpdateData(pojo, sendUrl) {
-    if($("#update-" + pojo + "-form").valid()){
+    if(pojo == "task" || $("#update-" + pojo + "-form").valid()){
         let sendData = {};
         let subLength = ("update-" + pojo + "-modal-").length;
-        $("#update-" + pojo + "-form").find("[id^=update-" + pojo + "-modal-]").each(function () {
+        $("#update-" + pojo + "-modal").find("[id^=update-" + pojo + "-modal-]").each(function () {
             let originId = $(this).attr("id");
             let key = originId.substring(subLength,originId.length);
             sendData[key] = $(this).val();
@@ -624,7 +625,6 @@ function loadBicycles(page) {
         paintColumn($(this).attr("id"),allBicycleStatus);
     });
     $("#bicycleTableBody").find("[id$='investmentTime']").each(function () {
-        // formatToLocal($(this).attr("id"));
         formatDateTime($(this).attr("id"));
     });
 }
@@ -634,7 +634,9 @@ function loadBicycles(page) {
  * @param data 车辆的信息
  */
 function loadMoveBicycle(data) {
-    moveBicycle(data.id);
+    if(checkBicycleStatus("移动", data.status)){
+        moveBicycle(data.id);
+    }
 }
 
 /**
@@ -642,7 +644,9 @@ function loadMoveBicycle(data) {
  * @param data 车辆的信息
  */
 function loadRepairBicycle(data){
-    repairBicycle(data.id);
+    if(checkBicycleStatus("维修", data.status)){
+        repairBicycle(data.id);
+    }
 }
 
 /**
@@ -650,14 +654,18 @@ function loadRepairBicycle(data){
  * @param data 车辆的信息
  */
 function loadScrapeBicycle(data) {
-    scrapeBicycle(data.id);
+    if(checkBicycleStatus("报废", data.status)){
+        scrapeBicycle(data.id);
+    }
 }
 
 /**
  * 删除车辆
  */
 function deleteBicycle(data) {
-    internalDeleteData("bicycleTable", data.id, bicyclesPath);
+    if(checkBicycleStatus("删除", data.status)){
+        internalDeleteData("bicycleTable", data.id, bicyclesPath);
+    }
 }
 
 /**
@@ -682,6 +690,28 @@ function initBicycleSupplier(){
     });
 }
 
+/**
+ * 根据车辆状态检测能够执行操作
+ * @param type 操作类型
+ * @param status 车辆状态
+ * @returns {boolean}
+ */
+//todo : 该方法仍然需要修改确认
+function checkBicycleStatus(type,status){
+    let checkResult = true;
+
+    if(type === "移动" && status !== "待移动") checkResult = false;//不可以移动待维修或待报废的车辆
+    if(type === "维修" && status === "待报废") checkResult = false;//不可以维修待报废的车辆
+
+    if(status === "使用中") checkResult = false;//不可以操作使用中的车辆
+    if(status === "空闲中") checkResult = true;
+
+    if(!checkResult){
+        alert("无法执行操作");
+    }
+    return checkResult;
+}
+
 /*---------------订单模块-----------------*/
 /**
  * 加载行程列表的数据
@@ -698,15 +728,16 @@ function loadJourneys(page) {
 
 /**
  * 为任务加载员工信息
+ * @param type 待填充的div所属的操作类型 ： add || update
  */
-function initTaskUser(){
+function initTaskUser(type){
     $.ajax({
         type: 'GET',
         url: allStaffsPath,
         sync : false,
         success: function(data) {
             if(data.code == successCode && !checkDataEmpty(data.result))
-                initSelection("add-task-modal-user",data.result);
+                initSelection(type + "-task-modal-user",data.result);
         }
     });
 }
@@ -732,7 +763,7 @@ function loadSimpleBicycles() {
                     let status = "";
                     status = allBicycleStatus[result[i].status].name;
                     content.push("状态 : " + status);
-                    content.push("操作 : <button class='Button Button--blue' onclick='moveBicycle(" + result[i].id + ")'>调出</button> <button class=' Button Button--blue' onclick='repairBicycle(" + result[i].id + ")'>维修</button> <button class='Button Button--blue' onclick='scrapeBicycle(" + result[i].id + ")'>报废</button>");
+                    content.push("操作 : <button class='Button Button--blue' onclick='moveBicycle(" + result[i].id + ")'>移动</button> <button class=' Button Button--blue' onclick='repairBicycle(" + result[i].id + ")'>维修</button> <button class='Button Button--blue' onclick='scrapeBicycle(" + result[i].id + ")'>报废</button>");
                     let infoWindow = new AMap.InfoWindow({
                         isCustom: true,  //使用自定义窗体
                         content: createInfoWindow(title, content.join("<br/>")),
@@ -820,20 +851,51 @@ function loadTasks(page) {
 }
 
 /**
+ *  显示分配任务
+ * @param data
+ */
+function dispatchTask(data){
+    let $modal = $("#update-task-modal");
+    let modalCount = 0;
+    $modal.on('show.bs.modal', function () {
+        if (modalCount===0) {
+            $("#update-task-modal-id").val(data.id);
+            $("#update-task-modal-name").val(data.name);
+            switch(data.type){
+                case "移动" : $("#update-task-modal-type").append("<option value='1'>移动</option>"); break;
+                case "修理" : $("#update-task-modal-type").append("<option value='2'>修理</option>"); break;
+                case "报废" : $("#update-task-modal-type").append("<option value='3'>报废</option>"); break;
+                default : $("#update-task-modal-type").append("<option value='0'>未知</option>"); break;
+            }
+            initTaskUser("update");
+            $("#update-task-modal-bicycle").val(data.bicycle);
+            modalCount++;
+        }
+    });
+    $modal.modal("show");
+}
+
+function doDispatchTask(){
+    internalUpdateData("task", taskPath);
+}
+
+/**
  * 完成任务
  * @param data 传入的任务数据
  */
 function doneTask(data) {
-        alert("不是该任务的参与人，无法操作！！");
-    let sendData = {"id": data.id, "status": true};
+    let sendData = {"id": data.id, "status": 3};
     $.ajax({
-        type: 'PUT',
-        url: taskPath,
+        type: 'POST',
+        url: taskPath + "/done",
         data: JSON.stringify(sendData),
         contentType: 'application/json',
         success: function (data) {
-            if (data === true) {
-                $("#taskTableTD-" + sendData.id + "-status").text(true);
+            if (data.code == successCode) {
+                window.location.reload();
+            }
+            else{
+                showErrorData(data);
             }
         }
     });
@@ -856,18 +918,19 @@ function addTask() {
 /**
  * 显示车辆分布页面的添加任务模态框
  * @param type 任务类型
- * @param bid 车辆编号
+ * @param bicycle 车辆编号
  */
-function initAddTaskModal(type, bid) {
+function initAddTaskModal(type, bicycle) {
     let $modal = $("#add-task-modal");
     resetModal("add-task-modal");
+    initTaskUser("add");
     let modalCount = 0;
-    $modal.on('show.bs.modal', function (event) {
+    $modal.on('show.bs.modal', function () {
         if (modalCount===0) {
             let typeStr = "";
             switch (type) {
                 case 1 :
-                    typeStr = "<option value='1'>调出</option>";
+                    typeStr = "<option value='1'>移动</option>";
                     break;
                 case 2 :
                     typeStr = "<option value='2'>维修</option>";
@@ -880,7 +943,7 @@ function initAddTaskModal(type, bid) {
                     break;
             }
             $("#add-task-modal-type").append(typeStr);
-            $("#add-task-modal-bid").val(bid);
+            $("#add-task-modal-bicycle").val(bicycle);
             modalCount++;
         }
     });

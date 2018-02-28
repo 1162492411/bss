@@ -11,10 +11,9 @@ import java.io.Serializable;
 public enum TaskTypeEnum implements IEnum{
 
     UNKNOWN(0,"未知"),
-    ADD(1,"投放"),
-    MOVE(2,"移动"),
-    REPAIR(3,"修理"),
-    DISABLE(4,"报废");
+    MOVE(1,"移动"),
+    REPAIR(2,"修理"),
+    DISABLE(3,"报废");
 
     private int code;
     private String type;

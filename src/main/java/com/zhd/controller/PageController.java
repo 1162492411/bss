@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class PageController {
 
     @RequestMapping("")
-    public String Default(){
+    public String defaultPage(){
         return "login";
     }
 

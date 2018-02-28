@@ -2,6 +2,7 @@ package com.zhd.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.zhd.convert.AreaConvert;
 import com.zhd.pojo.Area;
@@ -33,7 +34,7 @@ public class AreaController extends BaseController {
     public JSONResponse oldList(@PathVariable("current") int pageNum, Page<Area> page) {
         try {
             if(pageNum <= 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
-            return renderSuccess(AreaConvert.convertToVOPageInfo(areaService.selectPage(page)));
+            return renderSuccess(AreaConvert.convertToVOPageInfo(areaService.selectPage(page, new EntityWrapper<Area>().orderBy("type"))));
         } catch (Exception e) {
             return renderError(e.getMessage());
         }

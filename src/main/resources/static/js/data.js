@@ -19,15 +19,16 @@ const supplierMethods = [
     {"name": "删除", "method": "deleteSupplier"}
 ];//供应商管理的方法
 const bicycleMethods = [
-    {"name": "调出", "method": "loadMoveBicycle"},
+    {"name": "移动", "method": "loadMoveBicycle"},
     {"name": "维修", "method": "loadRepairBicycle"},
     {"name": "报废", "method": "loadScrapeBicycle"},
     {"name": "删除", "method": "deleteBicycle"}
 ];//车辆管理的方法
 const taskMethods = [
+    {"name" : "分配", "method" : "dispatchTask"},
     {"name": "完成", "method": "doneTask"},
     {"name": "取消", "method": "cancelTask"}
-];
+];//任务管理的方法
 
 const rootPath = "http://localhost:8080";//网站根目录
 const usersPath = rootPath + "/users";//获取用户数据的根目录
@@ -58,7 +59,8 @@ const allBicycleStatus = [
     {"id" : 2, "name" : "使用中", "class" : "info"},
     {"id" : 3, "name" : "待移动", "class" : "warning"},
     {"id" : 4, "name" : "待维修", "class" : "danger"},
-    {"id" : 5, "name" : "待报废", "class" : "danger"}
+    {"id" : 5, "name" : "待报废", "class" : "danger"},
+    {"id" : 6, "name" : "待删除", "class" : "danger"}
 ];//所有车辆状态信息
 
 const allAreaType = [
