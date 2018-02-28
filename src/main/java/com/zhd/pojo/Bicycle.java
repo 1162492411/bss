@@ -2,6 +2,7 @@ package com.zhd.pojo;
 
 import com.baomidou.mybatisplus.enums.IdType;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
@@ -41,13 +42,13 @@ public class Bicycle implements Serializable, BaseModel {
     /**
      * 车辆状态
      */
-    @NotNull(groups = Update.class)
-    private byte status;
+    @NotNull(groups = {Insert.class,Update.class})
+    private Integer status;
     /**
      * 车辆类型
      */
     @NotNull(groups = {Insert.class,Update.class})
-    private int type;
+    private Integer type;
     /**
      * 当前位置X坐标
      */
@@ -66,23 +67,21 @@ public class Bicycle implements Serializable, BaseModel {
     @NotBlank(groups = {Insert.class, Update.class})
     private String batch;
     /**
-     * 供应商ID
+     * 供应商
      */
-    @TableField("s_id")
     @NotNull(groups = {Insert.class, Update.class})
-    private Integer sId;
+    private Integer supplier;
     /**
      * 总使用时间
      */
     @TableField("service_time")
     @NotNull(groups = Update.class)
-    private Long serviceTime;
+    private String serviceTime;
     /**
      * 投产时间
      */
     @TableField("investment_time")
-    @NotNull(groups = Insert.class)
-    private Date investmentTime;
+    private String investmentTime;
     /**
      * 行驶里程
      */

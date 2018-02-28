@@ -2,6 +2,7 @@ package com.zhd.controller;
 
 
 import com.baomidou.mybatisplus.plugins.Page;
+import com.zhd.convert.SupplierConvert;
 import com.zhd.pojo.*;
 import com.zhd.service.ISupplierService;
 import com.zhd.util.Constants;
@@ -20,26 +21,26 @@ import org.springframework.web.bind.annotation.*;
  * @since 2018-02-05
  */
 @RestController
-@RequestMapping("/supplier")
+@RequestMapping("/suppliers")
 public class SupplierController extends BaseController{
     @Autowired
     private ISupplierService supplierService;
 
-    @GetMapping("{id}")
-    public JSONResponse get(Supplier record){
-        try{
-            return renderSuccess(supplierService.selectById(record.getId()));
-        }catch (Exception e){
+    @GetMapping("list/{current}")
+    public JSONResponse list(@PathVariable("current") Integer pageNum, Page<Supplier> page) {
+        try {
+            if(pageNum <= 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+            return renderSuccess(SupplierConvert.convertToPageInfo(supplierService.selectPage(page)));
+        } catch (Exception e) {
             return renderError(e.getMessage());
         }
     }
 
-    @GetMapping("list/{current}")
-    public JSONResponse list(@PathVariable("current") Integer pageNum, Page<Supplier> page, PageInfo pageInfo) {
-        try {
-            if(pageNum <= 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
-            return renderSuccess(PageUtil.clonePage(supplierService.selectPage(page), pageInfo));
-        } catch (Exception e) {
+    @GetMapping("all")
+    public JSONResponse all(){
+        try{
+            return renderSuccess(supplierService.selectAllSupplier());
+        }catch (Exception e){
             return renderError(e.getMessage());
         }
     }
@@ -70,8 +71,8 @@ public class SupplierController extends BaseController{
         }
     }
 
-    @DeleteMapping("{id}")
-    public JSONResponse delete(@Validated(Supplier.Delete.class) Supplier record, BindingResult bindingResult){
+    @DeleteMapping("")
+    public JSONResponse delete(@RequestBody @Validated(Supplier.Delete.class) Supplier record, BindingResult bindingResult){
         try{
             if(bindingResult.hasErrors()){
                 return renderError(bindingResult.getFieldError().getDefaultMessage());

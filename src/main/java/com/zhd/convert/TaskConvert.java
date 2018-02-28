@@ -1,6 +1,7 @@
 package com.zhd.convert;
 
 import com.baomidou.mybatisplus.plugins.Page;
+import com.zhd.enums.TaskStatusEnum;
 import com.zhd.enums.TaskTypeEnum;
 import com.zhd.pojo.PageInfo;
 import com.zhd.pojo.Task;
@@ -24,7 +25,7 @@ public class TaskConvert {
         Map map = BeanUtils.describe(task);
         map.remove("class");
         map.put("type", TaskTypeEnum.getByCode(task.getType()));
-        map.put("status", TaskTypeEnum.getByCode(task.getStatus()));
+        map.put("status", TaskStatusEnum.getByCode(task.getStatus()));
         return map;
     }
 
@@ -37,6 +38,8 @@ public class TaskConvert {
         }
         resultPage.setRecords(resultList);
         PageUtil.copyPage(taskPage, resultPage);
+        resultPage.setKeys(Constants.TASK_KEYS);
+        resultPage.setNames(Constants.TASK_NAMES);
         return resultPage;
     }
 

@@ -94,26 +94,19 @@ immediately after the control sidebar -->
                                 </div>
                             </div>
                             <!-- 状态 -->
-                            <div class="form-group">
-                                <label for="add-task-modal-status" class="col-sm-3 control-label">状态</label>
-                                <div class="col-sm-9">
-                                    <select class="col-sm-9 form-control" id="add-task-modal-status">
-                                        <option value="false" selected="selected">未完成</option>
-                                    </select>
-                                </div>
-                            </div>
+                            <input type="hidden" id="add-task-modal-status" value="1" />
                             <!-- 操作人 -->
                             <div class="form-group">
-                                <label for="add-task-modal-uid" class="col-sm-3 control-label">操作人</label>
+                                <label for="add-task-modal-user" class="col-sm-3 control-label">操作人</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="col-sm-9 form-control" id="add-task-modal-uid" name="addUid" placeholder="操作人" />
+                                    <select class="col-sm-9 form-control" id="add-task-modal-user" name="addUser"></select>
                                 </div>
                             </div>
                             <!-- 操作车辆 -->
                             <div class="form-group">
-                                <label for="add-task-modal-bid" class="col-sm-3 control-label">操作车辆</label>
+                                <label for="add-task-modal-bicycle" class="col-sm-3 control-label">操作车辆</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="col-sm-9 form-control" id="add-task-modal-bid" name="addBid" placeholder="操作车辆" />
+                                    <input type="text" class="col-sm-9 form-control" id="add-task-modal-bicycle" name="addBicycle" placeholder="操作车辆" />
                                 </div>
                             </div>
                         </div>
@@ -141,15 +134,12 @@ immediately after the control sidebar -->
     $(document).ready(function () {
         loadTasks(1);
         initSelection("add-task-modal-type",allTaskType);
+        initTaskUser();
         $("#add-task-form").validate({
             rules :{
                 addName : "required",
-                addUid : {
-                    required : true,
-                    number : true,
-                    rangelength : [11,11]
-                },
-                addBid : {
+                addUser : "required",
+                addBicycle : {
                     required : true,
                     number : true
                 }

@@ -1,7 +1,10 @@
 package com.zhd.convert;
 
+import com.baomidou.mybatisplus.plugins.Page;
+import com.zhd.pojo.PageInfo;
 import com.zhd.pojo.Supplier;
 import com.zhd.util.Constants;
+import com.zhd.util.PageUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +29,15 @@ public class SupplierConvert {
             resultMap.put(supplier.getId(),supplier);
         }
         return resultMap;
+    }
+
+    public static PageInfo<Supplier> convertToPageInfo(Page<Supplier> supplierPage){
+        if(supplierPage == null || CollectionUtils.isEmpty(supplierPage.getRecords())) throw new NullPointerException(Constants.TIP_EMPTY_DATA);
+        PageInfo<Supplier> resultPage = new PageInfo<>();
+        PageUtil.clonePage(supplierPage,resultPage);
+        resultPage.setKeys(Constants.SUPPLIER_KEYS);
+        resultPage.setNames(Constants.SUPPLIER_NAMES);
+        return resultPage;
     }
 
 }

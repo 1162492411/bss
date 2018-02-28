@@ -1,6 +1,8 @@
 package com.zhd.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.zhd.enums.UserStatusEnum;
+import com.zhd.enums.UserTypeEnum;
 import com.zhd.exceptions.NoEnoughDepositException;
 import com.zhd.exceptions.NoSuchUserException;
 import com.zhd.pojo.User;
@@ -8,11 +10,10 @@ import com.zhd.mapper.UserMapper;
 import com.zhd.service.IUserService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zhd.util.Constants;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * <p>
@@ -35,10 +36,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
+    public boolean isAdmin(String id) {
+        return userMapper.selectById(id).getType().equals(UserTypeEnum.MANAGER.getCode());
+    }
+
+    @Override
     public boolean checkDeposit(String id) throws NoEnoughDepositException, NoSuchUserException {
         User user = userMapper.selectOne(User.builder().id(id).status(UserStatusEnum.NORMAL.getCode()).build());
         if(user == null) throw new NoSuchUserException();
         if(user.getDepositBalance().intValue() < Constants.STANDARD_DEPOSIT.intValue()) throw new NoEnoughDepositException();
         else return false;
+    }
+
+    @Override
+    public User findUser(String id) throws NoSuchUserException {
+        User user = userMapper.selectById(id);
+        if(user == null) throw new NoSuchUserException();
+        else return user;
+    }
+
+    @Override
+    public List<User> getAllStaff() {
+        return userMapper.selectList(new EntityWrapper<User>().setSqlSelect("id,name").eq("type",UserTypeEnum.STAFF.getCode()).eq("status",UserStatusEnum.NORMAL.getCode()));
     }
 }

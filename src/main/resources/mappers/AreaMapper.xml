@@ -18,59 +18,13 @@
         id, name, north_point AS northPoint, south_point AS southPoint, west_point AS westPoint, east_point AS eastPoint, type
     </sql>
 
-    <!--<select id="selectVOs" resultType="com.zhd.vo.AreaVO">-->
-        <!--select-->
-        <!--<include refid="Base_Column_List" />-->
-        <!--from area-->
-        <!--<trim prefix="where" prefixOverrides="and">-->
-            <!--<if test="name != null">-->
-                <!--name = #{name}-->
-            <!--</if>-->
-            <!--<if test="northPoint != null">-->
-                <!--and north_point = #{northPoint}-->
-            <!--</if>-->
-            <!--<if test="southPoint != null">-->
-                <!--and south_point = #{southPoint}-->
-            <!--</if>-->
-            <!--<if test="westPoint != null">-->
-                <!--and west_point = #{westPoint}-->
-            <!--</if>-->
-            <!--<if test="eastPoint != null">-->
-                <!--and east_point = #{eastPoint}-->
-            <!--</if>-->
-            <!--<if test="type != 0">-->
-                <!--and type = #{type}-->
-            <!--</if>-->
-        <!--</trim>-->
-    <!--</select>-->
+    <!--<insert id="insertCollection" parameterType="java.util.List">-->
+        <!--insert into area (name, north_point, south_point, west_point, east_point) VALUES-->
+        <!--<foreach item="item" collection="areas" separator=",">-->
+            <!--(#{item.name}, #{item.northPoint}, #{item.southPoint}, #{item.westPoint}, #{item.eastPoint})-->
+        <!--</foreach>-->
+    <!--</insert>-->
 
-    <!--<select id="selectVO" resultType="com.zhd.vo.AreaVO">-->
-        <!--select-->
-        <!--<include refid="Base_Column_List" />-->
-        <!--from area-->
-        <!--<trim prefix="where" prefixOverrides="and">-->
-            <!--<if test="id != null">-->
-                <!--id = #{id}-->
-            <!--</if>-->
-            <!--<if test="name != null">-->
-                <!--and name = #{name}-->
-            <!--</if>-->
-            <!--<if test="northPoint != null">-->
-                <!--and north_point = #{northPoint}-->
-            <!--</if>-->
-            <!--<if test="southPoint != null">-->
-                <!--and south_point = #{southPoint}-->
-            <!--</if>-->
-            <!--<if test="westPoint != null">-->
-                <!--and west_point = #{westPoint}-->
-            <!--</if>-->
-            <!--<if test="eastPoint != null">-->
-                <!--and east_point = #{eastPoint}-->
-            <!--</if>-->
-            <!--<if test="type != 0">-->
-                <!--and type = #{type}-->
-            <!--</if>-->
-        <!--</trim>-->
-    <!--</select>-->
+
 
 </mapper>

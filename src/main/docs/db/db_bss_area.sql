@@ -8,7 +8,7 @@ INSERT INTO db_bss.area (id, name, north_point, south_point, west_point, east_po
 INSERT INTO db_bss.area (id, name, north_point, south_point, west_point, east_point, type) VALUES (8, '黄河科技学院', 113.68277600000000000, 113.68256100000000000, 34.69376400000000000, 34.69331800000000000, 1);
 INSERT INTO db_bss.area (id, name, north_point, south_point, west_point, east_point, type) VALUES (9, '黄河科技学院(北校区)', 113.64416200000000000, 113.64394700000000000, 34.72788100000000000, 34.72782900000000000, 1);
 INSERT INTO db_bss.area (id, name, north_point, south_point, west_point, east_point, type) VALUES (10, '信息工程大学(南门)', 113.58001900000000000, 113.58059800000000000, 34.81773900000000000, 34.81744300000000000, 1);
-INSERT INTO db_bss.area (id, name, north_point, south_point, west_point, east_point, type) VALUES (11, '中原工学院(北校区)', 113.62164200000000000, 113.62130900000000000, 34.75568700000000000, 34.75532400000000000, 1);
+INSERT INTO db_bss.area (id, name, north_point, south_point, west_point, east_point, type) VALUES (11, '中原工学院(北校区)', 113.62164200000000000, 113.62130900000000000, 34.75568700000000000, 34.75532400000000000, 2);
 INSERT INTO db_bss.area (id, name, north_point, south_point, west_point, east_point, type) VALUES (12, '中原工学院(南校区)', 113.69434200000000000, 113.69513200000000000, 34.59274000000000000, 34.59149100000000000, 1);
 INSERT INTO db_bss.area (id, name, north_point, south_point, west_point, east_point, type) VALUES (13, '中原工学院(西区)', 113.59609800000000000, 113.59613400000000000, 34.75193200000000000, 34.75159200000000000, 1);
 INSERT INTO db_bss.area (id, name, north_point, south_point, west_point, east_point, type) VALUES (14, '郑州汽车客运总站', 113.66127300000000000, 113.66135400000000000, 34.72545800000000000, 34.72454200000000000, 2);
@@ -18,7 +18,7 @@ INSERT INTO db_bss.area (id, name, north_point, south_point, west_point, east_po
 INSERT INTO db_bss.area (id, name, north_point, south_point, west_point, east_point, type) VALUES (18, '郑州客运南站', 113.66432700000000000, 113.66440800000000000, 34.70437300000000000, 34.70412000000000000, 2);
 INSERT INTO db_bss.area (id, name, north_point, south_point, west_point, east_point, type) VALUES (19, '郑州火车站', 113.66420400000000000, 113.66283900000000000, 34.75230600000000000, 34.75203900000000000, 2);
 INSERT INTO db_bss.area (id, name, north_point, south_point, west_point, east_point, type) VALUES (20, '郑州大学第一附属医院', 113.65240600000000000, 113.65179500000000000, 34.75866700000000000, 34.75833300000000000, 1);
-INSERT INTO db_bss.area (id, name, north_point, south_point, west_point, east_point, type) VALUES (21, '河南省人民医院', 113.70137300000000000, 113.70034000000000000, 34.77873400000000000, 34.77869700000000000, 1);
+INSERT INTO db_bss.area (id, name, north_point, south_point, west_point, east_point, type) VALUES (21, '河南省人民医院', 113.70137300000000000, 113.70034000000000000, 34.77873400000000000, 34.77869700000000000, 2);
 INSERT INTO db_bss.area (id, name, north_point, south_point, west_point, east_point, type) VALUES (22, '河南省中医院', 113.65688000000000000, 113.65665500000000000, 34.80814100000000000, 34.80771800000000000, 1);
 INSERT INTO db_bss.area (id, name, north_point, south_point, west_point, east_point, type) VALUES (23, '郑州市中心医院', 113.61881000000000000, 113.61863000000000000, 34.75648000000000000, 34.75627900000000000, 1);
 INSERT INTO db_bss.area (id, name, north_point, south_point, west_point, east_point, type) VALUES (24, '解放军一五三中心医院', 113.54147400000000000, 113.54159100000000000, 34.77152900000000000, 34.77150700000000000, 1);

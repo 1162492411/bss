@@ -55,6 +55,8 @@ public class UserConvert {
         }
         resultPage.setRecords(resultList);
         PageUtil.copyPage(userPage, resultPage);
+        resultPage.setKeys(Constants.USER_KEYS);
+        resultPage.setNames(Constants.USER_NAMES);
         return resultPage;
     }
 

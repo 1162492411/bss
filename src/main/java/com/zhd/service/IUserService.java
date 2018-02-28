@@ -5,6 +5,8 @@ import com.zhd.exceptions.NoSuchUserException;
 import com.zhd.pojo.User;
 import com.baomidou.mybatisplus.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  * 用户表 服务类
@@ -17,8 +19,12 @@ public interface IUserService extends IService<User> {
 
     boolean checkUser(String id) throws NoSuchUserException;//检查用户有效性
 
+    boolean isAdmin(String id);
+
     boolean checkDeposit(String id) throws NoEnoughDepositException, NoSuchUserException;//检查用户押金
 
     User findUser(String id) throws NoSuchUserException;//查找用户
+
+    List<User> getAllStaff();
 
 }

@@ -69,9 +69,10 @@ public class Area implements Serializable,BaseModel {
     @Range(min = -180, max = 180, groups = {Insert.class, Update.class})
     private BigDecimal eastPoint;
     /**
-     * 区域类型：0-普通区;1-红包区;2-禁停区
+     * 区域类型 : 见AreaTypeEnum
      */
     @NotNull(groups = {Insert.class, Update.class})
-    @Range(min = 0 ,max = 2, groups = {Insert.class, Update.class})
-    private int type;
+    @Range(min = 1 ,max = 3, groups = {Insert.class, Update.class} , message = "区域类型设置错误")
+    private Integer type;
+
 }

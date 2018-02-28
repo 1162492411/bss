@@ -48,9 +48,8 @@ public class Task implements Serializable,BaseModel {
     /**
      * 任务处理人
      */
-    @TableField("u_id")
     @NotBlank(groups = {Insert.class, Update.class})
-    private String uId;
+    private String user;
     /**
      * 任务状态
      */
@@ -61,18 +60,19 @@ public class Task implements Serializable,BaseModel {
      */
     @TableField("start_time")
     @NotNull(groups = {Insert.class})
-    private Date startTime;
+    private String startTime;
+
     /**
      * 任务结束时间
      */
     @TableField("end_time")
     @NotNull(groups = {Update.class})
-    private Date endTime;
+    private String endTime;
+
     /**
      * 车辆编号
      */
-    @TableField("b_id")
     @NotNull(groups = {Insert.class, Update.class})
-    private Integer bId;
+    private Integer bicycle;
 
 }

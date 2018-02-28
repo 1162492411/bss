@@ -4,14 +4,36 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.zhd.pojo.Supplier">
-        <id column="id" property="id" />
-        <result column="name" property="name" />
-        <result column="address" property="address" />
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="address" property="address"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, name, address
     </sql>
+
+    <select id="selectAllSupplier" resultType="java.util.HashMap">
+        select id, name from supplier
+    </select>
+
+    <insert id="insertSupp" useGeneratedKeys="true" keyProperty="id">
+        insert into supplier (name, address) values (#{name}, #{address})
+    </insert>
+
+    <select id="selectSuppliersByBatch" resultMap="BaseResultMap">
+      SELECT id, name, address FROM supplier
+      WHERE id IN
+           (
+             SELECT sid
+             FROM bicycle_supplier
+             WHERE bid =
+                   (SELECT id
+                    FROM bicycle
+                    WHERE batch = #{batch})
+           )
+    </select>
+
 
 </mapper>

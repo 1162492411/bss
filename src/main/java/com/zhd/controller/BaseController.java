@@ -5,6 +5,9 @@ import com.zhd.pojo.JSONResponse;
 import com.zhd.util.Constants;
 import org.apache.commons.lang.StringUtils;
 
+import java.time.Instant;
+import java.util.Date;
+
 /**
  * 基础控制器，负责渲染响应结果
  */
@@ -13,7 +16,7 @@ public class BaseController {
 
     /**
      * 渲染失败数据
-     * @return result 响应结果
+     * @return data 响应结果
      */
     protected JSONResponse renderError() {
         return renderResult(ResponseCodeEnum.FAILURE.getCode(), ResponseCodeEnum.FAILURE.getMsg(), Constants.UNKNOWN_EXCEPTION);
@@ -22,7 +25,7 @@ public class BaseController {
     /**
      * 渲染失败数据（带数据）
      * @param msg 需要返回的数据
-     * @return result 响应结果
+     * @return data 响应结果
      */
     protected JSONResponse renderError(String msg) {
         return renderResult(ResponseCodeEnum.FAILURE.getCode(), ResponseCodeEnum.FAILURE.getMsg(), msg != null ? msg : StringUtils.EMPTY);
@@ -30,7 +33,7 @@ public class BaseController {
 
     /**
      * 渲染成功数据
-     * @return result 响应结果
+     * @return data 响应结果
      */
     protected JSONResponse renderSuccess() {
         return renderResult(ResponseCodeEnum.SUCCESS.getCode(),ResponseCodeEnum.SUCCESS.getMsg(), StringUtils.EMPTY);
@@ -39,7 +42,7 @@ public class BaseController {
     /**
      * 渲染成功数据（带数据）
      * @param result 需要返回的对象
-     * @return result 响应结果
+     * @return data 响应结果
      */
     protected JSONResponse renderSuccess(Object result) {
         if(result == null) throw new NullPointerException(Constants.TIP_EMPTY_DATA);

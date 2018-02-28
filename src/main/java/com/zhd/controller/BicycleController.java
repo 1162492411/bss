@@ -17,7 +17,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.time.Instant;
 import java.util.List;
 
 /**
@@ -29,7 +28,7 @@ import java.util.List;
  * @since 2018-02-05
  */
 @RestController
-@RequestMapping("/bicycle")
+@RequestMapping("/bicycles")
 public class BicycleController extends BaseController{
 
     @Autowired
@@ -42,17 +41,6 @@ public class BicycleController extends BaseController{
     private IJourneyService journeyService;
     @Autowired
     private IAreaService areaService;
-
-    @GetMapping("{id}")
-    public JSONResponse get(Bicycle record){
-        try{
-            record = bicycleService.selectById(record.getId());
-            Supplier supplier = supplierService.selectById(record.getSId());
-            return renderSuccess(BicycleConvert.convertToVO(record, supplier));
-        }catch (Exception e){
-            return renderError(e.getMessage());
-        }
-    }
 
     @GetMapping("list/{current}")
     public JSONResponse list(@PathVariable("current") Integer pageNum, Page<Bicycle> page) {
@@ -70,8 +58,10 @@ public class BicycleController extends BaseController{
     public JSONResponse insert(@RequestBody @Validated(Bicycle.Insert.class) Bicycle record, BindingResult bindingResult) {
         try {
             if (bindingResult.hasErrors()) {
+                System.out.println(bindingResult.getAllErrors());
                 return renderError(bindingResult.getFieldError().getDefaultMessage());
             } else {
+                record.setInvestmentTime(System.currentTimeMillis() + "");
                 return bicycleService.insert(record) ? renderSuccess(record) : renderError();
             }
         } catch (Exception e) {
@@ -92,7 +82,7 @@ public class BicycleController extends BaseController{
         }
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("")
     public JSONResponse delete(@Validated(Bicycle.Delete.class) Bicycle record, BindingResult bindingResult){
         try{
             if(bindingResult.hasErrors()){
@@ -122,7 +112,7 @@ public class BicycleController extends BaseController{
             if(bicycle.getStatus() != BicycleStatusEnum.UNUSED.getCode()) throw new NotUseableBicycleException();
             //borrowBicycle
             bicycleService.borrowBicycle(bicycle.getId());
-            Journey journey = Journey.builder().bId(bicycle.getId()).uId(userid).startTime(Instant.now().getEpochSecond()).build();
+            Journey journey = Journey.builder().bId(bicycle.getId()).uId(userid).startTime(System.currentTimeMillis() + "").build();
             journeyService.insert(journey);
             return renderSuccess(journey);
         }catch (Exception e){
@@ -140,8 +130,10 @@ public class BicycleController extends BaseController{
             User user = userService.findUser(userid);
             //prepare returnBicycle
             Area area = areaService.findArea(journey.getEndLocationX(),journey.getEndLocationY());
-            journey.setRideTime(journey.getEndTime() - journey.getStartTime());
-            journey.setAmount(ConsumptionUtil.calcute(journey.getRideTime(),area.getType(), user.getDates()));
+            long startTime = Long.parseLong(journey.getStartTime());
+            long endTime = Long.parseLong(journey.getEndTime());
+            journey.setRideTime(endTime - startTime + "");
+            journey.setAmount(ConsumptionUtil.calculate(journey.getRideTime(),area.getType(), user.getMonthlyTime()));
             //returnBicycle
             bicycleService.returnBicycle(bicycleId);
             journeyService.updateById(journey);

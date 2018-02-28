@@ -52,19 +52,19 @@ public class Journey implements Serializable, BaseModel {
      */
     @TableField("start_time")
     @NotNull(groups = {Insert.class, Update.class})
-    private long startTime;
+    private String startTime;
     /**
      * 结束时间
      */
     @TableField("end_time")
     @NotNull(groups = {Update.class})
-    private long endTime;
+    private String endTime;
     /**
      * 骑行时间
      */
     @TableField("ride_time")
     @NotNull(groups = Update.class)
-    private long rideTime;
+    private String rideTime;
     /**
      * 骑行距离
      */
@@ -74,7 +74,7 @@ public class Journey implements Serializable, BaseModel {
      * 骑行花费
      */
     @NotNull(groups = Update.class)
-    private double amount;
+    private BigDecimal amount;
 
     /**
      * 起始位置X

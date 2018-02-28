@@ -1,5 +1,6 @@
 package com.zhd.controllerTests;
 
+import com.zhd.mapper.AreaMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class AreaControllerTests  {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private AreaMapper areaMapper;
+
     @Test
     public void testHello() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get("/area/list/{page}",1))
@@ -34,5 +38,7 @@ public class AreaControllerTests  {
                 .andDo(document("home"))
                 .andReturn();
     }
+
+
 
 }

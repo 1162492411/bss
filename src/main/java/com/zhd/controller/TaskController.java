@@ -25,20 +25,11 @@ import org.springframework.stereotype.Controller;
  * @since 2018-02-05
  */
 @RestController
-@RequestMapping("/task")
+@RequestMapping("/tasks")
 public class TaskController extends BaseController{
 
     @Autowired
     private ITaskService taskService;
-
-    @GetMapping("{id}")
-    public JSONResponse get(Task record){
-        try{
-            return renderSuccess(TaskConvert.convertToVO(taskService.selectById(record.getId())));
-        }catch (Exception e){
-            return renderError(e.getMessage());
-        }
-    }
 
     @GetMapping("list/{current}")
     public JSONResponse list(@PathVariable("current") int pageNum, Page<Task> page) {

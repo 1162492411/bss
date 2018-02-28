@@ -1,6 +1,7 @@
 package com.zhd.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.zhd.convert.AreaConvert;
 import com.zhd.pojo.Area;
@@ -21,23 +22,15 @@ import org.springframework.web.bind.annotation.*;
  * @since 2018-02-05
  */
 @RestController
-@RequestMapping("/area")
+@RequestMapping("/areas")
 public class AreaController extends BaseController {
 
     @Autowired
     private IAreaService areaService;
 
-    @GetMapping("{id}")
-    public JSONResponse get(Area record){
-        try{
-            return renderSuccess(AreaConvert.convertToVO(areaService.selectById(record.getId())));
-        }catch (Exception e){
-            return renderError(e.getMessage());
-        }
-    }
 
     @GetMapping("list/{current}")
-    public JSONResponse list(@PathVariable("current") int pageNum, Page<Area> page) {
+    public JSONResponse oldList(@PathVariable("current") int pageNum, Page<Area> page) {
         try {
             if(pageNum <= 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
             return renderSuccess(AreaConvert.convertToVOPageInfo(areaService.selectPage(page)));
@@ -72,8 +65,8 @@ public class AreaController extends BaseController {
         }
     }
 
-    @DeleteMapping("{id}")
-    public JSONResponse delete(@Validated(Area.Delete.class) Area record, BindingResult bindingResult){
+    @DeleteMapping("")
+    public JSONResponse delete(@RequestBody @Validated(Area.Delete.class) Area record, BindingResult bindingResult){
         try{
             if(bindingResult.hasErrors()){
                 return renderError(bindingResult.getFieldError().getDefaultMessage());

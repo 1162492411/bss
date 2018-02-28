@@ -7,6 +7,9 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * <p>
  * 供应商表 服务实现类
@@ -24,5 +27,11 @@ public class SupplierServiceImpl extends ServiceImpl<SupplierMapper, Supplier> i
     @Override
     public boolean checkSupplier(Integer id) {
         return supplierMapper.selectById(id) != null;
+    }
+
+
+    @Override
+    public List<Map> selectAllSupplier() {
+        return supplierMapper.selectAllSupplier();
     }
 }

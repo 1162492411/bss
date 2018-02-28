@@ -50,12 +50,12 @@ public class User implements Serializable,BaseModel {
      * 密码
      */
     @NotBlank(groups = {Insert.class, Update.class})
-    transient private String password;
+    private String password;
     /**
      * 账户类型
      */
     @Range(min = 0, max = 3, groups = {Insert.class, Update.class})
-    private Byte type;
+    private Integer type;
     /**
      * 头像
      */
@@ -77,12 +77,6 @@ public class User implements Serializable,BaseModel {
     @Range(min = 0, groups = {Update.class})
     @TableField("account_balance")
     private BigDecimal accountBalance;
-    /**
-     * 红包余额
-     */
-    @Range( min = 0, groups = {Update.class})
-    @TableField("red_balance")
-    private BigDecimal redBalance;
 
     /**
      * 押金余额
@@ -91,13 +85,9 @@ public class User implements Serializable,BaseModel {
     private BigDecimal depositBalance;
 
     /**
-     * 优惠券数量
-     */
-    @Range(min = 0, groups = {Insert.class, Update.class})
-    private Integer coupons;
-    /**
      * 包月截止时间
      */
     @NotNull(groups = {Insert.class, Update.class})
-    private long dates;
+    @TableField("monthly_time")
+    private String monthlyTime;
 }

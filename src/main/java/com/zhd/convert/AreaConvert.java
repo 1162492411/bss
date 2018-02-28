@@ -53,6 +53,8 @@ public class AreaConvert{
         }
         resultPage.setRecords(resultList);
         PageUtil.copyPage(areaPage,resultPage);
+        resultPage.setKeys(Constants.AREA_KEYS);
+        resultPage.setNames(Constants.AREA_NAMES);
         return resultPage;
     }
 

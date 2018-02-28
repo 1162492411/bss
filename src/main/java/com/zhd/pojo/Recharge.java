@@ -51,7 +51,7 @@ public class Recharge implements Serializable, BaseModel{
      */
     @TableField("recharge_time")
     @NotNull(groups = {Insert.class, Update.class})
-    private Date rechargeTime;
+    private String rechargeTime;
     /**
      * 充值金额
      */

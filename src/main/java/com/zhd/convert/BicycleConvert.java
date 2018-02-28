@@ -34,9 +34,8 @@ public class BicycleConvert {
         if(bicycle == null) throw new NullPointerException(Constants.TIP_EMPTY_DATA);
         Map resultMap = BeanUtils.describe(bicycle);
         resultMap.remove("class");
-        resultMap.remove("SId");
-        if(supplier != null) resultMap.put("sName",Constants.UNKNOWN_DATA);
-        else resultMap.put("sName",supplier.getName() != null ? supplier.getName() : Constants.UNKNOWN_DATA);
+        if(supplier == null) resultMap.put("supplier",Constants.UNKNOWN_DATA);
+        else resultMap.put("supplier",supplier.getName() != null ? supplier.getName() : Constants.UNKNOWN_DATA);
         resultMap.put("status", BicycleStatusEnum.getByCode(bicycle.getStatus()));
         resultMap.put("type", BicycleTypeEnum.getByCode(bicycle.getType()));
         return resultMap;
@@ -57,10 +56,12 @@ public class BicycleConvert {
         List<Map> resultList = new ArrayList<>();
         Map<Integer,Supplier> supplierMap = SupplierConvert.convertSupplierListToMap(supplierList);
         for (Bicycle bicycle : bicyclePage.getRecords()) {
-            resultList.add(convertToVO(bicycle,supplierMap.get(bicycle.getSId())));
+            resultList.add(convertToVO(bicycle,supplierMap.get(bicycle.getSupplier())));
         }
         PageUtil.copyPage(bicyclePage,resultPage);
         resultPage.setRecords(resultList);
+        resultPage.setNames(Constants.BICYCLE_NAMES);
+        resultPage.setKeys(Constants.BICYCLE_KEYS);
         return resultPage;
     }
 

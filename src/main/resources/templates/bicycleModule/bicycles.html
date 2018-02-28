@@ -77,8 +77,8 @@ immediately after the control sidebar -->
                 <div class="modal-body">
                     <form class="form-horizontal" id="add-bicycle-form">
                         <div class="box-body">
-                            <!-- 编号 -->
-                            <input type="hidden" id="add-bicycle-modal-id" />
+                            <!--&lt;!&ndash; 编号 &ndash;&gt;-->
+                            <!--<input type="hidden" id="add-bicycle-modal-id" />-->
                             <!-- 型号 -->
                             <div class="form-group">
                                 <label for="add-bicycle-modal-type" class="col-sm-3 control-label">型号</label>
@@ -96,11 +96,15 @@ immediately after the control sidebar -->
                             </div>
                             <!-- 供应商 -->
                             <div class="form-group">
-                                <label for="add-bicycle-modal-sid" class="col-sm-3 control-label">供应商</label>
+                                <label for="add-bicycle-modal-supplier" class="col-sm-3 control-label">供应商</label>
                                 <div class="col-sm-8">
-                                    <select class="col-sm-10 form-control" id="add-bicycle-modal-sid" ></select>
+                                    <select class="col-sm-10 form-control" id="add-bicycle-modal-supplier" ></select>
                                 </div>
                             </div>
+                            <!-- 默认车辆信息 -->
+                            <input type="hidden" id="add-bicycle-modal-status" value="1" />
+                            <input type="hidden" id="add-bicycle-modal-locationX" value="0.0" />
+                            <input type="hidden" id="add-bicycle-modal-locationY" value="0.0" />
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">放弃</button>
@@ -147,12 +151,12 @@ immediately after the control sidebar -->
                                 </div>
                             </div>
                             <!-- 状态 -->
-                            <input type="hidden" id="add-task-modal-status" />
+                            <input type="hidden" id="add-task-modal-status" value="1"/>
                             <!-- 操作人 -->
                             <div class="form-group">
-                                <label for="add-task-modal-uid" class="col-sm-3 control-label">操作人</label>
+                                <label for="add-task-modal-user" class="col-sm-3 control-label">操作人</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="add-task-modal-uid" name="taskUid" placeholder="操作人" />
+                                    <select class="col-sm-9 form-control" id="add-task-modal-user" name="addUser"></select>
                                 </div>
                             </div>
                             <!-- 操作车辆 -->
@@ -188,15 +192,8 @@ immediately after the control sidebar -->
     $(document).ready(function () {
         loadBicycles(1);
         initSelection("add-bicycle-modal-type",allBicycleType);
-        $.ajax({
-            type: 'GET',
-            url: allSuppliersPath,
-            sync : false,
-            success: function(data) {
-                if(!checkDataEmpty(data))
-                    initSelection("add-bicycle-modal-sid",data.datas);
-            }
-        });
+        initBicycleSupplier();
+        initTaskUser();
         $("#add-bicycle-form").validate({
             rules :{
                 addBatch : "required"
@@ -210,3 +207,4 @@ immediately after the control sidebar -->
 </script>
 </body>
 </html>
+

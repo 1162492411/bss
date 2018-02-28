@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Select;
 
 import javax.annotation.security.PermitAll;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * <p>
@@ -20,5 +21,8 @@ public interface AreaMapper extends BaseMapper<Area> {
 
     @Select("select id,name,type from area where ${x} between west_point and east_point and ${y} between north_point and south_point")
     Area findArea(@Param("x") BigDecimal locationX, @Param("y") BigDecimal locationY);
+
+    Boolean insertCollection(@Param("areas") List<Area> list);
+
 
 }

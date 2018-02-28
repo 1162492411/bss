@@ -21,17 +21,18 @@ public class ConsumptionUtil {
      * @param monthlyTime 包月截止时间
      * @return
      */
-    public static double calcute(long rideTime,int areaType,long monthlyTime) throws RideTimeOutException, BanAreaException {
-        if(rideTime < 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
-        int minutes = Math.round(rideTime / 1000 / 60);//format rideTime
+    public static BigDecimal calculate(String rideTime, int areaType, String monthlyTime) throws RideTimeOutException, BanAreaException {
+        long time = Long.parseLong(rideTime);
+        if(time < 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+        int minutes = Math.round(time / 1000 / 60);//format rideTime
         double originalAmount = calcuteByRideTime(minutes);
 
-        if(monthlyTime > System.currentTimeMillis() && minutes <= 120) return 0;
+        if(Long.parseLong(monthlyTime) > System.currentTimeMillis() && minutes <= 120) return BigDecimal.ZERO;
 
         if(areaType == AreaTypeEnum.BAN.getCode() || areaType == AreaTypeEnum.UNKNOWN.getCode()) throw new BanAreaException();
-        else if(areaType == AreaTypeEnum.RED.getCode()) return 0;
+        else if(areaType == AreaTypeEnum.RED.getCode()) return BigDecimal.ZERO;
 
-        return originalAmount;
+        return BigDecimal.valueOf(originalAmount);
     }
 
     /**

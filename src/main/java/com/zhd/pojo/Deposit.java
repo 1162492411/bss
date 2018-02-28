@@ -65,13 +65,13 @@ public class Deposit implements Serializable, BaseModel{
      */
     @TableField("start_time")
     @NotNull(groups = {Insert.class, Update.class})
-    private Date startTime;
+    private String startTime;
 
     /**
      * 结束时间
      */
     @NotNull(groups = {Update.class})
     @TableField("end_time")
-    private Date endTime;
+    private String endTime;
 
 }

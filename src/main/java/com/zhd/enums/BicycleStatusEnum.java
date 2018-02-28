@@ -14,22 +14,22 @@ import java.io.Serializable;
 @Getter
 public enum BicycleStatusEnum implements IEnum{
 
-    UNKNOWN(Byte.valueOf("0"),"异常状态"),
+    UNKNOWN(0,"未知"),
 
-    UNUSED(Byte.valueOf("1"),"空闲中"),
+    UNUSED(1,"空闲中"),
 
-    USING(Byte.valueOf("2"),"使用中"),
+    USING(2,"使用中"),
 
-    WAIT_MOVE(Byte.valueOf("3"),"待移动"),
+    WAIT_MOVE(3,"待移动"),
 
-    WAIT_REPAIR(Byte.valueOf("4"),"待维修"),
+    WAIT_REPAIR(4,"待维修"),
 
-    WAIT_SCRAP(Byte.valueOf("5"),"待报废");
+    WAIT_SCRAP(5,"待报废");
 
-    private byte code;
+    private int code;
     private String status;
 
-    public static BicycleStatusEnum getByCode(byte code){
+    public static BicycleStatusEnum getByCode(int code){
         if(code <= 0) return UNKNOWN;
         for (BicycleStatusEnum bicycleStatusEnum : values()) {
             if(code == bicycleStatusEnum.getCode()) return bicycleStatusEnum;

@@ -3,6 +3,7 @@ package com.zhd.controller;
 
 import com.baomidou.mybatisplus.plugins.Page;
 import com.zhd.convert.AreaConvert;
+import com.zhd.convert.JourneyConvert;
 import com.zhd.pojo.Area;
 import com.zhd.pojo.BaseModel;
 import com.zhd.pojo.JSONResponse;
@@ -25,26 +26,17 @@ import org.springframework.stereotype.Controller;
  * @since 2018-02-05
  */
 @RestController
-@RequestMapping("/journey")
+@RequestMapping("/journeys")
 public class JourneyController extends BaseController{
 
     @Autowired
     private IJourneyService journeyService;
 
-    @GetMapping("{id}")
-    public JSONResponse get(Journey record){
-        try{
-            return renderSuccess(journeyService.selectById(record.getId()));
-        }catch (Exception e){
-            return renderError(e.getMessage());
-        }
-    }
-
     @GetMapping("list/{current}")
     public JSONResponse list(@PathVariable("current") int pageNum, Page<Journey> page) {
         try {
             if(pageNum <= 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
-            return renderSuccess(journeyService.selectPage(page));
+            return renderSuccess(JourneyConvert.convertToVOPageIngo(journeyService.selectPage(page)));
         } catch (Exception e) {
             return renderError(e.getMessage());
         }

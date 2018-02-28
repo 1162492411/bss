@@ -13,18 +13,18 @@ import java.io.Serializable;
 @Getter
 public enum UserTypeEnum implements IEnum{
 
-    UNKNOWN(Byte.valueOf("0"),"未知用户"),
+    UNKNOWN(0,"未知用户"),
 
-    NORMAL(Byte.valueOf("1"),"普通用户"),
+    NORMAL(1,"普通用户"),
 
-    STAFF(Byte.valueOf("2"),"员工"),
+    STAFF(2,"员工"),
 
-    MANAGER(Byte.valueOf("3"),"管理员");
+    MANAGER(3,"管理员");
 
-    private byte code;
+    private int code;
     private String type;
 
-    public static UserTypeEnum getByCode(byte code){
+    public static UserTypeEnum getByCode(int code){
         if(code <= 0) return UNKNOWN;
         for (UserTypeEnum userTypeEnum : values()) {
             if(code == userTypeEnum.getCode()) return userTypeEnum;

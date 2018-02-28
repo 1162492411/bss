@@ -1,1 +1,0 @@
-INSERT INTO db_bss.journey (id, u_id, b_id, start_time, ride_time, distance, amount, end_time) VALUES (1, '13512341235', 2, '2017-10-20 15:04:42', 480, 1500, 0.50, '2017-10-20 15:12:42');

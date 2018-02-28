@@ -14,9 +14,9 @@ public enum UserStatusEnum implements IEnum{
 
     NORMAL(1,"正常"),
 
-    TEMP_BAN(2,"临时封禁"),
+    TEMP_BAN(2,"封禁");
 
-    DISABLED(3,"停用");
+//    DISABLED(3,"停用");
 
     private int code;
     private String status;

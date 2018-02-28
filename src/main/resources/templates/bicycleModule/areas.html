@@ -77,7 +77,7 @@ immediately after the control sidebar -->
                         <div class="box-body">
                             <!-- 编号 -->
                             <div class="form-group">
-                                <label for="add-area-modal-id" class="col-sm-3 control-label">编号</label>
+                                <label for="update-area-modal-id" class="col-sm-3 control-label">编号</label>
                                 <div class="col-sm-8">
                                     <input type="text" class="col-sm-10 form-control" id="update-area-modal-id" placeholder="编号" disabled="disabled" />
                                 </div>
@@ -87,6 +87,13 @@ immediately after the control sidebar -->
                                 <label for="update-area-modal-name" class="col-sm-3 control-label">区域名</label>
                                 <div class="col-sm-8">
                                     <input type="text" class="col-sm-10 form-control" id="update-area-modal-name" name="updateName" placeholder="区域名" />
+                                </div>
+                            </div>
+                            <!-- 区域类型 -->
+                            <div class="form-group">
+                                <label for="update-area-modal-type" class="col-sm-3 control-label">区域类型</label>
+                                <div class="col-sm-8">
+                                    <select class="col-sm-10 form-control" id="update-area-modal-type"></select>
                                 </div>
                             </div>
                             <!-- 区域最北部 -->
@@ -117,13 +124,7 @@ immediately after the control sidebar -->
                                     <input type="text" class="col-sm-10 form-control" id="update-area-modal-eastPoint" name="updateEastPoint" placeholder="区域最东部" />
                                 </div>
                             </div>
-                            <!-- 区域类型 -->
-                            <div class="form-group">
-                                <label for="update-area-modal-type" class="col-sm-3 control-label">区域类型</label>
-                                <div class="col-sm-8">
-                                    <select class="col-sm-10 form-control" id="update-area-modal-type"></select>
-                                </div>
-                            </div>
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">放弃</button>
@@ -158,6 +159,13 @@ immediately after the control sidebar -->
                                     <input type="text" class="col-sm-10 form-control" id="add-area-modal-name" name="addName" placeholder="区域名" />
                                 </div>
                             </div>
+                            <!-- 区域类型 -->
+                            <div class="form-group">
+                                <label for="add-area-modal-type" class="col-sm-3 control-label">区域类型</label>
+                                <div class="col-sm-8">
+                                    <select class="col-sm-10 form-control" id="add-area-modal-type"></select>
+                                </div>
+                            </div>
                             <!-- 区域最北部 -->
                             <div class="form-group">
                                 <label for="add-area-modal-northPoint" class="col-sm-3 control-label">区域最北部</label>
@@ -184,13 +192,6 @@ immediately after the control sidebar -->
                                 <label for="add-area-modal-eastPoint" class="col-sm-3 control-label">区域最东部</label>
                                 <div class="col-sm-8">
                                     <input type="text" class="col-sm-10 form-control" id="add-area-modal-eastPoint" name="addEastPoint" placeholder="区域最东部" />
-                                </div>
-                            </div>
-                            <!-- 区域类型 -->
-                            <div class="form-group">
-                                <label for="add-area-modal-type" class="col-sm-3 control-label">区域类型</label>
-                                <div class="col-sm-8">
-                                    <select class="col-sm-10 form-control" id="add-area-modal-type"></select>
                                 </div>
                             </div>
                         </div>
@@ -230,19 +231,23 @@ immediately after the control sidebar -->
                 addName: "required",
                 addNorthPoint: {
                     required : true,
-                    number : true
+                    number : true,
+                    range : [-180 , 180]
                 },
                 addSouthPoint: {
                     required : true,
-                    number : true
+                    number : true,
+                    range : [-180, 180]
                 },
                 addWestPoint: {
                     required : true,
-                    number : true
+                    number : true,
+                    range : [-180, 180]
                 },
                 addEastPoint: {
                     required : true,
-                    number : true
+                    number : true,
+                    range : [-180, 180]
                 }
             }
         });
@@ -251,19 +256,23 @@ immediately after the control sidebar -->
                 updateName: "required",
                 updateNorthPoint: {
                     required : true,
-                    number : true
+                    number : true,
+                    range : [-180, 180]
                 },
                 updateSouthPoint: {
                     required : true,
-                    number : true
+                    number : true,
+                    range : [-180 ,180]
                 },
                 updateWestPoint: {
                     required : true,
-                    number : true
+                    number : true,
+                    range : [-180, 180]
                 },
                 updateEastPoint: {
                     required : true,
-                    number : true
+                    number : true,
+                    range : [-180, 180]
                 }
             }
         });
