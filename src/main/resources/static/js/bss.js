@@ -93,6 +93,16 @@ function resetModal(div) {
 }
 
 /**
+ * 把单个对象放入数组
+ * @param data
+ */
+function castObjectToArray(data){
+    let array = new Array();
+    array.push(data);
+    return array;
+}
+
+/**
  * 生成表格
  * @param div 待操作的表格
  * @param data 待填充的数据
@@ -263,7 +273,7 @@ function internalLoadDatas(baseUrl, page, tableDiv, pagDiv, methods, reloadMetho
         url: baseUrl + "/" + page,
         async: false,
         success: function (data) {
-            if(data.code == successCode){
+            if(data.code == Codes.successResponse){
                 generateTable(tableDiv, data.result, methods);
                 initPag(data.result.current, data.result.pages, pagDiv, reloadMethod);
             }
@@ -305,7 +315,7 @@ function internalDeleteData(div, id, sendUrl) {
             data: JSON.stringify(sendData),
             contentType: 'application/json',
             success: function (data) {
-                if (data.code == successCode) {
+                if (data.code == Codes.successResponse) {
                     window.location.reload();
                 }
                 else{
@@ -339,7 +349,7 @@ function internalAddData(pojo, sendUrl) {
             data: JSON.stringify(sendData),
             contentType: 'application/json',
             success: function (data) {
-                if (data.code == successCode) {
+                if (data.code == Codes.successResponse) {
                     $("#add-" + pojo + "-modal").modal("hide");
                     window.location.reload();
                 }
@@ -371,7 +381,7 @@ function internalUpdateData(pojo, sendUrl) {
             data: JSON.stringify(sendData),
             contentType: 'application/json',
             success: function (data) {
-                if (data.code == successCode) {
+                if (data.code == Codes.successResponse) {
                     window.location.reload();
                 }
                 else{
@@ -390,8 +400,17 @@ function internalUpdateData(pojo, sendUrl) {
 function initSelection(div, data) {
     let $div = $("#" + div);
     let str = "";
-    for (let i = 1; i < data.length; i++)
-        str += "<option value='" + data[i].id + "'>" + data[i].name + "</option>";
+    if(checkDataEmpty(data) || !data instanceof Array) {
+        str = emptyDataValue;
+    } else{
+        if(data.length == 1){
+            str += "<option value='" + data[0].id + "'>" + data[0].name + "</option>";
+        }else{
+            for (let i = 1; i < data.length; i++) {
+                str += "<option value='" + data[i].id + "'>" + data[i].name + "</option>";
+            }
+        }
+    }
     $div.append(str);
 }
 
@@ -627,6 +646,8 @@ function loadBicycles(page) {
     $("#bicycleTableBody").find("[id$='investmentTime']").each(function () {
         formatDateTime($(this).attr("id"));
     });
+    initSelection("add-bicycle-modal-type",allBicycleType);
+    initBicycleSupplier();
 }
 
 /**
@@ -640,11 +661,11 @@ function loadMoveBicycle(data) {
 }
 
 /**
- * 加载维修车辆函数
+ * 加载修理车辆函数
  * @param data 车辆的信息
  */
 function loadRepairBicycle(data){
-    if(checkBicycleStatus("维修", data.status)){
+    if(checkBicycleStatus("修理", data.status)){
         repairBicycle(data.id);
     }
 }
@@ -684,7 +705,7 @@ function initBicycleSupplier(){
         url: allSuppliersPath,
         sync : false,
         success: function(data) {
-            if(data.code == successCode && !checkDataEmpty(data))
+            if(data.code == Codes.successResponse && !checkDataEmpty(data))
                 initSelection("add-bicycle-modal-supplier",data.result);
         }
     });
@@ -696,16 +717,14 @@ function initBicycleSupplier(){
  * @param status 车辆状态
  * @returns {boolean}
  */
-//todo : 该方法仍然需要修改确认
 function checkBicycleStatus(type,status){
-    let checkResult = true;
-
-    if(type === "移动" && status !== "待移动") checkResult = false;//不可以移动待维修或待报废的车辆
-    if(type === "维修" && status === "待报废") checkResult = false;//不可以维修待报废的车辆
-
-    if(status === "使用中") checkResult = false;//不可以操作使用中的车辆
-    if(status === "空闲中") checkResult = true;
-
+    let checkResult = false;
+    if(type === "删除" && status === "待删除") {
+        checkResult = true;
+    }
+    if(status === "空闲中"){
+        checkResult = true;
+    }
     if(!checkResult){
         alert("无法执行操作");
     }
@@ -736,8 +755,10 @@ function initTaskUser(type){
         url: allStaffsPath,
         sync : false,
         success: function(data) {
-            if(data.code == successCode && !checkDataEmpty(data.result))
+            if(data.code == Codes.successResponse && !checkDataEmpty(data.result)){
+                $("#" + type + "-task-modal-user").append("<option value='" + emptyStaff.id + "'>" + emptyStaff.name + "</option>");
                 initSelection(type + "-task-modal-user",data.result);
+            }
         }
     });
 }
@@ -763,7 +784,7 @@ function loadSimpleBicycles() {
                     let status = "";
                     status = allBicycleStatus[result[i].status].name;
                     content.push("状态 : " + status);
-                    content.push("操作 : <button class='Button Button--blue' onclick='moveBicycle(" + result[i].id + ")'>移动</button> <button class=' Button Button--blue' onclick='repairBicycle(" + result[i].id + ")'>维修</button> <button class='Button Button--blue' onclick='scrapeBicycle(" + result[i].id + ")'>报废</button>");
+                    content.push("操作 : <button class='Button Button--blue' onclick='moveBicycle(" + result[i] + ")'>移动</button> <button class=' Button Button--blue' onclick='repairBicycle(" + result[i] + ")'>修理</button> <button class='Button Button--blue' onclick='scrapeBicycle(" + result[i] + ")'>报废</button>");
                     let infoWindow = new AMap.InfoWindow({
                         isCustom: true,  //使用自定义窗体
                         content: createInfoWindow(title, content.join("<br/>")),
@@ -815,26 +836,35 @@ function closeInfoWindow() {
 
 /**
  * 移动车辆
- * @param id 车辆编号
+ * @param data 车辆信息
  */
-function moveBicycle(id) {
-    initAddTaskModal(1, id);
+function moveBicycle(data) {
+    data.type = "移动";
+    if(checkBicycleStatus(data.type,data.status)){
+        initAddTaskModal(data);
+    }
 }
 
 /**
- * 维修车辆
- * @param id 车辆编号
+ * 修理车辆
+ * @param data 车辆信息
  */
-function repairBicycle(id) {
-    initAddTaskModal(2, id);
+function repairBicycle(data) {
+    data.type = "修理";
+    if(checkBicycleStatus(data.type,data.status)){
+        initAddTaskModal(data);
+    }
 }
 
 /**
  * 报废车辆
- * @param id 车辆编号
+ * @param data 车辆信息
  */
-function scrapeBicycle(id) {
-    initAddTaskModal(3, id);
+function scrapeBicycle(data) {
+    data.type = "报废";
+    if(checkBicycleStatus(data.type,data.status)){
+        initAddTaskModal(data);
+    }
 }
 
 /**
@@ -861,12 +891,7 @@ function dispatchTask(data){
         if (modalCount===0) {
             $("#update-task-modal-id").val(data.id);
             $("#update-task-modal-name").val(data.name);
-            switch(data.type){
-                case "移动" : $("#update-task-modal-type").append("<option value='1'>移动</option>"); break;
-                case "修理" : $("#update-task-modal-type").append("<option value='2'>修理</option>"); break;
-                case "报废" : $("#update-task-modal-type").append("<option value='3'>报废</option>"); break;
-                default : $("#update-task-modal-type").append("<option value='0'>未知</option>"); break;
-            }
+            initSelection("update-task-modal-type", castObjectToArray(allTaskType.find((element) => (element.name == data.type))));
             initTaskUser("update");
             $("#update-task-modal-bicycle").val(data.bicycle);
             modalCount++;
@@ -884,14 +909,14 @@ function doDispatchTask(){
  * @param data 传入的任务数据
  */
 function doneTask(data) {
-    let sendData = {"id": data.id, "status": 3};
+    let sendData = {"id": data.id, "type" : allTaskType.find((element) => (element.name == data.type)).id, "bicycle" : data.bicycle};
     $.ajax({
         type: 'POST',
         url: taskPath + "/done",
         data: JSON.stringify(sendData),
         contentType: 'application/json',
         success: function (data) {
-            if (data.code == successCode) {
+            if (data.code == Codes.successResponse) {
                 window.location.reload();
             }
             else{
@@ -917,39 +942,22 @@ function addTask() {
 
 /**
  * 显示车辆分布页面的添加任务模态框
- * @param type 任务类型
- * @param bicycle 车辆编号
+ * @param data 车辆信息
  */
-function initAddTaskModal(type, bicycle) {
+function initAddTaskModal(data) {
     let $modal = $("#add-task-modal");
     resetModal("add-task-modal");
     initTaskUser("add");
     let modalCount = 0;
     $modal.on('show.bs.modal', function () {
         if (modalCount===0) {
-            let typeStr = "";
-            switch (type) {
-                case 1 :
-                    typeStr = "<option value='1'>移动</option>";
-                    break;
-                case 2 :
-                    typeStr = "<option value='2'>维修</option>";
-                    break;
-                case 3 :
-                    typeStr = "<option value='3'>报废</option>";
-                    break;
-                default :
-                    typeStr = "<option>请重新选择合适的任务类型</option>";
-                    break;
-            }
-            $("#add-task-modal-type").append(typeStr);
-            $("#add-task-modal-bicycle").val(bicycle);
+            initSelection("add-task-modal-type", castObjectToArray(allTaskType.find((element) => (element.name == data.type))));
+            $("#add-task-modal-bicycle").val(data.id);
             modalCount++;
         }
     });
     $modal.modal("show");
 }
-
 
 
 

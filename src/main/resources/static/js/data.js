@@ -3,7 +3,19 @@
  */
 /*-----------------全局变量---------------*/
 const emptyDataValue = "-";//数据为空时显示的字符内容
-const successCode = 1;
+const Codes = {
+    "successResponse" : 1,
+    "task" : {
+        "waitSomeOne" : 1,
+        "waitComplete" : 2,
+        "done" : 3
+    }
+};//常量
+
+const emptyStaff = {
+    "id" : "",
+    "name" : "暂不设置"
+};
 
 const userMethods = [
     {"name": "更新", "method": "updateUser"},
@@ -19,9 +31,9 @@ const supplierMethods = [
     {"name": "删除", "method": "deleteSupplier"}
 ];//供应商管理的方法
 const bicycleMethods = [
-    {"name": "移动", "method": "loadMoveBicycle"},
-    {"name": "维修", "method": "loadRepairBicycle"},
-    {"name": "报废", "method": "loadScrapeBicycle"},
+    {"name": "移动", "method": "moveBicycle"},
+    {"name": "修理", "method": "repairBicycle"},
+    {"name": "报废", "method": "scrapeBicycle"},
     {"name": "删除", "method": "deleteBicycle"}
 ];//车辆管理的方法
 const taskMethods = [
@@ -72,10 +84,9 @@ const allAreaType = [
 
 const allTaskType = [
     {"id" : 0, "name" : "未知", "class" : "danger"},
-    {"id" : 1, "name" : "投放", "class" : ""},
-    {"id" : 2, "name" : "移动", "class" : ""},
-    {"id" : 3, "name" : "维修" , "class" : "warning"},
-    {"id" : 4, "name" : "报废", "class" : "danger"}
+    {"id" : 1, "name" : "移动", "class" : ""},
+    {"id" : 2, "name" : "修理" , "class" : "warning"},
+    {"id" : 3, "name" : "报废", "class" : "danger"}
 ];//所有任务类型信息
 
 const allTaskStatus = [
@@ -84,3 +95,5 @@ const allTaskStatus = [
     {"id" : 2, "name" : "待执行", "class" : ""},
     {"id" : 3, "name" : "已完成", "class" : "info"}
 ];//所有任务状态信息
+
+

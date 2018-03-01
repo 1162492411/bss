@@ -5,7 +5,9 @@ import com.alibaba.fastjson.util.TypeUtils;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.zhd.convert.TaskConvert;
+import com.zhd.enums.BicycleStatusEnum;
 import com.zhd.enums.TaskStatusEnum;
+import com.zhd.enums.TaskTypeEnum;
 import com.zhd.pojo.Bicycle;
 import com.zhd.pojo.JSONResponse;
 import com.zhd.pojo.Task;
@@ -57,14 +59,15 @@ public class TaskController extends BaseController {
                 return renderError(bindingResult.getFieldError().getDefaultMessage());
             } else {
                 record.setStartTime(TypeUtils.castToString(System.currentTimeMillis()));
-                if (StringUtils.isNotEmpty(record.getUser())) {
+                if(StringUtils.isBlank(record.getName())){
+                    record.setName(TaskTypeEnum.getByCode(record.getType()).toString() + record.getBicycle());
+                }
+                if (StringUtils.isNotBlank(record.getUser())) {
                     record.setStatus(TaskStatusEnum.WAIT_COMPLETE.getCode());
                 } else {
                     record.setStatus(TaskStatusEnum.WAIT_SOMEONE.getCode());
                 }
-                bicycleService.updateById(Bicycle.builder().id(record.getBicycle()).status(calculateBicycleStatusAfterInsertTask(record.getType())).build());
-
-
+                bicycleService.updateById(Bicycle.builder().id(record.getBicycle()).status(calculateStatusAfterInsert(record.getType())).build());
                 return taskService.insert(record) ? renderSuccess(record) : renderError();
             }
         } catch (Exception e) {
@@ -73,15 +76,15 @@ public class TaskController extends BaseController {
     }
 
     @PutMapping
-    public JSONResponse update(@RequestBody @Validated(Task.Update.class) Task record, BindingResult bindingResult, HttpSession session) {
+    public JSONResponse dispatch(@RequestBody @Validated(Task.Update.class) Task record, BindingResult bindingResult, HttpSession session) {
         System.out.println("received-->" + record);
         try {
-            if (bindingResult.hasErrors()) {
+            if (bindingResult.hasErrors() || StringUtils.isBlank(record.getUser())) {
                 return renderError(bindingResult.getFieldError().getDefaultMessage());
             } else {
+                record.setStatus(TaskStatusEnum.WAIT_COMPLETE.getCode());
                 String currentUserId = String.valueOf(session.getAttribute("userid"));
                 if (StringUtils.isNotEmpty(currentUserId) && (userService.isAdmin(currentUserId) || currentUserId.equals(taskService.selectById(record.getId()).getUser()))) {
-                    record.setStartTime(TypeUtils.castToString(System.currentTimeMillis()));
                     return taskService.updateById(record) ? renderSuccess(record) : renderError(Constants.UNKNOWN_EXCEPTION);
                 } else {
                     return renderError(Constants.TIP_NO_PERMISSION);
@@ -101,6 +104,8 @@ public class TaskController extends BaseController {
                 String currentUserId = String.valueOf(session.getAttribute("userid"));
                 if (StringUtils.isNotEmpty(currentUserId) && (userService.isAdmin(currentUserId) || currentUserId.equals(taskService.selectById(record.getId()).getUser()))) {
                     record.setEndTime(TypeUtils.castToString(System.currentTimeMillis()));
+                    record.setStatus(TaskStatusEnum.DONE.getCode());
+                    bicycleService.updateById(Bicycle.builder().id(record.getBicycle()).status(calculateStatusAfterDone(record.getType())).build());
                     return taskService.updateById(record) ? renderSuccess(record) : renderError(Constants.UNKNOWN_EXCEPTION);
                 } else {
                     return renderError(Constants.TIP_NO_PERMISSION);
@@ -119,9 +124,9 @@ public class TaskController extends BaseController {
             } else if ((record = taskService.selectById(record.getId())) != null) {
                 String currentUserId = String.valueOf(session.getAttribute("userid"));
                 if (StringUtils.isNotEmpty(currentUserId) && userService.isAdmin(currentUserId)) {
-                    return taskService.deleteById(record.getId()) ? renderSuccess(record) : renderError();
+                    return taskService.deleteById(record.getId()) ? renderSuccess(record) : renderError(Constants.UNKNOWN_EXCEPTION);
                 } else {
-                    return renderError(Constants.UNKNOWN_EXCEPTION);
+                    return renderError(Constants.TIP_NO_PERMISSION);
                 }
             } else {
                 return renderError(Constants.TIP_EMPTY_DATA);
@@ -133,30 +138,27 @@ public class TaskController extends BaseController {
 
     /**
      * 根据任务类型返回车辆状态
+     *
      * @param type 任务的类型
      * @return 车辆的状态
      */
-    private int calculateBicycleStatusAfterInsertTask(int type){
-        switch(type){
-            case 1 : return 3;
-            case 2 : return 4;
-            case 3 : return 5;
-            default : return 0;
-        }
+    private int calculateStatusAfterInsert(int type) {
+        if (type == TaskTypeEnum.MOVE.getCode()) return BicycleStatusEnum.WAIT_MOVE.getCode();
+        else if (type == TaskTypeEnum.REPAIR.getCode()) return BicycleStatusEnum.WAIT_REPAIR.getCode();
+        else if (type == TaskTypeEnum.DISABLE.getCode()) return BicycleStatusEnum.WAIT_SCRAP.getCode();
+        else return BicycleStatusEnum.UNKNOWN.getCode();
     }
 
     /**
      * 完成任务后计算车辆状态
+     *
      * @param type 任务待类型
      * @return 车辆的状态
      */
-    private int calculateBicycleStatusAfterDoneTask(int type){
-//        switch(type){
-//
-//        }
-        return 0;
+    private int calculateStatusAfterDone(int type) {
+        if (type == TaskTypeEnum.DISABLE.getCode()) return BicycleStatusEnum.WAIT_DELETE.getCode();
+        else return BicycleStatusEnum.UNUSED.getCode();
     }
-
 
 
 }

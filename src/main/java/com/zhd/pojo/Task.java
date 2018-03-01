@@ -1,6 +1,8 @@
 package com.zhd.pojo;
 
 import com.baomidou.mybatisplus.enums.IdType;
+
+import java.util.ArrayList;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
@@ -12,6 +14,8 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.TreeMap;
 
 /**
  * <p>
@@ -38,23 +42,21 @@ public class Task implements Serializable,BaseModel {
     /**
      * 任务名称
      */
-    @NotBlank(groups = {Insert.class})
     private String name;
     /**
      * 任务类型
      */
-    @NotNull(groups = {Insert.class})
+    @NotNull(groups = {Insert.class, Update.class})
     private Integer type;
     /**
      * 任务处理人
      */
-    @NotBlank(groups = {Insert.class})
     private String user;
     /**
      * 任务状态
      */
-    @NotNull(groups = {Update.class})
     private Integer status;
+
     /**
      * 任务开始时间
      */
@@ -70,7 +72,7 @@ public class Task implements Serializable,BaseModel {
     /**
      * 车辆编号
      */
-    @NotNull(groups = {Insert.class})
+    @NotNull(groups = {Insert.class, Update.class})
     private Integer bicycle;
 
 }

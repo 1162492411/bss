@@ -83,7 +83,7 @@ immediately after the control sidebar -->
                             <div class="form-group">
                                 <label for="update-task-modal-name" class="col-sm-3 control-label">任务名</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="update-task-modal-name" name="taskName" placeholder="任务名" />
+                                    <input type="text" class="form-control" id="update-task-modal-name" name="taskName" placeholder="任务名" disabled="disabled"/>
                                 </div>
                             </div>
                             <!-- 类别 -->
@@ -94,7 +94,7 @@ immediately after the control sidebar -->
                                 </div>
                             </div>
                             <!-- 状态 -->
-                            <input type="hidden" id="update-task-modal-status" value="2"/>
+
                             <!-- 操作人 -->
                             <div class="form-group">
                                 <label for="update-task-modal-user" class="col-sm-3 control-label">操作人</label>
@@ -132,6 +132,8 @@ immediately after the control sidebar -->
 <script th:src="@{/static/js/data.js}"></script>
 <script th:src="@{/static/js/bss.js}"></script>
 <script type="text/javascript">
+    //todo : 各按钮点击前后的校验
+    //bug : 分配任务时传到后台的user为空
     $(document).ready(function () {
         loadTasks(1);
         $("#update-task-form").validate({
@@ -147,3 +149,5 @@ immediately after the control sidebar -->
 </script>
 </body>
 </html>
+
+

@@ -133,8 +133,6 @@ immediately after the control sidebar -->
                 <div class="modal-body">
                     <form class="form-horizontal" >
                         <div class="box-body">
-                            <!-- 编号 -->
-                            <!--<input type="hidden" id="add-task-modal-id" />-->
                             <!-- 任务名 -->
                             <div class="form-group">
                                 <label for="add-task-modal-name" class="col-sm-3 control-label">任务名</label>
@@ -146,8 +144,7 @@ immediately after the control sidebar -->
                             <div class="form-group">
                                 <label for="add-task-modal-type" class="col-sm-3 control-label">类别</label>
                                 <div class="col-sm-9">
-                                    <select class="form-control" id="add-task-modal-type" disabled="disabled">
-                                    </select>
+                                    <select class="form-control" id="add-task-modal-type" disabled="disabled"></select>
                                 </div>
                             </div>
                             <!-- 状态 -->
@@ -191,8 +188,6 @@ immediately after the control sidebar -->
 <script type="text/javascript">
     $(document).ready(function () {
         loadBicycles(1);
-        initSelection("add-bicycle-modal-type",allBicycleType);
-        initBicycleSupplier();
         $("#add-bicycle-form").validate({
             rules :{
                 addBatch : "required"
