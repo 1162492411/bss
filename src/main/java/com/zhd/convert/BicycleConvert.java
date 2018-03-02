@@ -65,6 +65,18 @@ public class BicycleConvert {
         return resultPage;
     }
 
+    public static List convertSimple(List<Bicycle> bicycleList) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        if(CollectionUtils.isEmpty(bicycleList)) throw new NullPointerException(Constants.TIP_EMPTY_DATA);
+        List<Map> resultList = new ArrayList<>();
+        for (Bicycle bicycle : bicycleList) {
+            Map map = BeanUtils.describe(bicycle);
+            map.remove("class");
+            map.put("status", BicycleStatusEnum.getByCode(bicycle.getStatus()));
+            resultList.add(map);
+        }
+        return resultList;
+    }
+
 
 
 //todo:若某字段值为空，是不返回该字段给前台还是返回空值给前台

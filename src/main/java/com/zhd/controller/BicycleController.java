@@ -44,6 +44,16 @@ public class BicycleController extends BaseController{
     @Autowired
     private IAreaService areaService;
 
+    @GetMapping("all")
+    public JSONResponse all(){
+        try{
+            return renderSuccess(BicycleConvert.convertSimple(bicycleService.selectAllSimple()));
+//            return renderSuccess(bicycleService.selectAllSimple());
+        }catch (Exception e){
+            return renderError(e.getMessage());
+        }
+    }
+
     @GetMapping("list/{current}")
     public JSONResponse list(@PathVariable("current") Integer pageNum, Page<Bicycle> page) {
         try {

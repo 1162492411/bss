@@ -1,5 +1,6 @@
 package com.zhd.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.zhd.enums.BicycleStatusEnum;
 import com.zhd.mapper.SupplierMapper;
 import com.zhd.pojo.Bicycle;
@@ -10,6 +11,8 @@ import com.zhd.service.IBicycleService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -50,5 +53,11 @@ public class BicycleServiceImpl extends ServiceImpl<BicycleMapper, Bicycle> impl
         BicycleSupplier bicycleSupplier = bicycleMapper.selectBicycleSupplier(batch);
         bicycleSupplier.setSupplierList(supplierMapper.selectSuppliersByBatch(batch));
         return bicycleSupplier;
+    }
+
+
+    @Override
+    public List<Bicycle> selectAllSimple() {
+        return bicycleMapper.selectList(new EntityWrapper<Bicycle>().setSqlSelect("id,status,location_x,location_y"));
     }
 }

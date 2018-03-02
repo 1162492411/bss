@@ -166,12 +166,10 @@ immediately after the control sidebar -->
 <script type="text/javascript" th:src="@{/static/js/addToolbar.js}"></script>
 <script th:src="@{http://webapi.amap.com/maps?v=1.4.0&amp;key=06c804ecdb67c6ace2638c173c526a43}"></script>
 <script>
-    var map = new AMap.Map('container', {
-        resizeEnable: true,
-        zoom:11,
-        center: [113.50927,34.810942]
-    });
+    $(document).ready(function () {
+
     loadSimpleBicycles();
+    });
 </script>
 </body>
 </html>

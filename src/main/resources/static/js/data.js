@@ -17,6 +17,7 @@ const emptyStaff = {
     "name" : "暂不设置"
 };
 
+
 const userMethods = [
     {"name": "更新", "method": "updateUser"},
     {"name": "封禁", "method": "blockUser"},
@@ -66,13 +67,13 @@ const allBicycleType = [
 ];//所有车辆类型信息
 
 const allBicycleStatus = [
-    {"id" : 0, "name" : "未知", "class" : "danger"},
-    {"id" : 1, "name" : "空闲中", "class" : ""},
-    {"id" : 2, "name" : "使用中", "class" : "info"},
-    {"id" : 3, "name" : "待移动", "class" : "warning"},
-    {"id" : 4, "name" : "待维修", "class" : "danger"},
-    {"id" : 5, "name" : "待报废", "class" : "danger"},
-    {"id" : 6, "name" : "待删除", "class" : "danger"}
+    {"id" : 0, "name" : "未知", "class" : "danger", "icon" : "http://ocgfh1n3q.bkt.clouddn.com/coor_danger.png" },
+    {"id" : 1, "name" : "空闲中", "class" : "default", "icon" : "http://ocgfh1n3q.bkt.clouddn.com/coor_default.png"},
+    {"id" : 2, "name" : "使用中", "class" : "info", "icon" : "http://ocgfh1n3q.bkt.clouddn.com/coor_info.png"},
+    {"id" : 3, "name" : "待移动", "class" : "warning", "icon" : "http://ocgfh1n3q.bkt.clouddn.com/coor_warning.png"},
+    {"id" : 4, "name" : "待维修", "class" : "danger", "icon" : "http://ocgfh1n3q.bkt.clouddn.com/coor_danger.png"},
+    {"id" : 5, "name" : "待报废", "class" : "danger", "icon" : "http://ocgfh1n3q.bkt.clouddn.com/coor_danger.png"},
+    {"id" : 6, "name" : "待删除", "class" : "danger", "icon" : "http://ocgfh1n3q.bkt.clouddn.com/coor_danger.png"}
 ];//所有车辆状态信息
 
 const allAreaType = [

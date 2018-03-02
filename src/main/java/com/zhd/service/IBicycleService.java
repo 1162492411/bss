@@ -1,9 +1,10 @@
 package com.zhd.service;
 
-import com.zhd.exceptions.NoSuchBicycleException;
 import com.zhd.pojo.Bicycle;
 import com.baomidou.mybatisplus.service.IService;
 import com.zhd.pojo.BicycleSupplier;
+
+import java.util.List;
 
 /**
  * <p>
@@ -22,5 +23,7 @@ public interface IBicycleService extends IService<Bicycle> {
     void insertBicycleSupplier(BicycleSupplier bicycleSupplier);
 
     BicycleSupplier selectBicycleSupplier(String batch);
+
+    List<Bicycle> selectAllSimple();//查看所有车辆简略信息
 
 }

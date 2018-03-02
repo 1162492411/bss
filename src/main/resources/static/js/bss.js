@@ -19,18 +19,18 @@ Date.prototype.format = function (format) {
 /**
  * 扩展jquery Validation,除去每个输入框的空格
  */
-(function ($) {
-
-    $.each($.validator.methods, function (key, value) {
-        $.validator.methods[key] = function () {
-            if(arguments.length > 0) {
-                arguments[0] = $.trim(arguments[0]);
-            }
-
-            return value.apply(this, arguments);
-        };
-    });
-} (jQuery));
+// (function ($) {
+//
+//     $.each($.validator.methods, function (key, value) {
+//         $.validator.methods[key] = function () {
+//             if(arguments.length > 0) {
+//                 arguments[0] = $.trim(arguments[0]);
+//             }
+//
+//             return value.apply(this, arguments);
+//         };
+//     });
+// } (jQuery));
 
 /*---------------公共函数----------------*/
 /**
@@ -718,6 +718,7 @@ function initBicycleSupplier(){
  * @returns {boolean}
  */
 function checkBicycleStatus(type,status){
+    alert("type-->" + type + ", status-->" + status);
     let checkResult = false;
     if(type === "删除" && status === "待删除") {
         checkResult = true;
@@ -767,33 +768,46 @@ function initTaskUser(type){
  * 加载所有车辆的位置信息
  */
 function loadSimpleBicycles() {
+    const map = new AMap.Map('container', {
+        resizeEnable: true,
+        zoom:11,
+        center: [113.50927,34.810942]
+    });
     $.ajax({
         type: 'GET',
         url: allBicyclesPath,
         contentType: 'application/json',
         success: function (data) {
-            if (!checkDataEmpty(data.datas)) {
-                let result = data.datas;
-                for (let i = 0; i < result.length; i++) {
+            if (data.code == Codes.successResponse && !checkDataEmpty(data.result)) {
+                let result = data.result;
+                var cluster, markers = [];
+                var map = new AMap.Map("container", {
+                    resizeEnable: true,
+                    center:[105,34],
+                    zoom: 4
+                });
+                for(let i=0;i<result.length;i+=1){
                     let marker = new AMap.Marker({
-                        map: map,
-                        position: [result[i].locationX, result[i].locationY]
-                    });
-                    let title = "车辆信息", content = [];
-                    content.push("编号 : " + result[i].id);
-                    let status = "";
-                    status = allBicycleStatus[result[i].status].name;
-                    content.push("状态 : " + status);
-                    content.push("操作 : <button class='Button Button--blue' onclick='moveBicycle(" + result[i] + ")'>移动</button> <button class=' Button Button--blue' onclick='repairBicycle(" + result[i] + ")'>修理</button> <button class='Button Button--blue' onclick='scrapeBicycle(" + result[i] + ")'>报废</button>");
-                    let infoWindow = new AMap.InfoWindow({
-                        isCustom: true,  //使用自定义窗体
-                        content: createInfoWindow(title, content.join("<br/>")),
-                        offset: new AMap.Pixel(0, -30)
-                    });
-                    marker.on('click', function () {
-                        infoWindow.open(map, marker.getPosition());
-                    })
+                                position : [result[i].locationX, result[i].locationY],
+                                icon : allBicycleStatus.find((element) => (element.name == result[i].status)).icon
+                            });
+                        let title = "车辆信息", content = [];
+                        content.push("编号 : " + result[i].id);
+                        content.push("状态 : " + result[i].status);
+                        let infoWindow = new AMap.InfoWindow({
+                            isCustom: true,
+                            content: createInfoWindow(title, content.join("<br/>")),
+                            offset: new AMap.Pixel(0, -30)
+                        });
+                        marker.on('click', function () {
+                            infoWindow.open(map, marker.getPosition());
+                        });
+                        if(result[i].status === "使用中") marker.setAnimation('AMAP_ANIMATION_BOUNCE');
+                        markers.push(marker);
                 }
+                map.plugin(["AMap.MarkerClusterer"],function() {
+                    cluster = new AMap.MarkerClusterer(map,markers);
+                });
             }
         }
     });

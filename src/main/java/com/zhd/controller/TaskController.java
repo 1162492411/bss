@@ -77,7 +77,6 @@ public class TaskController extends BaseController {
 
     @PutMapping
     public JSONResponse dispatch(@RequestBody @Validated(Task.Update.class) Task record, BindingResult bindingResult, HttpSession session) {
-        System.out.println("received-->" + record);
         try {
             if (bindingResult.hasErrors() || StringUtils.isBlank(record.getUser())) {
                 return renderError(bindingResult.getFieldError().getDefaultMessage());
