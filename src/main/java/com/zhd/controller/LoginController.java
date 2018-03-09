@@ -36,6 +36,11 @@ public class LoginController {
             return "login";
     }
 
+    /**
+     * 用户注销
+     * @param session HTTP请求中包含的Session
+     * @return 登录页面
+     */
     @RequestMapping(value = "logout", method = RequestMethod.GET)
     public String logout(HttpSession session){
         if(session.getAttribute("userid") != null) session.removeAttribute("userid");

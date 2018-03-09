@@ -13,6 +13,7 @@ import com.zhd.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -59,4 +60,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public List<User> getAllStaff() {
         return userMapper.selectList(new EntityWrapper<User>().setSqlSelect("id,name").eq("type",UserTypeEnum.STAFF.getCode()).eq("status",UserStatusEnum.NORMAL.getCode()));
     }
+
+    @Override
+    public boolean rechargeAccount(String id, BigDecimal amount) {
+        return userMapper.rechargeAccount(id,amount) > 0;
+    }
+
+    @Override
+    public boolean rechargeDeposit(String id, BigDecimal amount) {
+        return userMapper.rechargeDeposit(id, amount) > 0;
+    }
+
+    @Override
+    public boolean refundDeposit(String id, BigDecimal amount) {
+        return userMapper.refundDeposit(id, amount) > 0;
+    }
 }
+
+

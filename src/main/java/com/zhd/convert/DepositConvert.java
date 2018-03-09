@@ -1,16 +1,13 @@
 package com.zhd.convert;
 
 import com.baomidou.mybatisplus.plugins.Page;
-import com.zhd.enums.DepositStatusEnum;
 import com.zhd.enums.DepositTypeEnum;
-import com.zhd.pojo.Area;
 import com.zhd.pojo.Deposit;
 import com.zhd.pojo.PageInfo;
 import com.zhd.util.Constants;
 import com.zhd.util.PageUtil;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +31,6 @@ public class DepositConvert {
         Map map = BeanUtils.describe(deposit);
         map.remove("class");
         map.put("type", DepositTypeEnum.getByCode(deposit.getType()));
-        map.put("status", DepositStatusEnum.getByCode(deposit.getStatus()));
         return map;
     }
 

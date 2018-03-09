@@ -10,6 +10,9 @@ spring:
   aop:
     auto: true
     proxy-target-class: false
+  http:
+    encoding:
+      force: true
 
 ## mybatis-plus
 mybatis-plus:

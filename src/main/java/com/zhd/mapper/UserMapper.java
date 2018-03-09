@@ -4,6 +4,10 @@ import com.zhd.pojo.User;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+
+import javax.annotation.security.PermitAll;
+import java.math.BigDecimal;
 
 /**
  * <p>
@@ -14,5 +18,14 @@ import org.apache.ibatis.annotations.Select;
  * @since 2018-02-05
  */
 public interface UserMapper extends BaseMapper<User> {
+
+    @Update("update user set account_balance = account_balance + ${amount} where id = ${uid}")
+    Integer rechargeAccount(@Param("uid") String id, @Param("amount") BigDecimal amount);
+
+    @Update("update user set deposit_balance = deposit_balance + ${amount} where id = ${uid}")
+    Integer rechargeDeposit(@Param("uid")String id, @Param("amount") BigDecimal amount);
+
+    @Update("update user set deposit_balance = deposit_balance - ${amount} where id = ${uid}")
+    Integer refundDeposit(@Param("uid")String id, @Param("amount") BigDecimal amount);
 
 }

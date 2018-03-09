@@ -24,7 +24,8 @@ public class ConsumptionUtil {
     public static BigDecimal calculate(String rideTime, int areaType, String monthlyTime) throws RideTimeOutException, BanAreaException {
         long time = Long.parseLong(rideTime);
         if(time < 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
-        int minutes = Math.round(time / 1000 / 60);//format rideTime
+//        int minutes =  Math.round(time / 1000 / 60);//format rideTime
+        int minutes =  Math.round(time / 1000 / 60);//format rideTime
         double originalAmount = calcuteByRideTime(minutes);
 
         if(Long.parseLong(monthlyTime) > System.currentTimeMillis() && minutes <= 120) return BigDecimal.ZERO;

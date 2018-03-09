@@ -5,6 +5,7 @@ import com.zhd.exceptions.NoSuchUserException;
 import com.zhd.pojo.User;
 import com.baomidou.mybatisplus.service.IService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -26,5 +27,11 @@ public interface IUserService extends IService<User> {
     User findUser(String id) throws NoSuchUserException;//查找用户
 
     List<User> getAllStaff();
+
+    boolean rechargeAccount(String id, BigDecimal amount);//用户充值账户余额
+
+    boolean rechargeDeposit(String id, BigDecimal amount);//用户充值押金
+
+    boolean refundDeposit(String id, BigDecimal amount);//用户退还押金
 
 }

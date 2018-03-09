@@ -14,6 +14,8 @@ public class Constants {
 
     public static final String ILLEGAL_ARGUMENTS = "参数错误";
 
+    public static final String DB_EXCEPTION = "数据库出现异常";
+
     public static final String UNKNOWN_EXCEPTION = "未知异常";
 
     //user
@@ -49,7 +51,12 @@ public class Constants {
     public static final String[] TASK_KEYS = {"id","name","user","bicycle","type","status"};
     public static final String[] TASK_NAMES = {"任务编号","任务名","处理人","车辆","类型","状态"};
 
+    //rechargeAccount
+    public static final String[] RECHARGE_KEYS = {"id","userId","type","rechargeTime","amount","payId","payStatus"};
+    public static final String[] RECHARGE_NAMES = {"记录编号","账户","渠道","时间","金额","订单号","充值结果"};
 
-
+    //deposit
+    public static final String TIP_ENOUGH_DEPOSIT = "已缴纳过押金";
+    public static final String TIP_NO_DEPOSIT = "未缴纳押金";
 
 }

@@ -7,15 +7,13 @@
         <id column="id" property="id" />
         <result column="amount" property="amount" />
         <result column="type" property="type" />
-        <result column="u_id" property="uId" />
-        <result column="status" property="status" />
-        <result column="start_time" property="startTime" />
-        <result column="end_time" property="endTime" />
+        <result column="user_id" property="userId" />
+        <result column="operate_time" property="operateTime" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, amount, type, u_id AS uId, status, start_time AS startTime, end_time AS endTime
+        id, amount, type, user_id AS userId, operate_time AS operateTime
     </sql>
 
 </mapper>

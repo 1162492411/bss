@@ -1,21 +1,23 @@
 package com.zhd.controller;
 
-
+import com.alibaba.fastjson.util.TypeUtils;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.zhd.convert.AreaConvert;
 import com.zhd.convert.DepositConvert;
+import com.zhd.enums.DepositTypeEnum;
+import com.zhd.exceptions.NotLoginException;
 import com.zhd.pojo.Area;
-import com.zhd.pojo.BaseModel;
 import com.zhd.pojo.Deposit;
 import com.zhd.pojo.JSONResponse;
 import com.zhd.service.IDepositService;
+import com.zhd.service.IUserService;
 import com.zhd.util.Constants;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Controller;
+import javax.servlet.http.HttpSession;
 
 /**
  * <p>
@@ -27,16 +29,18 @@ import org.springframework.stereotype.Controller;
  */
 @RestController
 @RequestMapping("/deposit")
-public class DepositController extends BaseController{
+public class DepositController extends BaseController {
 
     @Autowired
     private IDepositService depositService;
+    @Autowired
+    private IUserService userService;
 
     @GetMapping("{id}")
-    public JSONResponse get(Area record){
-        try{
+    public JSONResponse get(Area record) {
+        try {
             return renderSuccess(DepositConvert.convertToVO(depositService.selectById(record.getId())));
-        }catch (Exception e){
+        } catch (Exception e) {
             return renderError(e.getMessage());
         }
     }
@@ -44,56 +48,52 @@ public class DepositController extends BaseController{
     @GetMapping("list/{current}")
     public JSONResponse list(@PathVariable("current") int pageNum, Page<Deposit> page) {
         try {
-            if(pageNum <= 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+            if (pageNum <= 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
             return renderSuccess(DepositConvert.convertToVOPageInfo(depositService.selectPage(page)));
         } catch (Exception e) {
             return renderError(e.getMessage());
         }
     }
 
+    /**
+     * 操作押金--充值/提取
+     * @param deposit 操作信息
+     * @param bindingResult
+     * @param session
+     * @return
+     */
     @PostMapping
-    public JSONResponse insert(@RequestBody @Validated(Deposit.Insert.class)Deposit deposit, BindingResult bindingResult) {
+    public JSONResponse operateDeposit(@RequestBody @Validated(Deposit.Insert.class) Deposit deposit, BindingResult bindingResult, HttpSession session) {
         try {
             if (bindingResult.hasErrors()) {
                 return renderError(bindingResult.getFieldError().getDefaultMessage());
             } else {
-                return depositService.insert(deposit) ? renderSuccess(deposit) : renderError();
+                String userid = String.valueOf(session.getAttribute("userid"));
+                if (StringUtils.isBlank(userid)) throw new NotLoginException();
+                deposit.setUserId(userid);
+                deposit.setOperateTime(TypeUtils.castToString(System.currentTimeMillis()));
+                if (DepositTypeEnum.IN.getCode() == deposit.getType()) {
+                    if(userService.selectById(userid).getDepositBalance().intValue() >  Constants.STANDARD_DEPOSIT.intValue()){
+                        return renderError(Constants.TIP_ENOUGH_DEPOSIT);
+                    }
+                    userService.rechargeDeposit(deposit.getUserId(), Constants.STANDARD_DEPOSIT);
+                    depositService.insert(deposit);
+                    return renderSuccess(deposit);
+                } else if (DepositTypeEnum.OUT.getCode() == deposit.getType()) {
+                    if(userService.selectById(userid).getDepositBalance().intValue() <= 0){
+                        return renderError(Constants.TIP_NO_DEPOSIT);
+                    }
+                    userService.refundDeposit(deposit.getUserId(), Constants.STANDARD_DEPOSIT);
+                    depositService.insert(deposit);
+                    return renderSuccess(deposit);
+                } else {
+                    return renderError(Constants.ILLEGAL_ARGUMENTS);
+                }
             }
         } catch (Exception e) {
             return renderError(e.getMessage());
         }
     }
-
-    @PutMapping
-    public JSONResponse update(@RequestBody @Validated(Deposit.Update.class)Deposit deposit, BindingResult bindingResult) {
-        try {
-            if (bindingResult.hasErrors()) {
-                return renderError(bindingResult.getFieldError().getDefaultMessage());
-            } else {
-                return depositService.updateById(deposit) ? renderSuccess(deposit) : renderError();
-            }
-        } catch (Exception e) {
-            return renderError(e.getMessage());
-        }
-    }
-
-    @DeleteMapping("{id}")
-    public JSONResponse delete(@Validated(Deposit.Delete.class)Deposit deposit, BindingResult bindingResult){
-        try{
-            if(bindingResult.hasErrors()){
-                return renderError(bindingResult.getFieldError().getDefaultMessage());
-            }
-            else if( (deposit = depositService.selectById(deposit.getId()) )  != null){
-                return depositService.deleteById(deposit.getId()) ? renderSuccess(deposit) : renderError();
-            }
-            else{
-                return renderError(Constants.TIP_EMPTY_DATA);
-            }
-        }catch (Exception e){
-            return renderError(e.getMessage());
-        }
-    }
-
 
 }
 

@@ -333,7 +333,6 @@ function internalDeleteData(div, id, sendUrl) {
  * @param keys 修改的实体的键
  */
 function internalAddData(pojo, sendUrl) {
-    // checkElementEmpty("add-" + pojo + "-form") ||
     if(pojo == "task" || $("#add-" + pojo + "-form").valid()){
         let sendData = {};
         let subLength = ("add-" + pojo + "-modal-").length;
@@ -342,7 +341,6 @@ function internalAddData(pojo, sendUrl) {
             let key = originId.substring(subLength,originId.length);
             sendData[key] = $(this).val();
         });
-        alert("to be added-->" + JSON.stringify(sendData));
         $.ajax({
             type: 'POST',
             url: sendUrl,
@@ -350,7 +348,34 @@ function internalAddData(pojo, sendUrl) {
             contentType: 'application/json',
             success: function (data) {
                 if (data.code == Codes.successResponse) {
+                    alert(data.message);
                     $("#add-" + pojo + "-modal").modal("hide");
+                    window.location.reload();
+                }
+                else
+                    showErrorData(data);
+            }
+        });
+    }
+}
+
+function internalUserAddData(pojo, sendUrl) {
+    if(true){
+        let sendData = {};
+        let subLength = ("add-" + pojo + "-modal-").length;
+        $("#add-" + pojo + "-modal").find("[id^=add-" + pojo + "-modal-]").each(function () {
+            let originId = $(this).attr("id");
+            let key = originId.substring(subLength,originId.length);
+            sendData[key] = $(this).val();
+        });
+        $.ajax({
+            type: 'POST',
+            url: sendUrl,
+            data: JSON.stringify(sendData),
+            contentType: 'application/json',
+            success: function (data) {
+                if (data.code == Codes.successResponse) {
+                    alert(data.message);
                     window.location.reload();
                 }
                 else
@@ -973,5 +998,23 @@ function initAddTaskModal(data) {
     $modal.modal("show");
 }
 
+/*--------------------------------------------用户版------------------------------*/
 
+/**
+ * 用户充值
+ */
+function userRecharge(){
+    internalUserAddData("recharge", userRechargePath);
+}
 
+/**
+ * 加载用户充值记录
+ * @param page 页码
+ */
+function loadUserRecharges(page){
+    internalLoadDatas(userRechargesPath, page, "rechargeTable", "rechargesPagination", [], "loadUserRecharges");
+}
+
+function userOperateDeposit(){
+    internalUserAddData("deposit", userDepositPath);
+}

@@ -4,6 +4,7 @@ package com.zhd.convert;
  * Created by Mo on 2018/2/14.
  */
 
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.zhd.enums.RechargeTypeEnum;
 import com.zhd.pojo.Area;
@@ -12,6 +13,7 @@ import com.zhd.pojo.Recharge;
 import com.zhd.util.Constants;
 import com.zhd.util.PageUtil;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -36,6 +38,7 @@ public class RechargeConvert {
         Map map = BeanUtils.describe(recharge);
         map.remove("class");
         map.put("type", RechargeTypeEnum.getByCode(recharge.getType()));
+        System.out.println(map);
         return map;
     }
 
@@ -56,6 +59,8 @@ public class RechargeConvert {
         }
         resultPage.setRecords(resultList);
         PageUtil.copyPage(rechargePage,resultPage);
+        resultPage.setKeys(Constants.RECHARGE_KEYS);
+        resultPage.setNames(Constants.RECHARGE_NAMES);
         return resultPage;
     }
 }

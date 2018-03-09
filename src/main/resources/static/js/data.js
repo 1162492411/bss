@@ -53,6 +53,9 @@ const bicyclesPath = rootPath + "/bicycles";//获取车辆信息的根目录
 const allBicyclesPath = bicyclesPath + "/all";//获取所有车辆信息的根目录
 const journeysPath = rootPath + "/journeys";//获取行程信息的根目录
 const taskPath = rootPath + "/tasks";//获取任务信息的根目录
+const userRechargePath = rootPath + "/recharge";//用户版-充值目录
+const userRechargesPath = userRechargePath + "/list";//用户版-充值记录
+const userDepositPath = rootPath + "/deposit";//用户版-押金管理
 
 const allUserStatus = [
     {"id" : 0, "name" : "未知", "class" : "danger"},
@@ -96,5 +99,19 @@ const allTaskStatus = [
     {"id" : 2, "name" : "待执行", "class" : ""},
     {"id" : 3, "name" : "已完成", "class" : "info"}
 ];//所有任务状态信息
+
+const allRechargeType = [
+    {"id" : 0, "name" : "未知", "class" : "danger"},
+    {"id" : 1, "name" : "虚拟", "class" : ""},
+    {"id" : 2, "name" : "银行卡", "class" : ""},
+    {"id" : 3, "name" : "支付宝", "class" : ""},
+    {"id" : 4, "name" : "微信", "class" : ""},
+];//所有充值渠道信息
+
+const allDepositType = [
+    {"id" : 0, "name" : "未知", "class" : "danger"},
+    {"id" : 1, "name" : "存入", "class" : ""},
+    {"id" : 2, "name" : "取出", "class" : ""}
+];
 
 

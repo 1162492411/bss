@@ -123,7 +123,7 @@ public class BicycleController extends BaseController{
             if(bicycle.getStatus() != BicycleStatusEnum.UNUSED.getCode()) throw new NotUseableBicycleException();
             //borrowBicycle
             bicycleService.borrowBicycle(bicycle.getId());
-            Journey journey = Journey.builder().bId(bicycle.getId()).uId(userid).startTime(System.currentTimeMillis() + "").build();
+            Journey journey = Journey.builder().bId(bicycle.getId()).uId(userid).startTime(TypeUtils.castToString(System.currentTimeMillis())).build();
             journeyService.insert(journey);
             return renderSuccess(journey);
         }catch (Exception e){

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.zhd.convert.UserConvert;
 import com.zhd.enums.UserTypeEnum;
+import com.zhd.exceptions.NotLoginException;
 import com.zhd.pojo.JSONResponse;
 import com.zhd.pojo.User;
 import com.zhd.service.IUserService;
@@ -30,6 +31,7 @@ public class UserController extends BaseController{
     @Autowired
     private IUserService userService;
 
+
     @GetMapping("list/{current}")
     public JSONResponse list(@PathVariable("current") int pageNum, Page<User> page) {
         try {
@@ -41,8 +43,12 @@ public class UserController extends BaseController{
     }
 
     @GetMapping("allStaffs")
-    public JSONResponse allStaffs(){
+    public JSONResponse allStaffs(HttpSession session){
         try{
+            String userid = String.valueOf(session.getAttribute("userid"));
+            System.out.println("get userid from session : " + userid);
+            if(userid.equals("null")) throw new NotLoginException();
+            userService.isAdmin(userid);
             return renderSuccess(userService.getAllStaff());
         }catch (Exception e){
             return renderError(e.getMessage());

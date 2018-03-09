@@ -33,12 +33,10 @@ public class Deposit implements Serializable, BaseModel{
      * 记录编号
      */
     @TableId(value = "id", type = IdType.AUTO)
-    @NotNull(groups = {Update.class, Delete.class})
     private Integer id;
     /**
      * 押金金额
      */
-    @NotNull(groups = {Insert.class, Update.class})
     private BigDecimal amount;
 
     /**
@@ -50,28 +48,13 @@ public class Deposit implements Serializable, BaseModel{
     /**
      * 用户编号
      */
-    @TableField("u_id")
-    @NotNull(groups = {Insert.class, Update.class})
-    private String uId;
+    @TableField("user_id")
+    private String userId;
 
     /**
-     * 押金状态
+     * 操作时间
      */
-    @NotNull(groups = {Insert.class, Update.class})
-    private Integer status;
-
-    /**
-     * 开始时间
-     */
-    @TableField("start_time")
-    @NotNull(groups = {Insert.class, Update.class})
-    private String startTime;
-
-    /**
-     * 结束时间
-     */
-    @NotNull(groups = {Update.class})
-    @TableField("end_time")
-    private String endTime;
+    @TableField("operate_time")
+    private String operateTime;
 
 }

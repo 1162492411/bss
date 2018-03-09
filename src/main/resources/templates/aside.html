@@ -102,6 +102,19 @@
                     <!--<li><a href=""><i class="fa fa-circle-o"></i>优惠券信息</a></li>-->
                 <!--</ul>-->
             <!--</li>-->
+            <!-- 用户版功能 -->
+            <li class="active treeview">
+                <a href="#">
+                    <i class="fa fa-tasks"></i> <span>用户版功能</span>
+                    <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a th:href="@{/userVersion/recharge}"><i class="fa fa-map"></i>充值余额</a></li>
+                    <li><a th:href="@{/userVersion/recharges}"><i class="fa fa-map"></i>充值记录</a></li>
+                </ul>
+            </li>
 
         </ul>
     </section>

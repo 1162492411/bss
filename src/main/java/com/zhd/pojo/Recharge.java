@@ -38,11 +38,11 @@ public class Recharge implements Serializable, BaseModel{
     /**
      * 用户编号
      */
-    @TableField("u_id")
+    @TableField("user_id")
     @NotNull(groups = {Insert.class ,Update.class})
-    private String uId;
+    private String userId;
     /**
-     * 充值类型
+     * 充值渠道
      */
     @NotNull(groups = {Insert.class, Update.class})
     private Integer type;
@@ -50,7 +50,6 @@ public class Recharge implements Serializable, BaseModel{
      * 充值时间
      */
     @TableField("recharge_time")
-    @NotNull(groups = {Insert.class, Update.class})
     private String rechargeTime;
     /**
      * 充值金额
@@ -60,17 +59,12 @@ public class Recharge implements Serializable, BaseModel{
     /**
      * 支付方订单编号
      */
-    @TableField("p_id")
-    private String pId;
-    /**
-     * 支付方回调URL
-     */
-    @TableField("p_url")
-    private String pUrl;
+    @TableField("pay_id")
+    private String payId;
     /**
      * 支付结果
      */
-    @TableField("p_status")
-    private Integer pStatus;
+    @TableField("pay_status")
+    private Integer paStatus;
 
 }
