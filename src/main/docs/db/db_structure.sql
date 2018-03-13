@@ -35,10 +35,8 @@ create table deposit
 		primary key,
 	amount decimal(5,2) null,
 	type int null,
-	u_id char(11) null,
-	status int null,
-	start_time varchar(50) null,
-	end_time varchar(50) null
+	user_id char(11) null,
+	operate_time varchar(50) null
 )
 	comment '押金记录表' engine=InnoDB charset=utf8
 ;
@@ -66,13 +64,12 @@ create table recharge
 (
 	id int auto_increment comment '充值记录编号'
 		primary key,
-	u_id char(11) null comment '用户编号',
+	user_id char(11) null comment '用户编号',
 	type int null comment '充值类型',
 	recharge_time varchar(50) null comment '充值时间',
 	amount decimal(5,2) null comment '充值金额',
-	p_id varchar(254) null comment '支付方订单编号',
-	p_url varchar(254) null comment '支付方回调URL',
-	p_status int null comment '支付结果'
+	pay_id varchar(254) null comment '支付方订单编号',
+	pay_status int null comment '支付结果'
 )
 	comment '充值记录表' engine=InnoDB charset=utf8
 ;
