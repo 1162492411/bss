@@ -17,10 +17,6 @@ import java.util.Map;
  */
 public interface SupplierMapper extends BaseMapper<Supplier> {
 
-    Integer insertSupp(Supplier supplier);
-
-    List<Supplier> selectSuppliersByBatch(@Param("batch") String batch);
-
     List<Map> selectAllSupplier();
 
 }

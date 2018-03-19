@@ -1,5 +1,6 @@
 package com.zhd.service;
 
+import com.zhd.exceptions.NoEnoughAccountBalanceException;
 import com.zhd.exceptions.NoEnoughDepositException;
 import com.zhd.exceptions.NoSuchUserException;
 import com.zhd.pojo.User;
@@ -18,11 +19,11 @@ import java.util.List;
  */
 public interface IUserService extends IService<User> {
 
-    boolean checkUser(String id) throws NoSuchUserException;//检查用户有效性
-
     boolean isAdmin(String id);
 
-    boolean checkDeposit(String id) throws NoEnoughDepositException, NoSuchUserException;//检查用户押金
+    boolean checkDepositBalance(String id) throws NoEnoughDepositException, NoSuchUserException;//检查用户押金
+
+    boolean checkAccountBalance(String id) throws NoSuchUserException, NoEnoughAccountBalanceException;//检查用户账户余额
 
     User findUser(String id) throws NoSuchUserException;//查找用户
 
@@ -33,5 +34,9 @@ public interface IUserService extends IService<User> {
     boolean rechargeDeposit(String id, BigDecimal amount);//用户充值押金
 
     boolean refundDeposit(String id, BigDecimal amount);//用户退还押金
+
+
+    //扣钱接口
+    boolean reduceAccount(String id, BigDecimal amount);
 
 }

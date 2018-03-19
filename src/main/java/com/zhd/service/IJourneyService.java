@@ -3,6 +3,8 @@ package com.zhd.service;
 import com.zhd.pojo.Journey;
 import com.baomidou.mybatisplus.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  * 行程记录表 服务类
@@ -13,7 +15,9 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IJourneyService extends IService<Journey> {
 
-    boolean checkJourney(Integer id);
+    List<Journey> getContinuedJourneys(String userId);//查询用户待未结束行程记录
+
+    Journey selectByUser(String userId);//选取用户距现在最近的未完成的行程记录
 
 
 }

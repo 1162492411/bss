@@ -3,7 +3,7 @@ package com.zhd.exceptions;
 import com.zhd.util.Constants;
 
 /**
- * Created by Mo on 2018/2/18.
+ * 账户押金不足异常
  */
 public class NoEnoughDepositException extends Exception {
     @Override

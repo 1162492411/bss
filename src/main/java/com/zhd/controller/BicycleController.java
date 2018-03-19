@@ -5,7 +5,9 @@ import com.alibaba.fastjson.util.TypeUtils;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.zhd.convert.BicycleConvert;
+import com.zhd.enums.AreaTypeEnum;
 import com.zhd.enums.BicycleStatusEnum;
+import com.zhd.enums.JourneyStatusEnum;
 import com.zhd.exceptions.NoSuchBicycleException;
 import com.zhd.exceptions.NotLoginException;
 import com.zhd.exceptions.NotUseableBicycleException;
@@ -48,7 +50,6 @@ public class BicycleController extends BaseController{
     public JSONResponse all(){
         try{
             return renderSuccess(BicycleConvert.convertSimple(bicycleService.selectAllSimple()));
-//            return renderSuccess(bicycleService.selectAllSimple());
         }catch (Exception e){
             return renderError(e.getMessage());
         }
@@ -57,7 +58,9 @@ public class BicycleController extends BaseController{
     @GetMapping("list/{current}")
     public JSONResponse list(@PathVariable("current") Integer pageNum, Page<Bicycle> page) {
         try {
-            if(pageNum <= 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+            if(pageNum <= 0) {
+                throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+            }
             page = bicycleService.selectPage(page, new EntityWrapper<Bicycle>().orderBy("status", false));
             List<Supplier> supplierList = supplierService.selectList(null);
             return renderSuccess(BicycleConvert.convertToVOPageInfo(page,supplierList));
@@ -115,43 +118,58 @@ public class BicycleController extends BaseController{
         try{
             //check user && deposit
             String userid = String.valueOf(session.getAttribute("userid"));
-            if(userid.equals("null")) throw new NotLoginException();
-            userService.checkDeposit(userid);
-            //check bicycle
-            bicycle = bicycleService.selectById(bicycle.getId());
-            if(bicycle == null) throw new NoSuchBicycleException();
-            if(bicycle.getStatus() != BicycleStatusEnum.UNUSED.getCode()) throw new NotUseableBicycleException();
-            //borrowBicycle
-            bicycleService.borrowBicycle(bicycle.getId());
-            Journey journey = Journey.builder().bId(bicycle.getId()).uId(userid).startTime(TypeUtils.castToString(System.currentTimeMillis())).build();
-            journeyService.insert(journey);
-            return renderSuccess(journey);
+            if(Constants.NULL_USER_ID.equals(userid)) {
+                throw new NotLoginException();
+            }
+            //检测是否存在未结束行程
+            if(journeyService.getContinuedJourneys(userid).size() > 0) {
+                return renderError(Constants.TIP_HAS_NO_END_JOURNEY);
+            }
+            if(bicycleService.borrowBicycle(bicycle, userid)){
+                Journey journey = Journey.builder().bicycleId(bicycle.getId()).userId(userid).startTime(TypeUtils.castToString(System.currentTimeMillis())).build();
+                journeyService.insert(journey);
+                return renderSuccess(journey);
+            }
+            else{
+                return renderError(Constants.TIP_BORROW_BICYCLE_ERROR);
+            }
         }catch (Exception e){
             return renderError(e.getMessage());
         }
     }
 
-    //不确定bicycleId取参时是否会自动注入到journey,不确定bicycle取参时路径中的名字与方法参数中的名字不同时是否需要为@PathVariable设值
+
     @RequestMapping("return/{bicycleId}")
     public JSONResponse returnBicycle(@PathVariable Integer bicycleId, @RequestBody Journey journey, HttpSession session){
         try{
+            journey.setBicycleId(bicycleId);
             //check user
             String userid = String.valueOf(session.getAttribute("userid"));
-            if(userid.equals("null")) throw new NotLoginException();
+            if(Constants.NULL_USER_ID.equals(userid)){
+                throw new NotLoginException();
+            }
             User user = userService.findUser(userid);
+            //行程的原始信息从数据库中查询，保证安全.若存在多个未结束行程，则选取第一个，即离当前时间最近的行程
+            Journey formerJourney = journeyService.getContinuedJourneys(userid).get(0);
+            journey.setId(formerJourney.getId());
             //prepare returnBicycle
             Area area = areaService.findArea(journey.getEndLocationX(),journey.getEndLocationY());
-            long startTime = Long.parseLong(journey.getStartTime());
+            if(area == null || area.getType() == AreaTypeEnum.BAN.getCode()) {
+                return renderError(Constants.TIP_RETURN_TO_KNOWN_AREA);
+            }
+            long startTime = Long.parseLong(formerJourney.getStartTime());
             long endTime = Long.parseLong(journey.getEndTime());
             journey.setRideTime(endTime - startTime + "");
             journey.setAmount(ConsumptionUtil.calculate(journey.getRideTime(),area.getType(), user.getMonthlyTime()));
+            journey.setStatus(JourneyStatusEnum.END.getCode());
             //returnBicycle
-            bicycleService.returnBicycle(bicycleId);
-            journeyService.updateById(journey);
+            bicycleService.returnBicycle(bicycleId, userid,journey);
+            return renderSuccess(Constants.TIP_RETURN_BICYCLE_SUCCESS);
         }catch (Exception e){
             renderError(e.getMessage());
         }
-        return renderError();
+        return renderError(Constants.TIP_RETURN_BICYCLE_ERROR);
+
     }
 
 

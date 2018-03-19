@@ -2,13 +2,15 @@ package com.zhd.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.zhd.enums.BicycleStatusEnum;
+import com.zhd.exceptions.*;
 import com.zhd.mapper.SupplierMapper;
 import com.zhd.pojo.Bicycle;
 import com.zhd.mapper.BicycleMapper;
-import com.zhd.pojo.BicycleSupplier;
-import com.zhd.pojo.Supplier;
+import com.zhd.pojo.Journey;
 import com.zhd.service.IBicycleService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.zhd.service.IJourneyService;
+import com.zhd.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,32 +31,32 @@ public class BicycleServiceImpl extends ServiceImpl<BicycleMapper, Bicycle> impl
     private BicycleMapper bicycleMapper;
     @Autowired
     private SupplierMapper supplierMapper;
+    @Autowired
+    private IUserService userService;
+    @Autowired
+    private IJourneyService journeyService;
 
     @Override
-    public boolean borrowBicycle(Integer id) {
-        return bicycleMapper.updateById(Bicycle.builder().id(id).status(BicycleStatusEnum.USING.getCode()).build()) > 0;
-    }
-
-    @Override
-    public boolean returnBicycle(Integer id) {
-        return bicycleMapper.updateById(Bicycle.builder().id(id).status(BicycleStatusEnum.UNUSED.getCode()).build()) > 0;
-    }
-
-    @Override
-    public void insertBicycleSupplier(BicycleSupplier bicycleSupplier) {
-        for (Supplier supplier : bicycleSupplier.getSupplierList()) {
-            supplierMapper.insertSupp(supplier);
+    public Boolean borrowBicycle(Bicycle bicycle, String userid) throws NoSuchUserException, NoEnoughDepositException, NoSuchBicycleException, NotUseableBicycleException, NoEnoughAccountBalanceException {
+        userService.checkDepositBalance(userid);
+        userService.checkAccountBalance(userid);
+        //check bicycle
+        bicycle = this.selectById(bicycle.getId());
+        if (bicycle == null) {
+            throw new NoSuchBicycleException();
         }
-        bicycleMapper.insertBicycleSupplier(bicycleSupplier);
+        if (bicycle.getStatus() != BicycleStatusEnum.UNUSED.getCode()) {
+            throw new NotUseableBicycleException();
+        }
+        //borrowBicycle
+        bicycle.setStatus(BicycleStatusEnum.USING.getCode());
+        return bicycleMapper.updateById(bicycle) > 0;
     }
 
     @Override
-    public BicycleSupplier selectBicycleSupplier(String batch) {
-        BicycleSupplier bicycleSupplier = bicycleMapper.selectBicycleSupplier(batch);
-        bicycleSupplier.setSupplierList(supplierMapper.selectSuppliersByBatch(batch));
-        return bicycleSupplier;
+    public boolean returnBicycle(Integer bicycleId, String userId, Journey journey) {
+        return bicycleMapper.updateById(Bicycle.builder().id(bicycleId).status(BicycleStatusEnum.UNUSED.getCode()).build()) > 0 && journeyService.updateById(journey) && userService.reduceAccount(userId, journey.getAmount());
     }
-
 
     @Override
     public List<Bicycle> selectAllSimple() {

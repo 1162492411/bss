@@ -32,15 +32,6 @@ public class RechargeController extends BaseController{
     @Autowired
     private IUserService userService;
 
-//    @GetMapping("{id}")
-//    public JSONResponse get(Recharge record){
-//        try{
-//            return renderSuccess(RechargeConvert.convertToVO(rechargeService.selectById(record.getId())));
-//        }catch (Exception e){
-//            return renderError(e.getMessage());
-//        }
-//    }
-
     /**
      * 查看充值记录
      * @param pageNum 要查看的页码

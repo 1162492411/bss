@@ -3,6 +3,7 @@ package com.zhd.util;
 import com.zhd.enums.AreaTypeEnum;
 import com.zhd.exceptions.BanAreaException;
 import com.zhd.exceptions.RideTimeOutException;
+import org.apache.commons.lang.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -13,7 +14,6 @@ import java.time.Instant;
  */
 public class ConsumptionUtil {
 
-
     /**
      *
      * @param rideTime 骑行时间
@@ -23,16 +23,27 @@ public class ConsumptionUtil {
      */
     public static BigDecimal calculate(String rideTime, int areaType, String monthlyTime) throws RideTimeOutException, BanAreaException {
         long time = Long.parseLong(rideTime);
-        if(time < 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+        if(time < 0){
+            throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+        }
 //        int minutes =  Math.round(time / 1000 / 60);//format rideTime
         int minutes =  Math.round(time / 1000 / 60);//format rideTime
         double originalAmount = calcuteByRideTime(minutes);
 
-        if(Long.parseLong(monthlyTime) > System.currentTimeMillis() && minutes <= 120) return BigDecimal.ZERO;
+        if(StringUtils.isNotBlank(monthlyTime) && Long.parseLong(monthlyTime) > System.currentTimeMillis() && minutes <= 120) {
+            System.out.println("zero");
+            return BigDecimal.ZERO;
+        }
 
-        if(areaType == AreaTypeEnum.BAN.getCode() || areaType == AreaTypeEnum.UNKNOWN.getCode()) throw new BanAreaException();
-        else if(areaType == AreaTypeEnum.RED.getCode()) return BigDecimal.ZERO;
-
+        if(areaType == AreaTypeEnum.BAN.getCode() || areaType == AreaTypeEnum.UNKNOWN.getCode()){
+            System.out.println("ban area");
+            throw new BanAreaException();
+        }
+        else if(areaType == AreaTypeEnum.RED.getCode()) {
+            System.out.println("red area");
+            return BigDecimal.ZERO;
+        }
+        System.out.println("originalAmount-->" + originalAmount);
         return BigDecimal.valueOf(originalAmount);
     }
 

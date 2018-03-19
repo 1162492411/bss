@@ -3,6 +3,7 @@ package com.zhd.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.zhd.enums.UserStatusEnum;
 import com.zhd.enums.UserTypeEnum;
+import com.zhd.exceptions.NoEnoughAccountBalanceException;
 import com.zhd.exceptions.NoEnoughDepositException;
 import com.zhd.exceptions.NoSuchUserException;
 import com.zhd.pojo.User;
@@ -31,21 +32,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private UserMapper userMapper;
 
     @Override
-    public boolean checkUser(String id) throws NoSuchUserException {
-        if(userMapper.selectOne(User.builder().id(id).status(UserStatusEnum.NORMAL.getCode()).build()) == null) throw new NoSuchUserException();
-        else return true;
-    }
-
-    @Override
     public boolean isAdmin(String id) {
         return userMapper.selectById(id).getType().equals(UserTypeEnum.MANAGER.getCode());
     }
 
     @Override
-    public boolean checkDeposit(String id) throws NoEnoughDepositException, NoSuchUserException {
+    public boolean checkDepositBalance(String id) throws NoEnoughDepositException, NoSuchUserException {
         User user = userMapper.selectOne(User.builder().id(id).status(UserStatusEnum.NORMAL.getCode()).build());
         if(user == null) throw new NoSuchUserException();
-        if(user.getDepositBalance().intValue() < Constants.STANDARD_DEPOSIT.intValue()) throw new NoEnoughDepositException();
+        else if(user.getDepositBalance().intValue() < Constants.STANDARD_DEPOSIT.intValue()) throw new NoEnoughDepositException();
+        else return false;
+    }
+
+    @Override
+    public boolean checkAccountBalance(String id) throws NoSuchUserException, NoEnoughAccountBalanceException {
+        User user = findUser(id);
+        if(user.getAccountBalance().doubleValue() < 0) throw new NoEnoughAccountBalanceException();
         else return false;
     }
 
@@ -74,6 +76,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public boolean refundDeposit(String id, BigDecimal amount) {
         return userMapper.refundDeposit(id, amount) > 0;
+    }
+
+    @Override
+    public boolean reduceAccount(String id, BigDecimal amount) {
+        return userMapper.reduceAccount(id, amount) > 0;
     }
 }
 

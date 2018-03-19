@@ -19,13 +19,17 @@ import java.math.BigDecimal;
  */
 public interface UserMapper extends BaseMapper<User> {
 
-    @Update("update user set account_balance = account_balance + ${amount} where id = ${uid}")
+    @Update("update user set account_balance = account_balance + #{amount} where id = #{uid}")
     Integer rechargeAccount(@Param("uid") String id, @Param("amount") BigDecimal amount);
 
-    @Update("update user set deposit_balance = deposit_balance + ${amount} where id = ${uid}")
+    @Update("update user set account_balance = account_balance - #{amount} where id = #{id}")
+    Integer reduceAccount(@Param("id")String id, @Param("amount") BigDecimal amount);
+
+    @Update("update user set deposit_balance = deposit_balance + #{amount} where id = #{uid}")
     Integer rechargeDeposit(@Param("uid")String id, @Param("amount") BigDecimal amount);
 
-    @Update("update user set deposit_balance = deposit_balance - ${amount} where id = ${uid}")
+    @Update("update user set deposit_balance = deposit_balance - #{amount} where id = #{uid}")
     Integer refundDeposit(@Param("uid")String id, @Param("amount") BigDecimal amount);
+
 
 }

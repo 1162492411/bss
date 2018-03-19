@@ -1,7 +1,5 @@
 package com.zhd.controller;
 
-
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.zhd.convert.AreaConvert;
@@ -28,7 +26,6 @@ public class AreaController extends BaseController {
 
     @Autowired
     private IAreaService areaService;
-
 
     @GetMapping("list/{current}")
     public JSONResponse oldList(@PathVariable("current") int pageNum, Page<Area> page) {
@@ -85,4 +82,3 @@ public class AreaController extends BaseController {
 
 }
 
-//todo:insert update delete后一般是否需要将数据返回给前台？？返回前台传入的原始数据还是包装后的数据(如AreaVO)

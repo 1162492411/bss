@@ -5,8 +5,8 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.zhd.pojo.Journey">
         <id column="id" property="id" />
-        <result column="u_id" property="uId" />
-        <result column="b_id" property="bId" />
+        <result column="user_id" property="userId" />
+        <result column="bicycle_id" property="bicycleId" />
         <result column="start_time" property="startTime" />
         <result column="ride_time" property="rideTime" />
         <result column="distance" property="distance" />
@@ -16,11 +16,14 @@
         <result column="start_location_y" property="startLocationY" />
         <result column="end_location_x" property="endLocationX" />
         <result column="end_location_y" property="endLocationY" />
+        <result column="status" property="status" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, u_id AS uId, b_id AS bId, start_time AS startTime, ride_time AS rideTime, distance, amount, end_time AS endTime, start_location_x as startLocationX, start_location_y as startLocationY, end_location_x as endLocationX, end_location_y as endLocationY
+        id, user_id AS userId, bicycle_id AS bicycleId, start_time AS startTime, ride_time AS rideTime, distance, amount, end_time AS endTime, start_location_x as startLocationX, start_location_y as startLocationY, end_location_x as endLocationX, end_location_y as endLocationY, status
     </sql>
+
+
 
 </mapper>

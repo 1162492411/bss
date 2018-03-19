@@ -38,15 +38,15 @@ public class Journey implements Serializable, BaseModel {
     /**
      * 用户ID
      */
-    @TableField("u_id")
+    @TableField("user_id")
     @NotNull(groups = {Insert.class, Update.class})
-    private String uId;
+    private String userId;
     /**
      * 车辆ID
      */
-    @TableField("b_id")
+    @TableField("bicycle_id")
     @NotNull(groups = {Insert.class, Update.class})
-    private Integer bId;
+    private Integer bicycleId;
     /**
      * 开始时间
      */
@@ -99,6 +99,11 @@ public class Journey implements Serializable, BaseModel {
      */
     @TableField("end_location_y")
     private BigDecimal endLocationY;
+
+    /**
+     * 状态
+     */
+    private Integer status;
 
 
 }
