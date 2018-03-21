@@ -33,6 +33,12 @@ public class PageController {
     public void toAreas(){}
 
     /**
+     * 前往--车辆模块-添加区域
+     */
+    @RequestMapping("bicycleModule/addArea")
+    public void toAddArea(){}
+
+    /**
      * 前往--车辆模块-供应商管理
      */
     @RequestMapping("bicycleModule/suppliers")
@@ -64,5 +70,9 @@ public class PageController {
     public void toTasks(){}
 
 
+    @RequestMapping("city")
+    public String toCity(){
+        return "bicycleModule/city";
+    }
 
 }

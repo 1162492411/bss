@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhd.mapper.CityMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhd.pojo.City">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="level" property="level" />
+        <result column="code" property="code" />
+        <result column="parent_id" property="parentId" />
+        <result column="centerX" property="centerX" />
+        <result column="centerY" property="centerY" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, level, code, parent_id AS parentId, centerX, centerY
+    </sql>
+
+</mapper>

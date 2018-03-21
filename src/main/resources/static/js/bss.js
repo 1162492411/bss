@@ -1,6 +1,8 @@
 /**
  * Created by Mo on 2017/10/2.
  */
+
+var rectangleEditor;//添加区域页面待矩形编辑框
 /*----------------扩展函数--------------*/
 Date.prototype.format = function (format) {
     let o = {
@@ -613,11 +615,58 @@ function deleteArea(data) {
     internalDeleteData("areaTable", data.id, areasPath);
 }
 
+
+
+function loadAreaMap(){
+    const areaMap = new AMap.Map('container', {
+        resizeEnable: true,
+        center: [116.397428, 39.90923],
+        zoom: 18
+    });
+    areaMap.on('click', function(e) {
+        let centerPointX = parseFloat(e.lnglat.getLng());
+        let centerPointY = parseFloat(e.lnglat.getLat());
+        areaMap.setZoomAndCenter(18, [centerPointX,centerPointY]);
+        var southWest = new AMap.LngLat(centerPointX, centerPointY);
+        var northEast = new AMap.LngLat(parseFloat(centerPointX + 0.0005), parseFloat(centerPointY + 0.0002));
+        var rectangle = new AMap.Rectangle({
+            map: areaMap,
+            bounds: new AMap.Bounds(southWest, northEast),
+            strokeColor:'red',
+            strokeWeight:10,
+            strokeOpacity:0.5,
+            strokeDasharray: [30,10],
+            strokeStyle: 'dashed',
+            fillColor:'blue',
+            fillOpacity:0.5,
+            zIndex:10,
+            bubble:true,
+            cursor:'pointer',
+            bubble: false
+        });
+        rectangleEditor = new AMap.RectangleEditor(areaMap, rectangle);
+    });
+
+}
+
+function beginAddArea() {
+    rectangleEditor.open();
+}
+
 /**
  * 添加区域
  */
 function addArea() {
-    internalAddData("area", areasPath);
+    let positionA = rectangleEditor.Fb[0].Ch.label.content.replace(" ","").split(',');
+    let positionB = rectangleEditor.Fb[1].Ch.label.content.replace("","").split(',');
+    let northPoint =  parseFloat(positionB[1]);
+    let eastPoint = parseFloat(positionB[0]);
+    let southPoint = parseFloat(positionA[1]);
+    let westPoint = parseFloat(positionA[0]);
+    let sendData = {};
+
+
+
 }
 
 /**
