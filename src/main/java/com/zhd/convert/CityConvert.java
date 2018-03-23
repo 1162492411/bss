@@ -21,14 +21,6 @@ public class CityConvert {
             JSONObject resultObject = new JSONObject();
             resultObject.put("id", jsonObject.getString("location"));
             resultObject.put("name", jsonObject.getString("name"));
-//            String[] location = jsonObject.getString("location").replaceAll(" ","").split(",");
-//            if(location.length >= 2){
-//                resultObject.put("centerX", location[0]);
-//                resultObject.put("centerY", location[1]);
-//            }else {
-//                resultObject.put("centerX", Constants.VALUE_DEFAULT_LOCATION_X);
-//                resultObject.put("centerY", Constants.VALUE_DEFAULT_LOCATION_Y);
-//            }
             resultArray.add(resultObject);
         }
         return resultArray;

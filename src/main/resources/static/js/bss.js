@@ -41,7 +41,7 @@ Date.prototype.format = function (format) {
  * @param data 待跳转的页面
  */
 function pageJump(data) {
-    if (!checkDataEmpty(data)) {
+    if (dataNotEmpty(data)) {
         self.location.href = data;
     }
 }
@@ -71,6 +71,15 @@ function checkElementEmpty(id) {
  */
 function checkDataEmpty(data) {
     return data === "" || data === undefined || data === "[]" || data === NaN || data === emptyDataValue || data === null;
+}
+
+/**
+ * 数据是否不为空
+ * @param data 待检查的数据
+ * @returns {boolean} true:数据不为空;false:数据为空
+ */
+function dataNotEmpty(data){
+    return ! checkDataEmpty(data);
 }
 
 /**
@@ -114,12 +123,12 @@ function castObjectToArray(data){
 function generateTable(div, data, methods) {
     if (!checkElementEmpty(div)) {
         let $div = $("#" + div);
-        if (!checkDataEmpty(data)) {
+        if (dataNotEmpty(data)) {
             //设置表头
-            if (!checkDataEmpty(data.names))
+            if (dataNotEmpty(data.names))
                 $div.append(generateBatchTableHeader(data.names));
             //设置数据
-            if (!checkDataEmpty(data.records) && !checkDataEmpty(data.keys))
+            if (dataNotEmpty(data.records) && dataNotEmpty(data.keys))
                 $div.append(generateBatchTableData(div, data.records, data.keys, methods));
         }
     }
@@ -152,7 +161,7 @@ function generateBatchTableHeader(header) {
 function generateBatchTableData(div, data, keys, methods) {
     let strPre = "<tbody id='" + div + "Body'>";
     let strData = "";
-    if (!checkDataEmpty(data)) {
+    if (dataNotEmpty(data)) {
         for (let i = 0; i < data.length; i++) {
             strData += generateSingleTableData(div, data[i], keys, methods);
         }
@@ -170,7 +179,7 @@ function generateBatchTableData(div, data, keys, methods) {
  * @returns {string} 设置好的单行表格数据
  */
 function generateSingleTableData(div, data, keys, methods) {
-    if (!checkDataEmpty(data) && !checkDataEmpty(keys)) {
+    if (dataNotEmpty(data) && dataNotEmpty(keys)) {
         let strPre = "<tr id='" + div + "TR-" + data.id + "'>";
         let strData = "";
         for (let i = 0; i < keys.length; i++) {
@@ -204,9 +213,9 @@ function generateSingleTD(idValue, data) {
  * @return {string} 设置好的单行数据的操作列
  */
 function generateSingleTableMethods(div, data, methods) {
-    let strPre = !checkDataEmpty(methods) ? "<td id='" + div + "-" + data.id +  "-Btn" + "'>" : "<td id=' " + div + "-" + data.id + "-Btn" +"' style='text-align: center;line-height: 100%'>";
+    let strPre = dataNotEmpty(methods) ? "<td id='" + div + "-" + data.id +  "-Btn" + "'>" : "<td id=' " + div + "-" + data.id + "-Btn" +"' style='text-align: center;line-height: 100%'>";
     let strData = "";
-    if (!checkDataEmpty(methods)) {
+    if (dataNotEmpty(methods)) {
         for (let i = 0; i < methods.length; i++) {
             strData += "<button class='Button Button--blue' id='" + div + "BlockBtn-" + data.id + "' onclick='" + methods[i].method + "(" + JSON.stringify(data) + ")'>" + methods[i].name + "</button> ";
         }
@@ -441,7 +450,6 @@ function initSelection(div, data) {
         }
     }
     $div.append(str);
-    debugger
 }
 
 /**
@@ -452,7 +460,7 @@ function formatSeconds(div) {
     let result = "";
     if (!checkElementEmpty(div)) {
         let val = parseInt($("#" + div).text());
-        if (!checkDataEmpty(val)) {
+        if (dataNotEmpty(val)) {
             let min = Math.floor(val / 60),
                 second = val % 60,
                 day = 0, hour = 0;
@@ -498,7 +506,7 @@ function paintColumn(div, names) {
 function formatDateTime(div) {
     if (!checkElementEmpty(div)) {
         let $div = $("#" + div), $val = parseInt($div.text());
-        if (!checkDataEmpty($val)) {
+        if (dataNotEmpty($val)) {
             $div.text(new Date($val).toLocaleString());
         }
         else
@@ -618,8 +626,9 @@ function deleteArea(data) {
     internalDeleteData("areaTable", data.id, areasPath);
 }
 
-
-
+/**
+ * 加载添加区域的地图
+ */
 function loadAreaMap(){
     areaMap = new AMap.Map('container', {
         resizeEnable: true,
@@ -652,16 +661,22 @@ function loadAreaMap(){
 
 }
 
+/**
+ * 开始划定停车区域
+ */
 function beginAddArea() {
     if(rectangleEditor !== undefined){
         rectangleEditor.open();
     }
 }
 
+/**
+ * 在区划内搜索含关键字的地点
+ */
 function searchCity(){
     let selectCode = $("#add-area-select-code").val();
     let keywords = $("#add-area-search").val();
-    if(keywords !== undefined && selectCode !== undefined){
+    if(dataNotEmpty(keywords) && dataNotEmpty(selectCode)){
         let sendData = {"keywords" : keywords, "code" : selectCode};
         $.ajax({
             type: 'POST',
@@ -671,7 +686,6 @@ function searchCity(){
             async : false,
             success: function (data) {
                 if (data.code == Codes.successResponse) {
-                    debugger;
                     initSelection("add-area-search-result",data.result);
                 }
                 else{
@@ -682,11 +696,14 @@ function searchCity(){
     }
 }
 
+/**
+ * 根据区划内搜索的选择结果更新停车点名称
+ */
 function refreshAreaName(){
     let selectedDiv = $("#add-area-search-result").find("option:selected");
     let selectedText = selectedDiv.text();
     let selectedValue = selectedDiv.val();
-    if(!checkDataEmpty(selectedText) && !checkDataEmpty(selectedValue)){
+    if(dataNotEmpty(selectedText) && dataNotEmpty(selectedValue)){
         let locations = selectedValue.replace(" ","").split(",");
         areaMap.setZoomAndCenter(18,[locations[0],locations[1]]);
         $("#add-area-modal-name").val(selectedText + "停车点");
@@ -702,7 +719,7 @@ function addArea() {
     let name = $("#add-area-modal-name").val();
     let cityId = $("#add-area-modal-cityId").val();
     let type = $("#add-area-modal-type").val();
-    if(name !== undefined && cityId !== undefined){
+    if(dataNotEmpty(name) && dataNotEmpty(cityId)){
         let sendData = {"name" : name,"northPoint" : parseFloat(positionB[1]), "southPoint" : parseFloat(positionA[1]), "westPoint" :parseFloat(positionA[0]), "eastPoint" : parseFloat(positionB[0]),"cityId": cityId, "type" : type};
         $.ajax({
             type: 'POST',
@@ -832,7 +849,7 @@ function initBicycleSupplier(){
         url: allSuppliersPath,
         sync : false,
         success: function(data) {
-            if(data.code == Codes.successResponse && !checkDataEmpty(data))
+            if(data.code == Codes.successResponse && dataNotEmpty(data))
                 initSelection("add-bicycle-modal-supplier",data.result);
         }
     });
@@ -883,7 +900,7 @@ function initTaskUser(type){
         url: allStaffsPath,
         sync : false,
         success: function(data) {
-            if(data.code == Codes.successResponse && !checkDataEmpty(data.result)){
+            if(data.code == Codes.successResponse && dataNotEmpty(data.result)){
                 $("#" + type + "-task-modal-user").append("<option value='" + emptyStaff.id + "'>" + emptyStaff.name + "</option>");
                 initSelection(type + "-task-modal-user",data.result);
             }
@@ -905,7 +922,7 @@ function loadSimpleBicycles() {
         url: allBicyclesPath,
         contentType: 'application/json',
         success: function (data) {
-            if (data.code == Codes.successResponse && !checkDataEmpty(data.result)) {
+            if (data.code == Codes.successResponse && dataNotEmpty(data.result)) {
                 let result = data.result;
                 var cluster, markers = [];
                 var map = new AMap.Map("container", {
