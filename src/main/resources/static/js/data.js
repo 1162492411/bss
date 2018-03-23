@@ -56,6 +56,9 @@ const taskPath = rootPath + "/tasks";//获取任务信息的根目录
 const userRechargePath = rootPath + "/recharge";//用户版-充值目录
 const userRechargesPath = userRechargePath + "/list";//用户版-充值记录
 const userDepositPath = rootPath + "/deposit";//用户版-押金管理
+const citiesPath = rootPath + "/city";//行政区划的根目录
+const searchCityPath = citiesPath + "/search";//查询行政区划的URL
+const inputTipsPath = citiesPath + "/inputtips";//查询输入提示的URL
 
 const allUserStatus = [
     {"id" : 0, "name" : "未知", "class" : "danger"},

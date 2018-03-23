@@ -75,4 +75,11 @@ public class Area implements Serializable,BaseModel {
     @Range(min = 1 ,max = 3, groups = {Insert.class, Update.class} , message = "区域类型设置错误")
     private Integer type;
 
+    /**
+     * 所属行政区划
+     */
+    @TableField("city_id")
+    @NotNull(groups = {Insert.class, Update.class})
+    private Integer cityId;
+
 }

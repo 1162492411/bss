@@ -105,5 +105,10 @@ public class Journey implements Serializable, BaseModel {
      */
     private Integer status;
 
+    /**
+     * 轨迹
+     */
+    private String path;
+
 
 }

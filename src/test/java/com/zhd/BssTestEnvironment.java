@@ -38,6 +38,8 @@ public class BssTestEnvironment {
 	public ITaskService taskService;
 	@Autowired
 	public IUserService userService;
+	@Autowired
+	public ICityService cityService;
 
 	@Test
 	public void contextLoads() {

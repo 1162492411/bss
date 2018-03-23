@@ -9,13 +9,13 @@
         <result column="level" property="level" />
         <result column="code" property="code" />
         <result column="parent_id" property="parentId" />
-        <result column="centerX" property="centerX" />
-        <result column="centerY" property="centerY" />
+        <result column="center_x" property="centerX" />
+        <result column="center_y" property="centerY" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, level, code, parent_id AS parentId, centerX, centerY
+        id, name, level, code, parent_id AS parentId, center_x as centerX, center_y as centerY
     </sql>
 
 </mapper>

@@ -33,7 +33,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public boolean isAdmin(String id) {
-        return userMapper.selectById(id).getType().equals(UserTypeEnum.MANAGER.getCode());
+        return userMapper.selectById(id).getType().equals(UserTypeEnum.ADMIN.getCode());
     }
 
     @Override

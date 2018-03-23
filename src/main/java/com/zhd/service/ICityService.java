@@ -21,4 +21,6 @@ public interface ICityService extends IService<City> {
 
     List<City> getAllSimpleCityByParent(Integer parentId);//获取所有父类的子行政区划的简略信息
 
+    City getSimpleByCode(Integer code);//根据区划编码选择区划的简略信息
+
 }

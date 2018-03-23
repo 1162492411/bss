@@ -3,6 +3,7 @@
  */
 
 var rectangleEditor;//添加区域页面待矩形编辑框
+var areaMap;//添加区域页面的地图
 /*----------------扩展函数--------------*/
 Date.prototype.format = function (format) {
     let o = {
@@ -280,7 +281,7 @@ function internalLoadDatas(baseUrl, page, tableDiv, pagDiv, methods, reloadMetho
                 initPag(data.result.current, data.result.pages, pagDiv, reloadMethod);
             }
             else{
-               showErrorData(data);
+                showErrorData(data);
             }
 
         }
@@ -425,6 +426,7 @@ function internalUpdateData(pojo, sendUrl) {
  * @param data 待添加的数据
  */
 function initSelection(div, data) {
+    resetDiv(div);
     let $div = $("#" + div);
     let str = "";
     if(checkDataEmpty(data) || !data instanceof Array) {
@@ -439,6 +441,7 @@ function initSelection(div, data) {
         }
     }
     $div.append(str);
+    debugger
 }
 
 /**
@@ -618,7 +621,7 @@ function deleteArea(data) {
 
 
 function loadAreaMap(){
-    const areaMap = new AMap.Map('container', {
+    areaMap = new AMap.Map('container', {
         resizeEnable: true,
         center: [116.397428, 39.90923],
         zoom: 18
@@ -650,7 +653,44 @@ function loadAreaMap(){
 }
 
 function beginAddArea() {
-    rectangleEditor.open();
+    if(rectangleEditor !== undefined){
+        rectangleEditor.open();
+    }
+}
+
+function searchCity(){
+    let selectCode = $("#add-area-select-code").val();
+    let keywords = $("#add-area-search").val();
+    if(keywords !== undefined && selectCode !== undefined){
+        let sendData = {"keywords" : keywords, "code" : selectCode};
+        $.ajax({
+            type: 'POST',
+            url: inputTipsPath,
+            data: JSON.stringify(sendData),
+            contentType: 'application/json',
+            async : false,
+            success: function (data) {
+                if (data.code == Codes.successResponse) {
+                    debugger;
+                    initSelection("add-area-search-result",data.result);
+                }
+                else{
+                    showErrorData(data);
+                }
+            }
+        });
+    }
+}
+
+function refreshAreaName(){
+    let selectedDiv = $("#add-area-search-result").find("option:selected");
+    let selectedText = selectedDiv.text();
+    let selectedValue = selectedDiv.val();
+    if(!checkDataEmpty(selectedText) && !checkDataEmpty(selectedValue)){
+        let locations = selectedValue.replace(" ","").split(",");
+        areaMap.setZoomAndCenter(18,[locations[0],locations[1]]);
+        $("#add-area-modal-name").val(selectedText + "停车点");
+    }
 }
 
 /**
@@ -659,14 +699,27 @@ function beginAddArea() {
 function addArea() {
     let positionA = rectangleEditor.Fb[0].Ch.label.content.replace(" ","").split(',');
     let positionB = rectangleEditor.Fb[1].Ch.label.content.replace("","").split(',');
-    let northPoint =  parseFloat(positionB[1]);
-    let eastPoint = parseFloat(positionB[0]);
-    let southPoint = parseFloat(positionA[1]);
-    let westPoint = parseFloat(positionA[0]);
-    let sendData = {};
-
-
-
+    let name = $("#add-area-modal-name").val();
+    let cityId = $("#add-area-modal-cityId").val();
+    let type = $("#add-area-modal-type").val();
+    if(name !== undefined && cityId !== undefined){
+        let sendData = {"name" : name,"northPoint" : parseFloat(positionB[1]), "southPoint" : parseFloat(positionA[1]), "westPoint" :parseFloat(positionA[0]), "eastPoint" : parseFloat(positionB[0]),"cityId": cityId, "type" : type};
+        $.ajax({
+            type: 'POST',
+            url: areasPath,
+            data: JSON.stringify(sendData),
+            async : false,
+            contentType: 'application/json',
+            success: function (data) {
+                if (data.code == Codes.successResponse) {
+                    alert(data.message);
+                    window.location.reload();
+                }
+                else
+                    showErrorData(data);
+            }
+        });
+    }
 }
 
 /**
@@ -842,7 +895,7 @@ function initTaskUser(type){
  * 加载所有车辆的位置信息
  */
 function loadSimpleBicycles() {
-    const map = new AMap.Map('container', {
+    var map = new AMap.Map('container', {
         resizeEnable: true,
         zoom:11,
         center: [113.50927,34.810942]
@@ -862,22 +915,22 @@ function loadSimpleBicycles() {
                 });
                 for(let i=0;i<result.length;i+=1){
                     let marker = new AMap.Marker({
-                                position : [result[i].locationX, result[i].locationY],
-                                icon : allBicycleStatus.find((element) => (element.name == result[i].status)).icon
-                            });
-                        let title = "车辆信息", content = [];
-                        content.push("编号 : " + result[i].id);
-                        content.push("状态 : " + result[i].status);
-                        let infoWindow = new AMap.InfoWindow({
-                            isCustom: true,
-                            content: createInfoWindow(title, content.join("<br/>")),
-                            offset: new AMap.Pixel(0, -30)
-                        });
-                        marker.on('click', function () {
-                            infoWindow.open(map, marker.getPosition());
-                        });
-                        if(result[i].status === "使用中") marker.setAnimation('AMAP_ANIMATION_BOUNCE');
-                        markers.push(marker);
+                        position : [result[i].locationX, result[i].locationY],
+                        icon : allBicycleStatus.find((element) => (element.name == result[i].status)).icon
+                    });
+                    let title = "车辆信息", content = [];
+                    content.push("编号 : " + result[i].id);
+                    content.push("状态 : " + result[i].status);
+                    let infoWindow = new AMap.InfoWindow({
+                        isCustom: true,
+                        content: createInfoWindow(title, content.join("<br/>")),
+                        offset: new AMap.Pixel(0, -30)
+                    });
+                    marker.on('click', function () {
+                        infoWindow.open(map, marker.getPosition());
+                    });
+                    if(result[i].status === "使用中") marker.setAnimation('AMAP_ANIMATION_BOUNCE');
+                    markers.push(marker);
                 }
                 map.plugin(["AMap.MarkerClusterer"],function() {
                     cluster = new AMap.MarkerClusterer(map,markers);

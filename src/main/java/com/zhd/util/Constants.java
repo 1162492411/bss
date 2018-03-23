@@ -27,6 +27,8 @@ public class Constants {
     public static final String TIP_NO_SUCH_USER = "不存在该用户";
     public static final String TIP_NO_PERMISSION = "权限不足";
     public static final String TIP_NO_ACCOUNT_BALANCE = "账户余额不足";
+    public static final String VALUE_USER_DEFAULT_AVATAR = "http://7xshpr.com1.z0.glb.clouddn.com/default_avatar.png";
+    public static final Integer VALUE_USER_DEFAULT_CREDIT = 100;
 
     //journey
     public static final String[] JOURNEY_KEYS = {"id","uId","bId","rideTime","distance","amount"};
@@ -66,5 +68,12 @@ public class Constants {
     //deposit
     public static final String TIP_ENOUGH_DEPOSIT = "已缴纳过押金";
     public static final String TIP_NO_DEPOSIT = "未缴纳押金";
+
+    //ali
+    public static final String TIP_ALI_ERROR = "连接阿里接口失败！请联系服务员";
+    public static final String KEY_ALI_SERVICE_KEY = "d8c7b9bbe2d7d3811c75733a465ff91b";
+    public static final double VALUE_DEFAULT_LOCATION_X = 116.40739440917969000;
+    public static final double VALUE_DEFAULT_LOCATION_Y = 39.90420913696289000;
+
 
 }

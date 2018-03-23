@@ -19,7 +19,7 @@ public enum UserTypeEnum implements IEnum{
 
     STAFF(2,"员工"),
 
-    MANAGER(3,"管理员");
+    ADMIN(3,"管理员");
 
     private int code;
     private String type;

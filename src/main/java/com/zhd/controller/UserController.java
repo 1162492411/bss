@@ -36,7 +36,7 @@ public class UserController extends BaseController{
     public JSONResponse list(@PathVariable("current") int pageNum, Page<User> page) {
         try {
             if(pageNum <= 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
-            return renderSuccess(UserConvert.convertToVOPageInfo(userService.selectPage(page, new EntityWrapper<User>().setSqlSelect("id,name,type,status").ne("type", UserTypeEnum.MANAGER.getCode()).orderBy("status", false))));
+            return renderSuccess(UserConvert.convertToVOPageInfo(userService.selectPage(page, new EntityWrapper<User>().setSqlSelect("id,name,type,status").ne("type", UserTypeEnum.ADMIN.getCode()).orderBy("status", false))));
         } catch (Exception e) {
             return renderError(e.getMessage());
         }

@@ -55,11 +55,13 @@ public class City implements Serializable,BaseModel{
     /**
      * 中心位置X
      */
+    @TableField("center_x")
     private BigDecimal centerX;
 
     /**
      * 中心位置Y
      */
+    @TableField("center_y")
     private BigDecimal centerY;
 
 }

@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <title>共享单车管理平台--车辆分布</title>
-    <link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}" />
-    <link rel="stylesheet" th:href="@{/static/css/font-awesome.min.css}" />
-    <link rel="stylesheet" th:href="@{/static/css/ionicons.min.css}" />
-    <link rel="stylesheet" th:href="@{/static/css/AdminLTE.min.css}" />
-    <link rel="stylesheet" th:href="@{/static/css/skins/skin-blue.min.css}" />
-    <link rel="stylesheet" th:href="@{/static/css/bss.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/static/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" th:href="@{/static/css/ionicons.min.css}"/>
+    <link rel="stylesheet" th:href="@{/static/css/AdminLTE.min.css}"/>
+    <link rel="stylesheet" th:href="@{/static/css/skins/skin-blue.min.css}"/>
+    <link rel="stylesheet" th:href="@{/static/css/bss.css}"/>
     <link rel="stylesheet" th:href="@{/static/css/main1119.css}"/>
+    <link rel="stylesheet" th:href="@{/static/css/city-picker.css}"/>
     <style type="text/css">
         html,
         body {
@@ -36,37 +37,23 @@
             height: 100%;
         }
 
-        #start,
-        #stop,
-        #right input {
-            margin: 4px;
-            margin-left: 15px;
-        }
-
-        .title {
+        /*#start,*/
+        /*#stop,*/
+        /*#right input {*/
+        /*margin: 4px;*/
+        /*margin-left: 15px;*/
+        /*}*/
+        .innerTitle {
             width: 100%;
-            background-color: #dadada
-        }
-
-        button {
-            border: solid 1px;
-            margin-left: 15px;
-            background-color: #dadafa;
+            font-size: 22px;
+            background-color: #dadada;
+            margin: 5px;
         }
 
         .c {
             font-weight: 600;
             padding-left: 15px;
             padding-top: 4px;
-        }
-
-        #lnglat,
-        #address,
-        #nearestJunction,
-        #nearestRoad,
-        #nearestPOI,
-        .title {
-            padding-left: 15px;
         }
     </style>
 </head>
@@ -92,25 +79,68 @@
         <!-- Main content -->
         <section class="content">
 
-                <div id="container" style="width: 75%" class="map" tabindex="0">
-                </div>
-                <div id="right">
-                    <div id="add-area-form">
-                        <div class='title'>区域信息</div>
-                        <!--<div class='c'>最北部:</div>-->
-                        <!--<div id='add-area-modal-northPoint'></div>-->
-                        <!--<div class='c'>最南部:</div>-->
-                        <!--<div id='add-area-modal-southPoint'></div>-->
-                        <!--<div class='c'>最西部:</div>-->
-                        <!--<div id='add-area-modal-westPoint'></div>-->
-                        <!--<div class='c'>最东部:</div>-->
-                        <!--<div id='add-area-modal-eastPoint'></div>-->
-                        <div class='c'>名称:</div>
-                        <input id="add-area-modal-name" />
-                        <button id="start" onclick="beginAddArea()">开始选区</button>
-                        <button id='stop' onclick="addArea()">添加该点</button>
+            <div id="container" style="width: 75%" class="map" tabindex="0">
+            </div>
+            <div id="right">
+                <div id="add-area-form">
+                    <div class="innerTitle">区划选择</div>
+                    <div class="c">
+                        <div class="form-inline">
+                            <div id="distpicker">
+                                <div class="form-group">
+                                    <div style="position: relative;">
+                                        <input id="city-picker3" class="form-control" type="text"
+                                               data-toggle="city-picker"/>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="form-group" style="margin:10px">
+                                    <button class="btn btn-warning" id="reset" type="button">重置</button>
+                                    <button class="btn btn-danger" id="destroy" type="button">确定</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='innerTitle'>区划内搜索</div>
+                    <div class="form-horizontal">
+                        <div class="form-inline" style="margin: 10px">
+                            <input id="add-area-search" class="form-control" style="width:60%" placeholder="请输入关键字搜索"/>
+                            <button class="btn btn-info" onclick="searchCity()">搜索</button>
+                        </div>
+                        <div class="form-inline" style="margin: 10px;">
+                            <select id="add-area-search-result" class="form-control" style="width:60%"
+                                    placeholder="选择一个搜索结果"></select>
+                            <button class="btn btn-info" style="margin-left: 5px" onclick="refreshAreaName()">选择</button>
+                        </div>
+                    </div>
+                    <div class='innerTitle'>停车点信息</div>
+                    <div class="form-horizontal">
+                        <input type="hidden" id="add-area-modal-cityId"/>
+                        <div class="form-group">
+                            <label for="add-area-select-code" class="col-sm-3 control-label">区划编码</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="add-area-select-code" disabled="disabled"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="add-area-select-code" class="col-sm-3 control-label">停车点类型</label>
+                            <div class="col-sm-9">
+                                <select id="add-area-modal-type" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="add-area-modal-name" class="col-sm-3 control-label">停车点名称</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="add-area-modal-name"/>
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-sm-offset-2 text-center">
+                            <button id="start" class="btn btn-info" onclick="beginAddArea()">开始划区</button>
+                            <button id="stop" class="btn btn-info" onclick="addArea()">添加该点</button>
+                        </div>
                     </div>
                 </div>
+            </div>
         </section>
         <!-- /.content -->
 
@@ -128,16 +158,18 @@ immediately after the control sidebar -->
 <script th:src="@{/static/js/bootstrap.min.js}"></script>
 <script th:src="@{/static/js/adminlte.min.js}"></script>
 <script th:src="@{/static/js/data.js}"></script>
-
 <script th:src="@{/static/js/es5.min.js}"></script>
-<!--<script type="text/javascript" th:src="@{/static/js/addToolbar.js}"></script>-->
+<script th:src="@{/static/js/city-picker.data.js}"></script>
+<script th:src="@{/static/js/city-picker.js}"></script>
+<script th:src="@{/static/js/city-picker-main.js}"></script>
 <script th:src="@{http://webapi.amap.com/maps?v=1.4.5&amp;key=06c804ecdb67c6ace2638c173c526a43&amp;plugin=AMap.RectangleEditor}"></script>
 <script src="//webapi.amap.com/ui/1.0/main.js?v=1.0.11"></script>
+<script th:src="@{/static/js/bss.js}"></script>
 <script>
     $(document).ready(function () {
         loadAreaMap();
+        initSelection("add-area-modal-type", allAreaType);
     });
 </script>
-<script th:src="@{/static/js/bss.js}"></script>
 </body>
 </html>

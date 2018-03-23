@@ -3,6 +3,7 @@ package com.zhd.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.zhd.pojo.City;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -12,21 +13,19 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.junit.Test;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 行政区划工具类，用来将从阿里行政区划接口取到的json信息转化为SQL入库。
  */
 public class CityUtil {
 
-    private String apiPath = "http://restapi.amap.com/v3/config/district?key=d8c7b9bbe2d7d3811c75733a465ff91b";//阿里行政区划接口根路径(含Key)
+    private static String apiPath = "http://restapi.amap.com/v3/config/district?key=d8c7b9bbe2d7d3811c75733a465ff91b";//阿里行政区划接口根路径(含Key)
+    private static int idValue = 1;
 
-    public JSONObject getResponse(String keywords, String code,int subdistrict) {
+    public static JSONObject getResponse(String keywords, String code,int subdistrict) {
         String url = apiPath;
         if (StringUtils.isNotBlank(keywords) && StringUtils.isNotBlank(code)) {
             url += "&keywords=" + keywords + "&filter=" + code;
@@ -55,100 +54,63 @@ public class CityUtil {
         return new JSONObject();
     }
 
-    @Test
-    public void testGet() {
-        System.out.println(getResponse("河南", "410000",1));
-    }
-
     /**
      * 从jsonobject中获取有效信息
-     * @param object
+     * @param jsonObject
      * @return [centerY=39.90420913696289, adcode=110000, centerX=116.40739440917969, name=北京市]
      */
-    public Map<String,Object> getInfo(JSONObject object){
-        Map<String, Object> map = new HashMap<>();
-        JSONObject jsonObject = object;
-        map.put("name",jsonObject.getString("name"));
-        map.put("adcode", jsonObject.getInteger("adcode"));
+    public static City convertToCity(JSONObject jsonObject,Integer parentId){
+        City city = new City();
+        city.setId(++idValue);
+        city.setParentId(parentId);
+        city.setName(jsonObject.getString("name"));
+        city.setCode(jsonObject.getInteger("adcode"));
         String[] location = jsonObject.getString("center").replaceAll(" ","").split(",");
         if(location.length >= 2){
-            map.put("centerX", BigDecimal.valueOf(Float.parseFloat(location[0])));
-            map.put("centerY", BigDecimal.valueOf(Float.parseFloat(location[1])));
+            city.setCenterX(BigDecimal.valueOf(Float.parseFloat(location[0])));
+            city.setCenterY(BigDecimal.valueOf(Float.parseFloat(location[1])));
         }
-        String level;
+        Integer level;
         switch(jsonObject.getString("level")){
-            case "country" : level = "0";break;
-            case "province" : level = "1"; break;
-            case "city" : level = "2"; break;
-            case "district" : level = "3"; break;
-            case "street" : level = "4"; break;
-            default: level = "";
+            case "country" : level = 0;break;
+            case "province" : level = 1; break;
+            case "city" : level = 2; break;
+            case "district" : level = 3; break;
+            case "street" : level = 4; break;
+            default: level = -1;
         }
-        map.put("level", level);
-        map.put("former", jsonObject.getString("level"));
-        return map;
-    }
-
-    /**
-     * 获取所有省级行政区划的信息
-     * @return [{centerY=39.90420913696289, adcode=110000, centerX=116.40739440917969, name=北京市},.......]
-     */
-    public List<Map<String,Object>> getAllProvince() {
-        JSONObject countryObject = getResponse(null, null,1);
-        JSONArray provinces = countryObject.getJSONArray("districts");
-        List<Map<String,Object>> provinceInfos = new ArrayList<>(provinces.size());//省份信息
-        for (int i = 0; i < provinces.size(); i++) {
-            provinceInfos.add(getInfo(provinces.getJSONObject(i)));
-        }
-        return provinceInfos;
-    }
-
-    /**
-     * 获取某区域的所有下一级行政区划信息
-     * @param city
-     * @return [{centerY=36.09757614135742, adcode=410500, centerX=114.39239501953125,....]
-     */
-    public List<Map<String,Object>> getAllCityByParent(Map<String, Object> city){
-        String name = String.valueOf(city.get("name"));
-        String adcode = String.valueOf(city.get("adcode"));
-        JSONObject response = getResponse(name,adcode,1);
-        JSONArray cities = response.getJSONArray("districts");
-        List<Map<String,Object>> infos = new ArrayList<>(cities.size());//城市信息
-        for (int i = 0; i < cities.size(); i++) {
-            infos.add(getInfo(cities.getJSONObject(i)));
-        }
-        return infos;
+        city.setLevel(level);
+        return city;
     }
 
     //通过省份获取该省所有市 县/区 镇的信息
-    @Test
-    public void getAllQusByProvince(){
-        List<Map<String,Object>> results = new ArrayList<>();//存储所有最终信息
+    public static List<City> getAllDistrictsByProvince(){
+        List<City> results = new ArrayList<>();//存储所有最终信息
 
         JSONObject countryObject = getResponse(null, null,3);
         JSONArray provinceArray = countryObject.getJSONArray("districts");//获取省份列表
+        int countryId = 1;
         for(int i = 0; i < provinceArray.size(); i++){
             JSONObject provinceObject = provinceArray.getJSONObject(i);//获取某省的信息
-             results.add(getInfo(provinceObject));//todo :将该省信息加入最终信息中
-//            String provinceName = String.valueOf(provinceObject.get("name"));
-//            String provinceAdcode = String.valueOf(provinceObject.get("adcode"));
-//            JSONArray cityArray = getResponse(provinceName, provinceAdcode,2).getJSONArray("districts");
+            City province = convertToCity(provinceObject, countryId);
+            results.add(province);//将该省信息加入最终信息中
             JSONArray cityArray = provinceObject.getJSONArray("districts");//获取该省的城市列表
             for (int j = 0; j < cityArray.size(); j++) {
                 JSONObject cityObject = cityArray.getJSONObject(j);//获取该省某城市的信息
-                results.add(getInfo(cityObject));//todo : 将该城市信息加入最终信息中
-                JSONArray quArray = cityObject.getJSONArray("districts");//获取该省某城市的区/县列表
-                for (int k = 0; k < quArray.size(); k++) {
-                    JSONObject quObject = quArray.getJSONObject(k);
-                    results.add(getInfo(quObject));//todo : 将该区/县信息加入最终信息中
+                City city = convertToCity(cityObject, province.getId());
+                results.add(city);//将该城市信息加入最终信息中
+                JSONArray districtArray = cityObject.getJSONArray("districts");//获取该省某城市的区/县列表
+                for (int k = 0; k < districtArray.size(); k++) {
+                    JSONObject districtObject = districtArray.getJSONObject(k);
+                    if(!districtObject.getString("level").equals("street")){
+                        City district = convertToCity(districtObject, city.getId());
+                        results.add(district);//将该区/县信息加入最终信息中(排除某些城市的子行政区划直接为街道的情况)
+                    }
                 }
             }
         }
-
-        System.out.println("generate result-->\n" + JSON.toJSONString(results));
+        return results;
     }
-
-
 
 
 

@@ -17,11 +17,12 @@
         <result column="end_location_x" property="endLocationX" />
         <result column="end_location_y" property="endLocationY" />
         <result column="status" property="status" />
+        <result column="path" property="path" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, user_id AS userId, bicycle_id AS bicycleId, start_time AS startTime, ride_time AS rideTime, distance, amount, end_time AS endTime, start_location_x as startLocationX, start_location_y as startLocationY, end_location_x as endLocationX, end_location_y as endLocationY, status
+        id, user_id AS userId, bicycle_id AS bicycleId, start_time AS startTime, ride_time AS rideTime, distance, amount, end_time AS endTime, start_location_x as startLocationX, start_location_y as startLocationY, end_location_x as endLocationX, end_location_y as endLocationY, status, path
     </sql>
 
 

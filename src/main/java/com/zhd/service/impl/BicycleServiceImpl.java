@@ -55,7 +55,7 @@ public class BicycleServiceImpl extends ServiceImpl<BicycleMapper, Bicycle> impl
 
     @Override
     public boolean returnBicycle(Integer bicycleId, String userId, Journey journey) {
-        return bicycleMapper.updateById(Bicycle.builder().id(bicycleId).status(BicycleStatusEnum.UNUSED.getCode()).build()) > 0 && journeyService.updateById(journey) && userService.reduceAccount(userId, journey.getAmount());
+        return bicycleMapper.updateById(Bicycle.builder().id(bicycleId).locationX(journey.getEndLocationX()).locationY(journey.getEndLocationY()).status(BicycleStatusEnum.UNUSED.getCode()).build()) > 0 && journeyService.updateById(journey) && userService.reduceAccount(userId, journey.getAmount());
     }
 
     @Override

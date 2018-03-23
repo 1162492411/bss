@@ -11,11 +11,12 @@
         <result column="west_point" property="westPoint" />
         <result column="east_point" property="eastPoint" />
         <result column="type" property="type" />
+        <result column="city_id" property="cityId" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, north_point AS northPoint, south_point AS southPoint, west_point AS westPoint, east_point AS eastPoint, type
+        id, name, north_point AS northPoint, south_point AS southPoint, west_point AS westPoint, east_point AS eastPoint, type, city_id as cityId
     </sql>
 
     <!--<insert id="insertCollection" parameterType="java.util.List">-->

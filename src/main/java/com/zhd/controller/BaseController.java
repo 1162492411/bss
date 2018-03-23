@@ -45,7 +45,9 @@ public class BaseController {
      * @return data 响应结果
      */
     protected JSONResponse renderSuccess(Object result) {
-        if(result == null) throw new NullPointerException(Constants.TIP_EMPTY_DATA);
+        if(result == null) {
+            throw new NullPointerException(Constants.TIP_EMPTY_DATA);
+        }
         return renderResult(ResponseCodeEnum.SUCCESS.getCode(),ResponseCodeEnum.SUCCESS.getMsg(), result);
     }
 

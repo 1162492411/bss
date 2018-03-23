@@ -30,6 +30,11 @@ public class CityServiceImpl extends ServiceImpl<CityMapper, City> implements IC
 
     @Override
     public List<City> getAllSimpleCityByParent(Integer parentId) {
-        return cityMapper.getAllsimpleCityByParent(parentId);
+        return cityMapper.getAllSimpleCityByParent(parentId);
+    }
+
+    @Override
+    public City getSimpleByCode(Integer code) {
+        return cityMapper.selectSimpleByCode(code);
     }
 }

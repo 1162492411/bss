@@ -105,9 +105,11 @@ public class MockTest extends BssTestEnvironment {
 
 
 
+
+
     @Test
-    public void te() throws Exception{
-        System.out.println(journeyService.getContinuedJourneys("23456789011").size());
+    public void test() throws Exception{
+//        mockMvc.perform(post("/city/inputtips"))
     }
 
 
