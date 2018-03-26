@@ -125,20 +125,12 @@ public class BicycleController extends BaseController{
             if(journeyService.getContinuedJourneys(userid).size() > 0) {
                 return renderError(Constants.TIP_HAS_NO_END_JOURNEY);
             }
-            if(bicycleService.borrowBicycle(borrowBicycle, userid)){
-                Bicycle bicycle = bicycleService.selectById(borrowBicycle.getId());
-                Journey journey = Journey.builder().bicycleId(borrowBicycle.getId()).userId(userid).startTime(TypeUtils.castToString(System.currentTimeMillis())).startLocationX(bicycle.getLocationX()).startLocationY(bicycle.getLocationY()).build();
-                journeyService.insert(journey);
-                return renderSuccess(journey);
-            }
-            else{
-                return renderError(Constants.TIP_BORROW_BICYCLE_ERROR);
-            }
+            Journey journey = bicycleService.borrowBicycle(borrowBicycle, userid);
+            return journey != null ? renderSuccess(journey) : renderError(Constants.TIP_BORROW_BICYCLE_ERROR);
         }catch (Exception e){
             return renderError(e.getMessage());
         }
     }
-
 
     @RequestMapping("return/{bicycleId}")
     public JSONResponse returnBicycle(@PathVariable Integer bicycleId, @RequestBody Journey journey, HttpSession session){

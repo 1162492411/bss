@@ -64,10 +64,14 @@ public class Constants {
     //rechargeAccount
     public static final String[] RECHARGE_KEYS = {"id","userId","type","rechargeTime","amount","payId","payStatus"};
     public static final String[] RECHARGE_NAMES = {"记录编号","账户","渠道","时间","金额","订单号","充值结果"};
+    public static final String TIP_RECHARGE_ACCOUNT_ERROR = "充值账户失败";
 
     //deposit
     public static final String TIP_ENOUGH_DEPOSIT = "已缴纳过押金";
     public static final String TIP_NO_DEPOSIT = "未缴纳押金";
+    public static final String TIP_RECHARGE_DEPOSIT_ERROR = "缴纳押金失败";
+    public static final String TIP_REFUND_DEPOSIT_ERROR = "提取押金失败";
+
 
     //ali
     public static final String TIP_ALI_ERROR = "连接阿里接口失败！请联系服务员";

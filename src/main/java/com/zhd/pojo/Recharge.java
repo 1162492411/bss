@@ -9,7 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -55,16 +57,7 @@ public class Recharge implements Serializable, BaseModel{
      * 充值金额
      */
     @NotNull(groups = {Insert.class, Update.class})
+    @Range(min = 1, max = 9999, groups = {Insert.class, Update.class})
     private BigDecimal amount;
-    /**
-     * 支付方订单编号
-     */
-    @TableField("pay_id")
-    private String payId;
-    /**
-     * 支付结果
-     */
-    @TableField("pay_status")
-    private Integer paStatus;
 
 }

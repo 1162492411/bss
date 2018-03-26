@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zhd.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.List;
  * @since 2018-02-05
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
 
     @Autowired
@@ -39,23 +41,37 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public boolean checkDepositBalance(String id) throws NoEnoughDepositException, NoSuchUserException {
         User user = userMapper.selectOne(User.builder().id(id).status(UserStatusEnum.NORMAL.getCode()).build());
-        if(user == null) throw new NoSuchUserException();
-        else if(user.getDepositBalance().intValue() < Constants.STANDARD_DEPOSIT.intValue()) throw new NoEnoughDepositException();
-        else return false;
+        if(user == null){
+            throw new NoSuchUserException();
+        }
+        else if(user.getDepositBalance().intValue() < Constants.STANDARD_DEPOSIT.intValue()) {
+            throw new NoEnoughDepositException();
+        }
+        else{
+            return false;
+        }
     }
 
     @Override
     public boolean checkAccountBalance(String id) throws NoSuchUserException, NoEnoughAccountBalanceException {
         User user = findUser(id);
-        if(user.getAccountBalance().doubleValue() < 0) throw new NoEnoughAccountBalanceException();
-        else return false;
+        if(user.getAccountBalance().doubleValue() < 0) {
+            throw new NoEnoughAccountBalanceException();
+        }
+        else{
+            return false;
+        }
     }
 
     @Override
     public User findUser(String id) throws NoSuchUserException {
         User user = userMapper.selectById(id);
-        if(user == null) throw new NoSuchUserException();
-        else return user;
+        if(user == null) {
+            throw new NoSuchUserException();
+        }
+        else{
+            return user;
+        }
     }
 
     @Override

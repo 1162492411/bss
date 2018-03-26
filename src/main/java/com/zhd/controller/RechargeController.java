@@ -29,8 +29,6 @@ import javax.servlet.http.HttpSession;
 public class RechargeController extends BaseController{
     @Autowired
     private IRechargeService rechargeService;
-    @Autowired
-    private IUserService userService;
 
     /**
      * 查看充值记录
@@ -42,7 +40,9 @@ public class RechargeController extends BaseController{
     @GetMapping("list/{current}")
     public JSONResponse list(@PathVariable("current") int pageNum, Page<Recharge> page, HttpSession session) {
         try {
-            if(pageNum <= 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+            if(pageNum <= 0) {
+                throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+            }
             return renderSuccess(RechargeConvert.convertToVOPageInfo(rechargeService.selectPage(page, new EntityWrapper<Recharge>().eq("user_id", String.valueOf(session.getAttribute("userid"))))));
         } catch (Exception e) {
             return renderError(e.getMessage());
@@ -62,8 +62,7 @@ public class RechargeController extends BaseController{
                 return renderError(bindingResult.getFieldError().getDefaultMessage());
             } else {
                 record.setRechargeTime(TypeUtils.castToString(System.currentTimeMillis()));
-                if(rechargeService.insert(record) && userService.rechargeAccount(record.getUserId(), record.getAmount())) return renderSuccess();
-                else return renderError();
+                return rechargeService.recharge(record) ? renderSuccess() : renderError();
             }
         } catch (Exception e) {
             return renderError(e.getMessage());

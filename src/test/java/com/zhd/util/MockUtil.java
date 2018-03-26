@@ -18,13 +18,17 @@ import java.util.List;
  */
 public class MockUtil extends BssTestEnvironment{
 
-    @Test
-    public void mockCity(){
-        List<City> districts =  CityUtil.getAllDistrictsByProvince();
-        cityService.insertBatch(districts);//设置时需要将实体类中idType设置为input,SQL连接设置rewriteBatchedStatements参数
+    /**
+     * 生成行政区划数据
+     */
+    public List<City> mockCity(){
+        return CityUtil.getAllDistrictsByProvince();
     }
 
-    public static List<User> mockUsers(){
+    /**
+     * 生成各类用户
+     */
+    public List<User> mockUsers(){
         List<User> users = new ArrayList<>();
         //mock normal user
         Long normalId = Long.parseLong("11223344556");
@@ -37,8 +41,8 @@ public class MockUtil extends BssTestEnvironment{
             String avatar = Constants.VALUE_USER_DEFAULT_AVATAR;
             int credit = Constants.VALUE_USER_DEFAULT_CREDIT;
             int status = UserStatusEnum.NORMAL.getCode();
-            BigDecimal accountBalance = BigDecimal.valueOf(RandomUtils.nextInt(0,100));
-            BigDecimal depositBalance = RandomUtils.nextInt(0,100) >= 80 ? Constants.STANDARD_DEPOSIT : BigDecimal.valueOf(0);
+            BigDecimal accountBalance = BigDecimal.ZERO;
+            BigDecimal depositBalance = BigDecimal.ZERO;
             User user = User.builder().id(id).name(name).password(password).type(type).avatar(avatar).credit(credit).status(status).accountBalance(accountBalance).depositBalance(depositBalance).build();
             users.add(user);
         }
@@ -74,13 +78,21 @@ public class MockUtil extends BssTestEnvironment{
             User user = User.builder().id(id).name(name).password(password).type(type).avatar(avatar).credit(credit).status(status).accountBalance(accountBalance).depositBalance(depositBalance).build();
             users.add(user);
         }
-        System.out.println(JSON.toJSONString(users));
         return users;
     }
 
     @Test
     public void mockJourneys(){
 
+    }
+
+    /**
+     * 保存各种生成的模拟数据到数据库
+     */
+    @Test
+    public void insertMockData(){
+        cityService.insertBatch(mockCity());
+        userService.insertBatch(mockUsers());
     }
 
 

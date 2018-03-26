@@ -13,4 +13,8 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IDepositService extends IService<Deposit> {
 
+    boolean recharge(Deposit deposit) throws Exception;//用户缴纳押金
+
+    boolean refund(Deposit deposit) throws Exception;//用户提取押金
+
 }

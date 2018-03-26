@@ -48,7 +48,9 @@ public class DepositController extends BaseController {
     @GetMapping("list/{current}")
     public JSONResponse list(@PathVariable("current") int pageNum, Page<Deposit> page) {
         try {
-            if (pageNum <= 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+            if (pageNum <= 0) {
+                throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+            }
             return renderSuccess(DepositConvert.convertToVOPageInfo(depositService.selectPage(page)));
         } catch (Exception e) {
             return renderError(e.getMessage());
@@ -69,22 +71,24 @@ public class DepositController extends BaseController {
                 return renderError(bindingResult.getFieldError().getDefaultMessage());
             } else {
                 String userid = String.valueOf(session.getAttribute("userid"));
-                if (StringUtils.isBlank(userid)) throw new NotLoginException();
+                if (StringUtils.isBlank(userid)) {
+                    throw new NotLoginException();
+                }
                 deposit.setUserId(userid);
                 deposit.setOperateTime(TypeUtils.castToString(System.currentTimeMillis()));
                 if (DepositTypeEnum.IN.getCode() == deposit.getType()) {
+                    //交押金
                     if(userService.selectById(userid).getDepositBalance().intValue() >  Constants.STANDARD_DEPOSIT.intValue()){
                         return renderError(Constants.TIP_ENOUGH_DEPOSIT);
                     }
-                    userService.rechargeDeposit(deposit.getUserId(), Constants.STANDARD_DEPOSIT);
-                    depositService.insert(deposit);
+                    depositService.recharge(deposit);
                     return renderSuccess(deposit);
                 } else if (DepositTypeEnum.OUT.getCode() == deposit.getType()) {
+                    //取押金
                     if(userService.selectById(userid).getDepositBalance().intValue() <= 0){
                         return renderError(Constants.TIP_NO_DEPOSIT);
                     }
-                    userService.refundDeposit(deposit.getUserId(), Constants.STANDARD_DEPOSIT);
-                    depositService.insert(deposit);
+                    depositService.refund(deposit);
                     return renderSuccess(deposit);
                 } else {
                     return renderError(Constants.ILLEGAL_ARGUMENTS);

@@ -3,6 +3,7 @@ package com.zhd.service;
 import com.zhd.exceptions.NoEnoughAccountBalanceException;
 import com.zhd.exceptions.NoEnoughDepositException;
 import com.zhd.exceptions.NoSuchUserException;
+import com.zhd.pojo.Deposit;
 import com.zhd.pojo.User;
 import com.baomidou.mybatisplus.service.IService;
 

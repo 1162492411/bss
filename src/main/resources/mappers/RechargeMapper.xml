@@ -9,13 +9,11 @@
         <result column="type" property="type" />
         <result column="recharge_time" property="rechargeTime" />
         <result column="amount" property="amount" />
-        <result column="pay_id" property="payId" />
-        <result column="pay_status" property="payStatus" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, u_id AS uId, type, recharge_time AS rechargeTime, amount, p_id AS pId, p_status AS pStatus
+        id, u_id AS uId, type, recharge_time AS rechargeTime, amount
     </sql>
 
 </mapper>

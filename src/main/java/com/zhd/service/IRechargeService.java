@@ -15,4 +15,6 @@ public interface IRechargeService extends IService<Recharge> {
 
     boolean checkRecharge(Integer id);
 
+    boolean recharge(Recharge recharge);//用户充值账户余额
+
 }
