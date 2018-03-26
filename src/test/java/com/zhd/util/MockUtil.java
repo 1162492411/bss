@@ -1,15 +1,19 @@
 package com.zhd.util;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.util.TypeUtils;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.zhd.BssTestEnvironment;
+import com.zhd.enums.BicycleStatusEnum;
+import com.zhd.enums.BicycleTypeEnum;
 import com.zhd.enums.UserStatusEnum;
 import com.zhd.enums.UserTypeEnum;
-import com.zhd.pojo.City;
-import com.zhd.pojo.User;
+import com.zhd.pojo.*;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,9 +85,74 @@ public class MockUtil extends BssTestEnvironment{
         return users;
     }
 
-    @Test
-    public void mockJourneys(){
+    /**
+     * 生成供应商
+     */
+    public List<Supplier> mockSuppliers(){
+        List<Supplier> supplierList = new ArrayList<>();
+        supplierList.add(Supplier.builder().brand("富士康").name("鸿富锦精密电子（郑州）有限公司").address("郑州市航空港区振兴路东侧综合保税区").build());
+        supplierList.add(Supplier.builder().brand("富士康").name("富士康科技集团(深圳龙华)工业园").address("深圳龙华").build());
+        supplierList.add(Supplier.builder().brand("富士康").name("富士康鸿观科技园").address("深圳市龙华新区观光路1412号").build());
+        supplierList.add(Supplier.builder().brand("富士康").name("阜宁富士康").address("江苏省阜宁县阜城镇").build());
+        supplierList.add(Supplier.builder().brand("富士康").name("富士康科技集团（上海）工业园").address("上海市松江出口加工区南乐路1925号").build());
+        supplierList.add(Supplier.builder().brand("富士康").name("富士康杭州科技园").address("钱塘江边杭州经济技术开发区").build());
+        supplierList.add(Supplier.builder().brand("科林").name("天津科林自行车有限公司").address("天津市滨海新区大港津歧路（南）133号").build());
+        supplierList.add(Supplier.builder().brand("科林").name("天津科林一厂").address("天津市").build());
+        supplierList.add(Supplier.builder().brand("科林").name("天津科林二厂").address("天津市").build());
+        supplierList.add(Supplier.builder().brand("科林").name("天津科林三厂").address("天津市").build());
+        supplierList.add(Supplier.builder().brand("飞鸽").name("天津飞鸽车业发展有限公司").address("天津市静海经济开发区八号路与静霸联络线交口").build());
+        supplierList.add(Supplier.builder().brand("飞鸽").name("天津飞鸽自行车一厂").address("天津").build());
+        supplierList.add(Supplier.builder().brand("飞鸽").name("天津飞鸽自行车二厂").address("天津").build());
+        supplierList.add(Supplier.builder().brand("飞鸽").name("天津飞鸽自行车三厂").address("天津").build());
+        supplierList.add(Supplier.builder().brand("飞鸽").name("天津飞鸽自行车四厂").address("天津").build());
+        supplierList.add(Supplier.builder().brand("飞鸽").name("天津飞鸽自行车五厂").address("天津").build());
+        supplierList.add(Supplier.builder().brand("飞鸽").name("天津飞鸽自行车六厂").address("天津").build());
+        supplierList.add(Supplier.builder().brand("凤凰").name("上海凤凰自行车有限公司").address("上海市长宁区福泉北路518号6座凤凰中心").build());
+        supplierList.add(Supplier.builder().brand("凤凰").name("上海凤凰自行车一厂").address("上海市长宁区福泉北路518号6座凤凰中心").build());
+        supplierList.add(Supplier.builder().brand("凤凰").name("上海凤凰自行车二厂").address("上海市长宁区福泉北路518号6座凤凰中心").build());
+        supplierList.add(Supplier.builder().brand("凤凰").name("上海凤凰自行车三厂").address("上海市长宁区福泉北路518号6座凤凰中心").build());
+        supplierList.add(Supplier.builder().brand("凤凰").name("上海凤凰自行车四厂").address("上海市长宁区福泉北路518号6座凤凰中心").build());
+        supplierList.add(Supplier.builder().brand("凤凰").name("上海凤凰自行车五厂").address("上海市长宁区福泉北路518号6座凤凰中心").build());
+        return supplierList;
+    }
 
+
+    @Test
+    public void testTime(){
+        for (int i = 0; i < 30; i++) {
+            System.out.println(TypeUtils.castToString(TestUtil.generateRandomStartTime()));
+        }
+    }
+
+    /**
+     * 生成车辆
+     */
+    public List<Bicycle> mockBicycles(){
+        List<Area> areaList = areaService.selectList(new EntityWrapper<>());
+        List<Bicycle> bicycleList = new ArrayList<>(100);
+        List<Supplier> supplierList = supplierService.selectList(new EntityWrapper<>());
+        for (int i = 0; i < 500; i++) {
+            Bicycle bicycle = new Bicycle();
+            bicycle.setStatus(BicycleStatusEnum.UNUSED.getCode());
+            int type = RandomUtils.nextInt(0,100);
+            if(type <= 80){
+                bicycle.setType(BicycleTypeEnum.FIRST_GENERATION_LITE.getCode());
+            }else{
+                bicycle.setType(BicycleTypeEnum.FIRST_GENERATION_CLASSICS.getCode());
+            }
+            Area area = areaList.get(RandomUtils.nextInt(0,areaList.size()));
+            bicycle.setLocationX(BigDecimal.valueOf(RandomUtils.nextDouble(area.getWestPoint().doubleValue(), area.getEastPoint().doubleValue())));
+            bicycle.setLocationY(BigDecimal.valueOf(RandomUtils.nextDouble(area.getSouthPoint().doubleValue(), area.getNorthPoint().doubleValue())));
+            bicycle.setBatch("1702010010" + (999 - i));
+            Supplier supplier = supplierList.get(RandomUtils.nextInt(0, supplierList.size()));
+            bicycle.setSupplier(supplier.getId());
+            bicycle.setServiceTime("0");
+            bicycle.setInvestmentTime(TypeUtils.castToString(TestUtil.generateRandomStartTime().toEpochSecond(ZoneOffset.ofHours(8))));
+            bicycle.setMileage(0);
+            System.out.println(JSON.toJSONString(bicycle));
+            bicycleList.add(bicycle);
+        }
+        return bicycleList;
     }
 
     /**
@@ -93,6 +162,9 @@ public class MockUtil extends BssTestEnvironment{
     public void insertMockData(){
         cityService.insertBatch(mockCity());
         userService.insertBatch(mockUsers());
+        supplierService.insertBatch(mockSuppliers());
+        //停车点需手动添加
+        bicycleService.insertBatch(mockBicycles());
     }
 
 

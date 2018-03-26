@@ -40,6 +40,12 @@ public class Supplier implements Serializable, BaseModel {
     private String name;
 
     /**
+     * 供应商品牌
+     */
+    @NotBlank(groups = {Insert.class, Update.class})
+    private String brand;
+
+    /**
      * 供应商地址
      */
     @NotBlank(groups = {Insert.class, Update.class})

@@ -1,2 +1,0 @@
-INSERT INTO db_bss.deposit (id, amount, type, user_id, operate_time) VALUES (1, 99.00, 1, '23456789011', '1520482193433');
-INSERT INTO db_bss.deposit (id, amount, type, user_id, operate_time) VALUES (2, 99.00, 2, '23456789011', '1520482227690');

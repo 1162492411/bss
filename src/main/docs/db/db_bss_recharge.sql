@@ -1,3 +1,0 @@
-INSERT INTO db_bss.recharge (id, user_id, type, recharge_time, amount, pay_id, pay_status) VALUES (2, '23456789011', 3, '1520413662715', 200.00, '234567890112', 1);
-INSERT INTO db_bss.recharge (id, user_id, type, recharge_time, amount, pay_id, pay_status) VALUES (3, '23456789011', 2, '1520414276355', 100.00, '234567890113', 1);
-INSERT INTO db_bss.recharge (id, user_id, type, recharge_time, amount, pay_id, pay_status) VALUES (4, '23456789011', 4, '1520414323625', 50.00, '234567890114', 1);

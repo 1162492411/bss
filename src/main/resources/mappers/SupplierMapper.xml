@@ -7,14 +7,15 @@
         <id column="id" property="id"/>
         <result column="name" property="name"/>
         <result column="address" property="address"/>
+        <result column="brand" property="brand" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, address
+        id, name, address, brand
     </sql>
 
     <select id="selectAllSupplier" resultType="java.util.HashMap">
-        select id, name from supplier
+        select id, name, brand from supplier
     </select>
 </mapper>

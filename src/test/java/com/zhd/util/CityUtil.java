@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 行政区划工具类，用来将从阿里行政区划接口取到的json信息转化为SQL入库。
+ * 行政区划工具类，用来将从阿里行政区划接口取到的json信息转化为实体类。
  */
 public class CityUtil {
 
@@ -83,10 +83,9 @@ public class CityUtil {
         return city;
     }
 
-    //通过省份获取该省所有市 县/区 镇的信息
+    //获取所有省份的所有市 县/区 镇的信息
     public static List<City> getAllDistrictsByProvince(){
         List<City> results = new ArrayList<>();//存储所有最终信息
-
         JSONObject countryObject = getResponse(null, null,3);
         JSONArray provinceArray = countryObject.getJSONArray("districts");//获取省份列表
         int countryId = 1;
@@ -110,13 +109,6 @@ public class CityUtil {
             }
         }
         return results;
-    }
-
-
-
-    @Test
-    public void test(){
-
     }
 
 }

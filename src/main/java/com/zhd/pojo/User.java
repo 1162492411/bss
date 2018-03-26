@@ -38,7 +38,7 @@ public class User implements Serializable,BaseModel {
     /**
      * 用户编号
      */
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.INPUT)
     @NotNull(groups = {Update.class, Delete.class})
     private String id;
     /**

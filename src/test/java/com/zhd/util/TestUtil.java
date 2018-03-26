@@ -15,9 +15,10 @@ public class TestUtil {
      * @return
      */
     public static LocalDateTime generateRandomStartTime(){
-        int randomYear = RandomUtils.nextInt(2010,2017);
+//        int randomYear = RandomUtils.nextInt(2016,2017);
+        int randomYear = 2017;
         int randomMonth = RandomUtils.nextInt(1,12);
-        int randomDay = RandomUtils.nextInt(1,31);
+        int randomDay = RandomUtils.nextInt(1,27);
         int randomHour = RandomUtils.nextInt(7,22);
         int randomMinute  = RandomUtils.nextInt(1,60);
         int randomSecond = RandomUtils.nextInt(1,60);
