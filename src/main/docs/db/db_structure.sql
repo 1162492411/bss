@@ -94,7 +94,8 @@ create table supplier
 	id int auto_increment comment '编号'
 		primary key,
 	name varchar(254) null comment '供应商名',
-	address varchar(254) null comment '供应商地址'
+	address varchar(254) null comment '供应商地址',
+	brand varchar(254) null comment '供应商品牌'
 )
 	comment '供应商表' engine=InnoDB charset=utf8
 ;

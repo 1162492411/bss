@@ -1,6 +1,7 @@
 package com.zhd.controller;
 
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.util.TypeUtils;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -15,6 +16,8 @@ import com.zhd.pojo.*;
 import com.zhd.service.*;
 import com.zhd.util.Constants;
 import com.zhd.util.ConsumptionUtil;
+import com.zhd.util.LocationUtils;
+import com.zhd.util.RandomUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -135,6 +138,7 @@ public class BicycleController extends BaseController{
     @RequestMapping("return/{bicycleId}")
     public JSONResponse returnBicycle(@PathVariable Integer bicycleId, @RequestBody Journey journey, HttpSession session){
         try{
+            System.out.println("receive-->" + JSON.toJSONString(journey));
             journey.setBicycleId(bicycleId);
             //check user
             String userid = String.valueOf(session.getAttribute("userid"));
@@ -147,13 +151,13 @@ public class BicycleController extends BaseController{
             journey.setId(formerJourney.getId());
             //prepare returnBicycle
             Area area = areaService.findArea(journey.getEndLocationX(),journey.getEndLocationY());
-            if(area == null || area.getType() == AreaTypeEnum.BAN.getCode()) {
-                return renderError(Constants.TIP_RETURN_TO_KNOWN_AREA);
-            }
             long startTime = Long.parseLong(formerJourney.getStartTime());
             long endTime = Long.parseLong(journey.getEndTime());
+            journey.setUserId(userid);
             journey.setRideTime(endTime - startTime + "");
-            journey.setAmount(ConsumptionUtil.calculate(journey.getRideTime(),area.getType(), user.getMonthlyTime()));
+            journey.setDistance(LocationUtils.getDistance(formerJourney.getStartLocationX().doubleValue(), formerJourney.getStartLocationY().doubleValue(), journey.getEndLocationX().doubleValue(), journey.getEndLocationY().doubleValue()));
+            journey.setAmount(ConsumptionUtil.calculate(journey.getRideTime(), area == null ? -1 : area.getType(), user.getMonthlyTime()));
+            journey.setPath(RandomUtil.generateRandomPath(formerJourney.getStartLocationX().doubleValue(),formerJourney.getStartLocationY().doubleValue(),journey.getEndLocationX().doubleValue(), journey.getEndLocationY().doubleValue()));
             journey.setStatus(JourneyStatusEnum.END.getCode());
             //returnBicycle
             bicycleService.returnBicycle(bicycleId, userid,journey);

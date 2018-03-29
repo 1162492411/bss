@@ -17,7 +17,7 @@ import java.util.List;
  */
 public interface IBicycleService extends IService<Bicycle> {
 
-    Journey borrowBicycle(Bicycle bicycle, String userid) throws NoSuchUserException, NoEnoughDepositException, NoSuchBicycleException, NotUseableBicycleException, NoEnoughAccountBalanceException;//借车
+    Journey borrowBicycle(Bicycle bicycle, String userid) throws Exception;//借车
 
     boolean returnBicycle(Integer bicycleId, String userId, Journey journey) throws Exception;//还车
 

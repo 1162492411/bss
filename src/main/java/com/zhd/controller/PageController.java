@@ -69,10 +69,10 @@ public class PageController {
     @RequestMapping("taskModule/tasks")
     public void toTasks(){}
 
-
-    @RequestMapping("city")
-    public String toCity(){
-        return "bicycleModule/city";
+    //todo : temp for dev
+    @RequestMapping("path")
+    public String toPath(){
+        return "orderModule/journeyPath";
     }
 
 }

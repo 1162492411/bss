@@ -4,6 +4,8 @@
 
 var rectangleEditor;//添加区域页面待矩形编辑框
 var areaMap;//添加区域页面的地图
+var bicycleMap;//车辆分布页面的地图
+var pathMap;// 行程页面的行程轨迹的地图
 /*----------------扩展函数--------------*/
 Date.prototype.format = function (format) {
     let o = {
@@ -50,7 +52,7 @@ function pageJump(data) {
  * 显示失败消息
  * @param data 失败消息
  */
-function showErrorData(data){
+function showErrorData(data) {
     alert(data.message + " : " + data.result);
 }
 
@@ -78,8 +80,8 @@ function checkDataEmpty(data) {
  * @param data 待检查的数据
  * @returns {boolean} true:数据不为空;false:数据为空
  */
-function dataNotEmpty(data){
-    return ! checkDataEmpty(data);
+function dataNotEmpty(data) {
+    return !checkDataEmpty(data);
 }
 
 /**
@@ -108,7 +110,7 @@ function resetModal(div) {
  * 把单个对象放入数组
  * @param data
  */
-function castObjectToArray(data){
+function castObjectToArray(data) {
     let array = new Array();
     array.push(data);
     return array;
@@ -213,7 +215,7 @@ function generateSingleTD(idValue, data) {
  * @return {string} 设置好的单行数据的操作列
  */
 function generateSingleTableMethods(div, data, methods) {
-    let strPre = dataNotEmpty(methods) ? "<td id='" + div + "-" + data.id +  "-Btn" + "'>" : "<td id=' " + div + "-" + data.id + "-Btn" +"' style='text-align: center;line-height: 100%'>";
+    let strPre = dataNotEmpty(methods) ? "<td id='" + div + "-" + data.id + "-Btn" + "'>" : "<td id=' " + div + "-" + data.id + "-Btn" + "' style='text-align: center;line-height: 100%'>";
     let strData = "";
     if (dataNotEmpty(methods)) {
         for (let i = 0; i < methods.length; i++) {
@@ -285,11 +287,11 @@ function internalLoadDatas(baseUrl, page, tableDiv, pagDiv, methods, reloadMetho
         url: baseUrl + "/" + page,
         async: false,
         success: function (data) {
-            if(data.code == Codes.successResponse){
+            if (data.code == Codes.successResponse) {
                 generateTable(tableDiv, data.result, methods);
                 initPag(data.result.current, data.result.pages, pagDiv, reloadMethod);
             }
-            else{
+            else {
                 showErrorData(data);
             }
 
@@ -306,7 +308,7 @@ function internalLoadDatas(baseUrl, page, tableDiv, pagDiv, methods, reloadMetho
 function initUpdateModal(pojo, data) {
     let $modal = $("#update-" + pojo + "-modal");
     $modal.on('show.bs.modal', function () {
-        for(let key in data)
+        for (let key in data)
             $("#update-" + pojo + "-modal-" + key).val(data[key]);
     });
     $modal.modal("show");
@@ -320,7 +322,7 @@ function initUpdateModal(pojo, data) {
  */
 function internalDeleteData(div, id, sendUrl) {
     let sendData = {"id": id};
-    if(confirm("是否删除数据?")){
+    if (confirm("是否删除数据?")) {
         $.ajax({
             type: 'DELETE',
             url: sendUrl,
@@ -330,7 +332,7 @@ function internalDeleteData(div, id, sendUrl) {
                 if (data.code == Codes.successResponse) {
                     window.location.reload();
                 }
-                else{
+                else {
                     showErrorData(data);
                 }
             }
@@ -345,12 +347,12 @@ function internalDeleteData(div, id, sendUrl) {
  * @param keys 修改的实体的键
  */
 function internalAddData(pojo, sendUrl) {
-    if(pojo == "task" || $("#add-" + pojo + "-form").valid()){
+    if (pojo == "task" || $("#add-" + pojo + "-form").valid()) {
         let sendData = {};
         let subLength = ("add-" + pojo + "-modal-").length;
         $("#add-" + pojo + "-modal").find("[id^=add-" + pojo + "-modal-]").each(function () {
             let originId = $(this).attr("id");
-            let key = originId.substring(subLength,originId.length);
+            let key = originId.substring(subLength, originId.length);
             sendData[key] = $(this).val();
         });
         $.ajax({
@@ -372,12 +374,12 @@ function internalAddData(pojo, sendUrl) {
 }
 
 function internalUserAddData(pojo, sendUrl) {
-    if(true){
+    if (true) {
         let sendData = {};
         let subLength = ("add-" + pojo + "-modal-").length;
         $("#add-" + pojo + "-modal").find("[id^=add-" + pojo + "-modal-]").each(function () {
             let originId = $(this).attr("id");
-            let key = originId.substring(subLength,originId.length);
+            let key = originId.substring(subLength, originId.length);
             sendData[key] = $(this).val();
         });
         $.ajax({
@@ -404,12 +406,12 @@ function internalUserAddData(pojo, sendUrl) {
  * @param keys 修改的实体的键
  */
 function internalUpdateData(pojo, sendUrl) {
-    if(pojo == "task" || $("#update-" + pojo + "-form").valid()){
+    if (pojo == "task" || $("#update-" + pojo + "-form").valid()) {
         let sendData = {};
         let subLength = ("update-" + pojo + "-modal-").length;
         $("#update-" + pojo + "-modal").find("[id^=update-" + pojo + "-modal-]").each(function () {
             let originId = $(this).attr("id");
-            let key = originId.substring(subLength,originId.length);
+            let key = originId.substring(subLength, originId.length);
             sendData[key] = $(this).val();
         });
         $.ajax({
@@ -421,7 +423,7 @@ function internalUpdateData(pojo, sendUrl) {
                 if (data.code == Codes.successResponse) {
                     window.location.reload();
                 }
-                else{
+                else {
                     showErrorData(data);
                 }
             }
@@ -438,12 +440,12 @@ function initSelection(div, data) {
     resetDiv(div);
     let $div = $("#" + div);
     let str = "";
-    if(checkDataEmpty(data) || !data instanceof Array) {
+    if (checkDataEmpty(data) || !data instanceof Array) {
         str = emptyDataValue;
-    } else{
-        if(data.length == 1){
+    } else {
+        if (data.length == 1) {
             str += "<option value='" + data[0].id + "'>" + data[0].name + "</option>";
-        }else{
+        } else {
             for (let i = 1; i < data.length; i++) {
                 str += "<option value='" + data[i].id + "'>" + data[i].name + "</option>";
             }
@@ -459,10 +461,10 @@ function initSelection(div, data) {
 function formatSeconds(div) {
     let result = "";
     if (!checkElementEmpty(div)) {
-        let val = parseInt($("#" + div).text());
+        let val = parseInt($("#" + div).text()) / 1000;
         if (dataNotEmpty(val)) {
             let min = Math.floor(val / 60),
-                second = val % 60,
+                second = parseInt(val % 60),
                 day = 0, hour = 0;
 
             if (min >= 60) {
@@ -479,12 +481,12 @@ function formatSeconds(div) {
             else {
                 day = 0;
             }
-            if(day > 0) result = day + "天";
-            if(hour > 0) result += hour + "小时";
-            if(min > 0 ) result += min + "分";
-            if(second > 0) result += second + "秒";
+            if (day > 0) result = day + "天";
+            if (hour > 0) result += hour + "小时";
+            if (min > 0) result += min + "分";
+            if (second > 0) result += second + "秒";
         }
-        $("#" + div).text(val >0 ? result : emptyDataValue);
+        $("#" + div).text(val > 0 ? result : emptyDataValue);
     }
 }
 
@@ -494,8 +496,8 @@ function formatSeconds(div) {
  * @param names 单元格的值域
  */
 function paintColumn(div, names) {
-    if(! checkElementEmpty(div)){
-        $("#" + div).parent().attr("class",names.find((element) => (element.name == $("#" + div).text())).class);
+    if (!checkElementEmpty(div)) {
+        $("#" + div).parent().attr("class", names.find((element) => (element.name == $("#" + div).text())).class);
     }
 }
 
@@ -533,6 +535,7 @@ function login() {
         }
     });
 }
+
 /*----------用户模块部分--------------*/
 
 /**
@@ -542,7 +545,7 @@ function login() {
 function loadUsers(page) {
     internalLoadDatas(usersPath + "/list", page, "userTable", "usersPagination", userMethods, "loadUsers");
     $("#userTableBody").find("[id$='status']").each(function () {
-        paintColumn($(this).attr("id"),allUserStatus);
+        paintColumn($(this).attr("id"), allUserStatus);
     });
 }
 
@@ -601,7 +604,7 @@ function addUser() {
 function loadAreas(page) {
     internalLoadDatas(areasPath + "/list", page, "areaTable", "areasPagination", areaMethods, "loadAreas");
     $("#areaTableBody").find("[id$='type']").each(function () {
-        paintColumn($(this).attr("id"),allAreaType);
+        paintColumn($(this).attr("id"), allAreaType);
     });
 }
 
@@ -609,7 +612,7 @@ function loadAreas(page) {
  * 显示修改区域的modal
  */
 function updateArea(data) {
-    initUpdateModal("area",data);
+    initUpdateModal("area", data);
 }
 
 /**
@@ -629,31 +632,31 @@ function deleteArea(data) {
 /**
  * 加载添加区域的地图
  */
-function loadAreaMap(){
+function loadAreaMap() {
     areaMap = new AMap.Map('container', {
         resizeEnable: true,
         center: [116.397428, 39.90923],
         zoom: 18
     });
-    areaMap.on('click', function(e) {
+    areaMap.on('click', function (e) {
         let centerPointX = parseFloat(e.lnglat.getLng());
         let centerPointY = parseFloat(e.lnglat.getLat());
-        areaMap.setZoomAndCenter(18, [centerPointX,centerPointY]);
+        areaMap.setZoomAndCenter(18, [centerPointX, centerPointY]);
         var southWest = new AMap.LngLat(centerPointX, centerPointY);
         var northEast = new AMap.LngLat(parseFloat(centerPointX + 0.0005), parseFloat(centerPointY + 0.0002));
         var rectangle = new AMap.Rectangle({
             map: areaMap,
             bounds: new AMap.Bounds(southWest, northEast),
-            strokeColor:'red',
-            strokeWeight:10,
-            strokeOpacity:0.5,
-            strokeDasharray: [30,10],
+            strokeColor: 'red',
+            strokeWeight: 10,
+            strokeOpacity: 0.5,
+            strokeDasharray: [30, 10],
             strokeStyle: 'dashed',
-            fillColor:'blue',
-            fillOpacity:0.5,
-            zIndex:10,
-            bubble:true,
-            cursor:'pointer',
+            fillColor: 'blue',
+            fillOpacity: 0.5,
+            zIndex: 10,
+            bubble: true,
+            cursor: 'pointer',
             bubble: false
         });
         rectangleEditor = new AMap.RectangleEditor(areaMap, rectangle);
@@ -665,7 +668,7 @@ function loadAreaMap(){
  * 开始划定停车区域
  */
 function beginAddArea() {
-    if(rectangleEditor !== undefined){
+    if (rectangleEditor !== undefined) {
         rectangleEditor.open();
     }
 }
@@ -673,22 +676,22 @@ function beginAddArea() {
 /**
  * 在区划内搜索含关键字的地点
  */
-function searchCity(){
+function searchCity() {
     let selectCode = $("#add-area-select-code").val();
     let keywords = $("#add-area-search").val();
-    if(dataNotEmpty(keywords) && dataNotEmpty(selectCode)){
-        let sendData = {"keywords" : keywords, "code" : selectCode};
+    if (dataNotEmpty(keywords) && dataNotEmpty(selectCode)) {
+        let sendData = {"keywords": keywords, "code": selectCode};
         $.ajax({
             type: 'POST',
             url: inputTipsPath,
             data: JSON.stringify(sendData),
             contentType: 'application/json',
-            async : false,
+            async: false,
             success: function (data) {
                 if (data.code == Codes.successResponse) {
-                    initSelection("add-area-search-result",data.result);
+                    initSelection("add-area-search-result", data.result);
                 }
-                else{
+                else {
                     showErrorData(data);
                 }
             }
@@ -699,13 +702,13 @@ function searchCity(){
 /**
  * 根据区划内搜索的选择结果更新停车点名称
  */
-function refreshAreaName(){
+function refreshAreaName() {
     let selectedDiv = $("#add-area-search-result").find("option:selected");
     let selectedText = selectedDiv.text();
     let selectedValue = selectedDiv.val();
-    if(dataNotEmpty(selectedText) && dataNotEmpty(selectedValue)){
-        let locations = selectedValue.replace(" ","").split(",");
-        areaMap.setZoomAndCenter(18,[locations[0],locations[1]]);
+    if (dataNotEmpty(selectedText) && dataNotEmpty(selectedValue)) {
+        let locations = selectedValue.replace(" ", "").split(",");
+        areaMap.setZoomAndCenter(18, [locations[0], locations[1]]);
         $("#add-area-modal-name").val(selectedText + "停车点");
     }
 }
@@ -714,18 +717,26 @@ function refreshAreaName(){
  * 添加区域
  */
 function addArea() {
-    let positionA = rectangleEditor.Fb[0].Ch.label.content.replace(" ","").split(',');
-    let positionB = rectangleEditor.Fb[1].Ch.label.content.replace("","").split(',');
+    let positionA = rectangleEditor.Fb[0].Ch.label.content.replace(" ", "").split(',');
+    let positionB = rectangleEditor.Fb[1].Ch.label.content.replace("", "").split(',');
     let name = $("#add-area-modal-name").val();
     let cityId = $("#add-area-modal-cityId").val();
     let type = $("#add-area-modal-type").val();
-    if(dataNotEmpty(name) && dataNotEmpty(cityId)){
-        let sendData = {"name" : name,"northPoint" : parseFloat(positionB[1]), "southPoint" : parseFloat(positionA[1]), "westPoint" :parseFloat(positionA[0]), "eastPoint" : parseFloat(positionB[0]),"cityId": cityId, "type" : type};
+    if (dataNotEmpty(name) && dataNotEmpty(cityId)) {
+        let sendData = {
+            "name": name,
+            "northPoint": parseFloat(positionB[1]),
+            "southPoint": parseFloat(positionA[1]),
+            "westPoint": parseFloat(positionA[0]),
+            "eastPoint": parseFloat(positionB[0]),
+            "cityId": cityId,
+            "type": type
+        };
         $.ajax({
             type: 'POST',
             url: areasPath,
             data: JSON.stringify(sendData),
-            async : false,
+            async: false,
             contentType: 'application/json',
             success: function (data) {
                 if (data.code == Codes.successResponse) {
@@ -785,12 +796,12 @@ function loadBicycles(page) {
         formatSeconds($(this).attr("id"));
     });
     $("#bicycleTableBody").find("[id$='status']").each(function () {
-        paintColumn($(this).attr("id"),allBicycleStatus);
+        paintColumn($(this).attr("id"), allBicycleStatus);
     });
     $("#bicycleTableBody").find("[id$='investmentTime']").each(function () {
         formatDateTime($(this).attr("id"));
     });
-    initSelection("add-bicycle-modal-type",allBicycleType);
+    initSelection("add-bicycle-modal-type", allBicycleType);
     initBicycleSupplier();
 }
 
@@ -799,7 +810,7 @@ function loadBicycles(page) {
  * @param data 车辆的信息
  */
 function loadMoveBicycle(data) {
-    if(checkBicycleStatus("移动", data.status)){
+    if (checkBicycleStatus("移动", data.status)) {
         moveBicycle(data.id);
     }
 }
@@ -808,8 +819,8 @@ function loadMoveBicycle(data) {
  * 加载修理车辆函数
  * @param data 车辆的信息
  */
-function loadRepairBicycle(data){
-    if(checkBicycleStatus("修理", data.status)){
+function loadRepairBicycle(data) {
+    if (checkBicycleStatus("修理", data.status)) {
         repairBicycle(data.id);
     }
 }
@@ -819,7 +830,7 @@ function loadRepairBicycle(data){
  * @param data 车辆的信息
  */
 function loadScrapeBicycle(data) {
-    if(checkBicycleStatus("报废", data.status)){
+    if (checkBicycleStatus("报废", data.status)) {
         scrapeBicycle(data.id);
     }
 }
@@ -828,7 +839,7 @@ function loadScrapeBicycle(data) {
  * 删除车辆
  */
 function deleteBicycle(data) {
-    if(checkBicycleStatus("删除", data.status)){
+    if (checkBicycleStatus("删除", data.status)) {
         internalDeleteData("bicycleTable", data.id, bicyclesPath);
     }
 }
@@ -843,14 +854,14 @@ function addBicycle() {
 /**
  * 为车辆加载供应商数据
  */
-function initBicycleSupplier(){
+function initBicycleSupplier() {
     $.ajax({
         type: 'GET',
         url: allSuppliersPath,
-        sync : false,
-        success: function(data) {
-            if(data.code == Codes.successResponse && dataNotEmpty(data))
-                initSelection("add-bicycle-modal-supplier",data.result);
+        sync: false,
+        success: function (data) {
+            if (data.code == Codes.successResponse && dataNotEmpty(data))
+                initSelection("add-bicycle-modal-supplier", data.result);
         }
     });
 }
@@ -861,16 +872,16 @@ function initBicycleSupplier(){
  * @param status 车辆状态
  * @returns {boolean}
  */
-function checkBicycleStatus(type,status){
+function checkBicycleStatus(type, status) {
     alert("type-->" + type + ", status-->" + status);
     let checkResult = false;
-    if(type === "删除" && status === "待删除") {
+    if (type === "删除" && status === "待删除") {
         checkResult = true;
     }
-    if(status === "空闲中"){
+    if (status === "空闲中") {
         checkResult = true;
     }
-    if(!checkResult){
+    if (!checkResult) {
         alert("无法执行操作");
     }
     return checkResult;
@@ -882,11 +893,72 @@ function checkBicycleStatus(type,status){
  * @param page 请求的页数
  */
 function loadJourneys(page) {
-    internalLoadDatas(journeysPath + "/list", page, "journeyTable", "journeysPagination", [], "loadJourneys");
+    internalLoadDatas(journeysPath + "/list", page, "journeyTable", "journeysPagination", journeyMethods, "loadJourneys");
     $("#journeyTableBody").find("[id$='rideTime']").each(function () {
         formatSeconds($(this).attr("id"));
     });
 }
+
+/**
+ * 将字符串转换为二维数组,用于高德地图轨迹回放
+ * @param data 源数据
+ * @returns {any[]} 二维数组
+ */
+function convertTo2Array(data){
+    let datas = data.split(",");
+    let result = new Array();
+    for(let i = 0; i < data.length / 2;i = i + 2){
+        let point = new Array();
+        point.push(datas[i]);
+        point.push(datas[i+1]);
+        result.push(point);
+    }
+    return result;
+}
+
+//加载行车轨迹
+function showPath(data) {
+    pathMap = new AMap.Map('journeyDiv', {
+        resizeEnable: true,
+        zoom: 18,
+        center: [113.50927, 34.810942]
+    });
+    AMapUI.load(['ui/misc/PathSimplifier'], function (PathSimplifier) {
+        if (!PathSimplifier.supportCanvas) {
+            alert('当前环境不支持 Canvas！');
+            return;
+        }
+        //创建组件实例
+        let pathSimplifierIns = new PathSimplifier({
+            zIndex: 100,
+            map: pathMap, //所属的地图实例
+            getPath: function (pathData, pathIndex) {
+                return pathData.path;
+            },
+            renderOptions: {
+                //轨迹线的样式
+                pathLineStyle: {
+                    strokeStyle: 'red',
+                    lineWidth: 6,
+                    dirArrowStyle: true
+                }
+            }
+        });
+        pathSimplifierIns.setData([{
+            name: '轨迹0',
+            path: convertTo2Array(data.path)
+        }]);
+        let navg0 = pathSimplifierIns.createPathNavigator(0, //关联第1条轨迹
+            {
+                loop: true, //循环播放
+                speed: 100
+            });
+        navg0.start();
+    });
+    $("#show-journey-modal").modal("show");
+
+}
+
 
 /*---------------任务模块----------------*/
 
@@ -894,15 +966,15 @@ function loadJourneys(page) {
  * 为任务加载员工信息
  * @param type 待填充的div所属的操作类型 ： add || update
  */
-function initTaskUser(type){
+function initTaskUser(type) {
     $.ajax({
         type: 'GET',
         url: allStaffsPath,
-        sync : false,
-        success: function(data) {
-            if(data.code == Codes.successResponse && dataNotEmpty(data.result)){
+        sync: false,
+        success: function (data) {
+            if (data.code == Codes.successResponse && dataNotEmpty(data.result)) {
                 $("#" + type + "-task-modal-user").append("<option value='" + emptyStaff.id + "'>" + emptyStaff.name + "</option>");
-                initSelection(type + "-task-modal-user",data.result);
+                initSelection(type + "-task-modal-user", data.result);
             }
         }
     });
@@ -912,11 +984,6 @@ function initTaskUser(type){
  * 加载所有车辆的位置信息
  */
 function loadSimpleBicycles() {
-    var map = new AMap.Map('container', {
-        resizeEnable: true,
-        zoom:11,
-        center: [113.50927,34.810942]
-    });
     $.ajax({
         type: 'GET',
         url: allBicyclesPath,
@@ -924,16 +991,16 @@ function loadSimpleBicycles() {
         success: function (data) {
             if (data.code == Codes.successResponse && dataNotEmpty(data.result)) {
                 let result = data.result;
-                var cluster, markers = [];
-                var map = new AMap.Map("container", {
+                let cluster, markers = [];
+                bicycleMap = new AMap.Map("container", {
                     resizeEnable: true,
-                    center:[105,34],
+                    center: [105, 34],
                     zoom: 4
                 });
-                for(let i=0;i<result.length;i+=1){
+                for (let i = 0; i < result.length; i += 1) {
                     let marker = new AMap.Marker({
-                        position : [result[i].locationX, result[i].locationY],
-                        icon : allBicycleStatus.find((element) => (element.name == result[i].status)).icon
+                        position: [result[i].locationX, result[i].locationY],
+                        icon: allBicycleStatus.find((element) => (element.name == result[i].status)).icon
                     });
                     let title = "车辆信息", content = [];
                     content.push("编号 : " + result[i].id);
@@ -944,13 +1011,13 @@ function loadSimpleBicycles() {
                         offset: new AMap.Pixel(0, -30)
                     });
                     marker.on('click', function () {
-                        infoWindow.open(map, marker.getPosition());
+                        infoWindow.open(bicycleMap, marker.getPosition());
                     });
-                    if(result[i].status === "使用中") marker.setAnimation('AMAP_ANIMATION_BOUNCE');
+                    if (result[i].status === "使用中") marker.setAnimation('AMAP_ANIMATION_BOUNCE');
                     markers.push(marker);
                 }
-                map.plugin(["AMap.MarkerClusterer"],function() {
-                    cluster = new AMap.MarkerClusterer(map,markers);
+                bicycleMap.plugin(["AMap.MarkerClusterer"], function () {
+                    cluster = new AMap.MarkerClusterer(bicycleMap, markers);
                 });
             }
         }
@@ -989,7 +1056,7 @@ function createInfoWindow(title, content) {
 
 //关闭信息窗体
 function closeInfoWindow() {
-    map.clearInfoWindow();
+    bicycleMap.clearInfoWindow();
 }
 
 /**
@@ -998,7 +1065,7 @@ function closeInfoWindow() {
  */
 function moveBicycle(data) {
     data.type = "移动";
-    if(checkBicycleStatus(data.type,data.status)){
+    if (checkBicycleStatus(data.type, data.status)) {
         initAddTaskModal(data);
     }
 }
@@ -1009,7 +1076,7 @@ function moveBicycle(data) {
  */
 function repairBicycle(data) {
     data.type = "修理";
-    if(checkBicycleStatus(data.type,data.status)){
+    if (checkBicycleStatus(data.type, data.status)) {
         initAddTaskModal(data);
     }
 }
@@ -1020,7 +1087,7 @@ function repairBicycle(data) {
  */
 function scrapeBicycle(data) {
     data.type = "报废";
-    if(checkBicycleStatus(data.type,data.status)){
+    if (checkBicycleStatus(data.type, data.status)) {
         initAddTaskModal(data);
     }
 }
@@ -1032,9 +1099,9 @@ function scrapeBicycle(data) {
 function loadTasks(page) {
     internalLoadDatas(taskPath + "/list", page, "taskTable", "tasksPagination", taskMethods, "loadTasks");
     $("#taskTableBody").find("[id$='status']").each(function () {
-        if($(this).text() === '已完成')
+        if ($(this).text() === '已完成')
             $(this).parent().find("[id$='Btn']").empty();
-        paintColumn($(this).attr("id"),allTaskStatus);
+        paintColumn($(this).attr("id"), allTaskStatus);
     });
 }
 
@@ -1042,11 +1109,11 @@ function loadTasks(page) {
  *  显示分配任务
  * @param data
  */
-function dispatchTask(data){
+function dispatchTask(data) {
     let $modal = $("#update-task-modal");
     let modalCount = 0;
     $modal.on('show.bs.modal', function () {
-        if (modalCount===0) {
+        if (modalCount === 0) {
             $("#update-task-modal-id").val(data.id);
             $("#update-task-modal-name").val(data.name);
             initSelection("update-task-modal-type", castObjectToArray(allTaskType.find((element) => (element.name == data.type))));
@@ -1058,7 +1125,7 @@ function dispatchTask(data){
     $modal.modal("show");
 }
 
-function doDispatchTask(){
+function doDispatchTask() {
     internalUpdateData("task", taskPath);
 }
 
@@ -1067,7 +1134,11 @@ function doDispatchTask(){
  * @param data 传入的任务数据
  */
 function doneTask(data) {
-    let sendData = {"id": data.id, "type" : allTaskType.find((element) => (element.name == data.type)).id, "bicycle" : data.bicycle};
+    let sendData = {
+        "id": data.id,
+        "type": allTaskType.find((element) => (element.name == data.type)).id,
+        "bicycle": data.bicycle
+    };
     $.ajax({
         type: 'POST',
         url: taskPath + "/done",
@@ -1077,7 +1148,7 @@ function doneTask(data) {
             if (data.code == Codes.successResponse) {
                 window.location.reload();
             }
-            else{
+            else {
                 showErrorData(data);
             }
         }
@@ -1108,7 +1179,7 @@ function initAddTaskModal(data) {
     initTaskUser("add");
     let modalCount = 0;
     $modal.on('show.bs.modal', function () {
-        if (modalCount===0) {
+        if (modalCount === 0) {
             initSelection("add-task-modal-type", castObjectToArray(allTaskType.find((element) => (element.name == data.type))));
             $("#add-task-modal-bicycle").val(data.id);
             modalCount++;
@@ -1122,7 +1193,7 @@ function initAddTaskModal(data) {
 /**
  * 用户充值
  */
-function userRecharge(){
+function userRecharge() {
     internalUserAddData("recharge", userRechargePath);
 }
 
@@ -1130,10 +1201,10 @@ function userRecharge(){
  * 加载用户充值记录
  * @param page 页码
  */
-function loadUserRecharges(page){
+function loadUserRecharges(page) {
     internalLoadDatas(userRechargesPath, page, "rechargeTable", "rechargesPagination", [], "loadUserRecharges");
 }
 
-function userOperateDeposit(){
+function userOperateDeposit() {
     internalUserAddData("deposit", userDepositPath);
 }

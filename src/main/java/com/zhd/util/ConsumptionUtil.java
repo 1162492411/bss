@@ -35,7 +35,10 @@ public class ConsumptionUtil {
             return BigDecimal.ZERO;
         }
 
-        if(areaType == AreaTypeEnum.BAN.getCode() || areaType == AreaTypeEnum.UNKNOWN.getCode()){
+        if(areaType == -1){
+            originalAmount += 1;
+        }
+        else if(areaType == AreaTypeEnum.BAN.getCode() || areaType == AreaTypeEnum.UNKNOWN.getCode()){
             System.out.println("ban area");
             throw new BanAreaException();
         }

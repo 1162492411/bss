@@ -40,7 +40,7 @@ public class BicycleServiceImpl extends ServiceImpl<BicycleMapper, Bicycle> impl
     private IJourneyService journeyService;
 
     @Override
-    public Journey borrowBicycle(Bicycle bicycle, String userid) throws NoSuchUserException, NoEnoughDepositException, NoSuchBicycleException, NotUseableBicycleException, NoEnoughAccountBalanceException {
+    public Journey borrowBicycle(Bicycle bicycle, String userid) throws Exception {
         userService.checkDepositBalance(userid);
         userService.checkAccountBalance(userid);
         //check bicycle
@@ -53,17 +53,27 @@ public class BicycleServiceImpl extends ServiceImpl<BicycleMapper, Bicycle> impl
         }
         //borrowBicycle
         bicycle.setStatus(BicycleStatusEnum.USING.getCode());
-        bicycleMapper.updateById(bicycle);
         Journey journey = Journey.builder().bicycleId(bicycle.getId()).userId(userid).startTime(TypeUtils.castToString(System.currentTimeMillis())).startLocationX(bicycle.getLocationX()).startLocationY(bicycle.getLocationY()).build();
-        journeyService.insert(journey);
-        return journey;
+        boolean result =  bicycleMapper.updateById(bicycle) > 0 && journeyService.insert(journey);
+        if(result){
+            return journey;
+        }else{
+            throw new Exception(Constants.TIP_BORROW_BICYCLE_ERROR);
+        }
     }
 
     @Override
     public boolean returnBicycle(Integer bicycleId, String userId, Journey journey) throws Exception {
-        if(bicycleMapper.updateById(Bicycle.builder().id(bicycleId).locationX(journey.getEndLocationX()).locationY(journey.getEndLocationY()).status(BicycleStatusEnum.UNUSED.getCode()).build()) > 0 && journeyService.updateById(journey) && userService.reduceAccount(userId, journey.getAmount())){
-            return true;
-        }else{
+        try{
+            Bicycle bicycle = Bicycle.builder().id(bicycleId).locationX(journey.getEndLocationX()).locationY(journey.getEndLocationY()).status(BicycleStatusEnum.UNUSED.getCode()).build();
+            Bicycle bicycleInfo = Bicycle.builder().id(bicycleId).serviceTime(journey.getRideTime()).mileage(journey.getDistance()).build();
+            boolean result = bicycleMapper.updateById(bicycle) > 0 && bicycleMapper.updateInfo(bicycleInfo) && journeyService.updateById(journey) && userService.reduceAccount(userId, journey.getAmount());
+            if(result){
+                return true;
+            }else{
+                throw new Exception(Constants.TIP_RETURN_BICYCLE_ERROR);
+            }
+        }catch (Exception e){
             throw new Exception(Constants.TIP_RETURN_BICYCLE_ERROR);
         }
     }

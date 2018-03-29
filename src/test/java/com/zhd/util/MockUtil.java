@@ -4,18 +4,19 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.util.TypeUtils;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.zhd.BssTestEnvironment;
-import com.zhd.enums.BicycleStatusEnum;
-import com.zhd.enums.BicycleTypeEnum;
-import com.zhd.enums.UserStatusEnum;
-import com.zhd.enums.UserTypeEnum;
+import com.zhd.enums.*;
 import com.zhd.pojo.*;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
+import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 /**
  * 模拟数据工具类，用于生成各种模拟数据
@@ -116,14 +117,6 @@ public class MockUtil extends BssTestEnvironment{
         return supplierList;
     }
 
-
-    @Test
-    public void testTime(){
-        for (int i = 0; i < 30; i++) {
-            System.out.println(TypeUtils.castToString(TestUtil.generateRandomStartTime()));
-        }
-    }
-
     /**
      * 生成车辆
      */
@@ -147,12 +140,65 @@ public class MockUtil extends BssTestEnvironment{
             Supplier supplier = supplierList.get(RandomUtils.nextInt(0, supplierList.size()));
             bicycle.setSupplier(supplier.getId());
             bicycle.setServiceTime("0");
-            bicycle.setInvestmentTime(TypeUtils.castToString(TestUtil.generateRandomStartTime().toEpochSecond(ZoneOffset.ofHours(8))));
+            bicycle.setInvestmentTime(TypeUtils.castToString(RandomUtil.generateRandomStartTime().toEpochSecond(ZoneOffset.ofHours(8))));
             bicycle.setMileage(0);
             System.out.println(JSON.toJSONString(bicycle));
             bicycleList.add(bicycle);
         }
         return bicycleList;
+    }
+
+    /**
+     * 随机选择普通用户账户充值押金
+     */
+    @Test
+    public void batchInDeposit() throws Exception {
+        int count = 0;
+        List<User> userList = userService.selectList(new EntityWrapper<User>().eq("type","1"));
+        for (int i = 0; i < userList.size() ; i++) {
+            if(RandomUtils.nextInt(0,100) > 80){
+                System.out.println("---第" + (++count) + "次----------------");
+                User user = userList.get(RandomUtils.nextInt(0, userList.size()));
+                Deposit deposit = Deposit.builder().type(DepositTypeEnum.IN.getCode()).amount(Constants.STANDARD_DEPOSIT).build();
+                mockMvc.perform(post("/deposit").contentType(MediaType.APPLICATION_JSON).content(JSON.toJSONString(deposit)).sessionAttr("userid",user.getId())).andDo(print()).andReturn();
+            }
+        }
+    }
+
+    /**
+     * 随机选择普通用户账户充值账户余额
+     */
+    @Test
+    public void batchRecharge() throws Exception{
+        int count = 0;
+        List<User> userList = userService.selectList(new EntityWrapper<User>().eq("type","1"));
+        for (int i = 0; i < userList.size(); i++) {
+            if(RandomUtils.nextInt(0,100) > 60){
+                System.out.println("---第" + (++count) + "次----------------");
+                User user = userList.get(RandomUtils.nextInt(0,userList.size()));
+                int type = RandomUtils.nextInt(1,4);
+                BigDecimal amount = BigDecimal.valueOf(RandomUtils.nextInt(10,100));
+                Recharge recharge = Recharge.builder().userId(user.getId()).type(type).amount(amount).build();
+                mockMvc.perform(post("/recharge").contentType(MediaType.APPLICATION_JSON).content(JSON.toJSONString(recharge))).andDo(print()).andReturn();
+            }
+        }
+    }
+
+
+    @Test
+    public void testRandomPath(){
+        List<Area> areaList = areaService.selectList(new EntityWrapper<>());
+        for (int i = 0; i < 10; i++) {
+            Area areaA = areaList.get(RandomUtils.nextInt(0, areaList.size()));
+            Area areaB = areaList.get(RandomUtils.nextInt(0, areaList.size()));
+            if(areaA.getId() != areaB.getId()) {
+                double startPointX = RandomUtils.nextDouble(areaA.getWestPoint().doubleValue(), areaA.getEastPoint().doubleValue());
+                double startPointY = RandomUtils.nextDouble(areaA.getSouthPoint().doubleValue(), areaA.getNorthPoint().doubleValue());
+                double endPointX = RandomUtils.nextDouble(areaB.getWestPoint().doubleValue(), areaB.getEastPoint().doubleValue());
+                double endPointY = RandomUtils.nextDouble(areaB.getSouthPoint().doubleValue(), areaB.getNorthPoint().doubleValue());
+                System.out.println("resultPath-->" + RandomUtil.generateRandomPath(startPointX, startPointY, endPointX, endPointY));
+            }
+        }
     }
 
     /**
@@ -166,6 +212,8 @@ public class MockUtil extends BssTestEnvironment{
         //停车点需手动添加
         bicycleService.insertBatch(mockBicycles());
     }
+
+
 
 
 }

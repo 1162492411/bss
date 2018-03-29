@@ -31,8 +31,8 @@ public class Constants {
     public static final Integer VALUE_USER_DEFAULT_CREDIT = 100;
 
     //journey
-    public static final String[] JOURNEY_KEYS = {"id","uId","bId","rideTime","distance","amount"};
-    public static final String[] JOURNEY_NAMES = {"记录编号","用户编号","车辆编号","时间","距离","话费"};
+    public static final String[] JOURNEY_KEYS = {"id","userId","bicycleId","rideTime","distance","amount"};
+    public static final String[] JOURNEY_NAMES = {"记录编号","用户编号","车辆编号","时间","距离","花费"};
     public static final String TIP_NO_SUCH_BICYCLE = "不存在该车辆";
     public static final String TIP_NOT_USEABLE_BICYCLE = "车辆不可用";
     public static final BigDecimal STANDARD_DEPOSIT = BigDecimal.valueOf(99);//标准版押金
@@ -62,8 +62,8 @@ public class Constants {
     public static final String[] TASK_NAMES = {"任务编号","任务名","处理人","车辆","类型","状态"};
 
     //rechargeAccount
-    public static final String[] RECHARGE_KEYS = {"id","userId","type","rechargeTime","amount","payId","payStatus"};
-    public static final String[] RECHARGE_NAMES = {"记录编号","账户","渠道","时间","金额","订单号","充值结果"};
+    public static final String[] RECHARGE_KEYS = {"id","userId","type","rechargeTime","amount"};
+    public static final String[] RECHARGE_NAMES = {"记录编号","账户","渠道","时间","金额"};
     public static final String TIP_RECHARGE_ACCOUNT_ERROR = "充值账户失败";
 
     //deposit

@@ -3,10 +3,10 @@
  * Date: 2015/10/29 14:04
  */
 window.onload = function() {
-	map.plugin(["AMap.ToolBar"], function() {
-		map.addControl(new AMap.ToolBar());
+	bicycleMap.plugin(["AMap.ToolBar"], function() {
+		bicycleMap.addControl(new AMap.ToolBar());
 	});
 	if(location.href.indexOf('&guide=1')!==-1){
-		map.setStatus({scrollWheel:false})
+		bicycleMap.setStatus({scrollWheel:false})
 	}
 }

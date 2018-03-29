@@ -68,7 +68,6 @@ public class Journey implements Serializable, BaseModel {
     /**
      * 骑行距离
      */
-    @NotNull(groups = Update.class)
     private Integer distance;
     /**
      * 骑行花费

@@ -78,7 +78,7 @@ public class DepositController extends BaseController {
                 deposit.setOperateTime(TypeUtils.castToString(System.currentTimeMillis()));
                 if (DepositTypeEnum.IN.getCode() == deposit.getType()) {
                     //交押金
-                    if(userService.selectById(userid).getDepositBalance().intValue() >  Constants.STANDARD_DEPOSIT.intValue()){
+                    if(userService.selectById(userid).getDepositBalance().intValue() >=  Constants.STANDARD_DEPOSIT.intValue()){
                         return renderError(Constants.TIP_ENOUGH_DEPOSIT);
                     }
                     depositService.recharge(deposit);
