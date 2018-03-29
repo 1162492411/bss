@@ -14,11 +14,12 @@
         <result column="service_time" property="serviceTime" />
         <result column="investment_time" property="investmentTime" />
         <result column="mileage" property="mileage" />
+        <result column="cityId" property="city_id" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, status, type, location_x AS locationX, location_y AS locationY, batch, supplier, service_time AS serviceTime, investment_time AS investmentTime, mileage
+        id, status, type, location_x AS locationX, location_y AS locationY, batch, supplier, service_time AS serviceTime, investment_time AS investmentTime, mileage, city_id as cityId
     </sql>
 
 </mapper>

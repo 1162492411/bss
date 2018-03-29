@@ -13,6 +13,7 @@ import java.util.Map;
  * 随机数据工具类
  */
 public class RandomUtil {
+    public static final double TOO_MIN_DIFF = 0.0001;
 
     /**
      * 随机生成起始时间
@@ -38,10 +39,19 @@ public class RandomUtil {
         double maxX = Math.max(startPointX, endPointX);
         double minY = Math.min(startPointY, endPointY);
         double maxY = Math.max(startPointY, endPointY);
+        double diffX = maxX - minX;
+        double diffY = maxY - minY;
         StringBuffer stringBuffer = new StringBuffer();
+
         for (int i = 0; i < 5; i++) {
-            stringBuffer.append(RandomUtils.nextDouble(minX, maxX)).append(",");
-            stringBuffer.append(RandomUtils.nextDouble(minY, maxY)).append(",");
+            if(diffX <= TOO_MIN_DIFF && diffY < TOO_MIN_DIFF){
+                stringBuffer.append(RandomUtils.nextDouble(minX, minX + 0.01)).append(",");
+                stringBuffer.append(RandomUtils.nextDouble(minY, minY + 0.01)).append(",");
+            }
+            else{
+                stringBuffer.append(RandomUtils.nextDouble(minX, maxX)).append(",");
+                stringBuffer.append(RandomUtils.nextDouble(minY, maxY)).append(",");
+            }
         }
         return stringBuffer.toString().substring(0,stringBuffer.length() - 1);
     }

@@ -950,8 +950,7 @@ function showPath(data) {
         }]);
         let navg0 = pathSimplifierIns.createPathNavigator(0, //关联第1条轨迹
             {
-                loop: true, //循环播放
-                speed: 100
+                speed: 200
             });
         navg0.start();
     });

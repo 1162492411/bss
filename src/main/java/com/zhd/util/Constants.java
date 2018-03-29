@@ -27,6 +27,7 @@ public class Constants {
     public static final String TIP_NO_SUCH_USER = "不存在该用户";
     public static final String TIP_NO_PERMISSION = "权限不足";
     public static final String TIP_NO_ACCOUNT_BALANCE = "账户余额不足";
+    public static final String TIP_NO_ENOUGH_CREDIT = "账户信用分不足";
     public static final String VALUE_USER_DEFAULT_AVATAR = "http://7xshpr.com1.z0.glb.clouddn.com/default_avatar.png";
     public static final Integer VALUE_USER_DEFAULT_CREDIT = 100;
 
@@ -75,7 +76,9 @@ public class Constants {
 
     //ali
     public static final String TIP_ALI_ERROR = "连接阿里接口失败！请联系服务员";
-    public static final String KEY_ALI_SERVICE_KEY = "d8c7b9bbe2d7d3811c75733a465ff91b";
+    public static final String KEY_ALI_SERVICE_KEY = "d8c7b9bbe2d7d3811c75733a465ff91b";//阿里Web服务的key(行政区划查询，逆地理编码)
+    public static final String KEY_AMAP_REGEO_RESPONSE_KEY = "regeocode";//高德逆地理编码返回信息中有效信息的key
+    public static final int VALUE_DEFAULT_CITY_ID = 1;//默认的行政区划ID
     public static final double VALUE_DEFAULT_LOCATION_X = 116.40739440917969000;
     public static final double VALUE_DEFAULT_LOCATION_Y = 39.90420913696289000;
 

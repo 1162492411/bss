@@ -87,4 +87,11 @@ public class Bicycle implements Serializable, BaseModel {
      */
     @NotNull(groups = Update.class)
     private Integer mileage;
+
+    /**
+     * 当前所在行政区划ID
+     */
+    @TableField("city_id")
+    private Integer cityId;
+
 }

@@ -48,7 +48,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new NoEnoughDepositException();
         }
         else{
-            return false;
+            return true;
         }
     }
 
@@ -59,7 +59,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new NoEnoughAccountBalanceException();
         }
         else{
-            return false;
+            return true;
+        }
+    }
+
+    @Override
+    public boolean checkCredit(String id) throws Exception {
+        User user = findUser(id);
+        if(user.getCredit() < 0){
+            throw new Exception(Constants.TIP_NO_ENOUGH_CREDIT);
+        }else{
+            return true;
         }
     }
 
@@ -96,8 +106,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public boolean reduceAccount(String id, BigDecimal amount) {
-        return userMapper.reduceAccount(id, amount) > 0;
+        if(userMapper.reduceAccount(id,amount) > 0){
+          BigDecimal accountBalance = userMapper.selectById(id).getAccountBalance();
+          if(accountBalance.doubleValue() > 0){
+              userMapper.increaseCredit(id);
+          }else{
+              userMapper.reduceCredit(id);
+          }
+          return true;
+        }
+        return false;
     }
+
 }
 
 

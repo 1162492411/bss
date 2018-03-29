@@ -11,10 +11,12 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
@@ -37,7 +39,7 @@ public class MockUtil extends BssTestEnvironment{
         List<User> users = new ArrayList<>();
         //mock normal user
         Long normalId = Long.parseLong("11223344556");
-        for (int i = 1; i <= 100; i++) {
+        for (int i = 1; i <= 800; i++) {
             normalId++;
             String id = normalId.toString();
             String name = normalId + "号用户";
@@ -53,7 +55,7 @@ public class MockUtil extends BssTestEnvironment{
         }
         //mock staff user
         Long staffId = Long.parseLong("20100102000");
-        for (int i = 1; i <= 50; i++) {
+        for (int i = 1; i <= 100; i++) {
             staffId++;
             String id = staffId.toString();
             String name = staffId + "号员工";
@@ -69,7 +71,7 @@ public class MockUtil extends BssTestEnvironment{
         }
         //mock admin user
         Long adminId = Long.parseLong("10100102000");
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 10; i++) {
             adminId++;
             String id = adminId.toString();
             String name = adminId + "号管理员";
@@ -156,7 +158,7 @@ public class MockUtil extends BssTestEnvironment{
         int count = 0;
         List<User> userList = userService.selectList(new EntityWrapper<User>().eq("type","1"));
         for (int i = 0; i < userList.size() ; i++) {
-            if(RandomUtils.nextInt(0,100) > 80){
+            if(RandomUtils.nextInt(0,100) > 10){
                 System.out.println("---第" + (++count) + "次----------------");
                 User user = userList.get(RandomUtils.nextInt(0, userList.size()));
                 Deposit deposit = Deposit.builder().type(DepositTypeEnum.IN.getCode()).amount(Constants.STANDARD_DEPOSIT).build();
@@ -166,14 +168,14 @@ public class MockUtil extends BssTestEnvironment{
     }
 
     /**
-     * 随机选择普通用户账户充值账户余额
+     * 随机选择缴纳过押金的普通用户充值账户余额
      */
     @Test
     public void batchRecharge() throws Exception{
         int count = 0;
-        List<User> userList = userService.selectList(new EntityWrapper<User>().eq("type","1"));
+        List<User> userList = userService.selectList(new EntityWrapper<User>().eq("type","1").ne("deposit_balance",0));
         for (int i = 0; i < userList.size(); i++) {
-            if(RandomUtils.nextInt(0,100) > 60){
+            if(RandomUtils.nextInt(0,100) > 5){
                 System.out.println("---第" + (++count) + "次----------------");
                 User user = userList.get(RandomUtils.nextInt(0,userList.size()));
                 int type = RandomUtils.nextInt(1,4);
@@ -184,28 +186,48 @@ public class MockUtil extends BssTestEnvironment{
         }
     }
 
-
+    /**
+     * 随机选择缴纳过押金的普通账户借车还车
+     */
     @Test
-    public void testRandomPath(){
-        List<Area> areaList = areaService.selectList(new EntityWrapper<>());
-        for (int i = 0; i < 10; i++) {
-            Area areaA = areaList.get(RandomUtils.nextInt(0, areaList.size()));
-            Area areaB = areaList.get(RandomUtils.nextInt(0, areaList.size()));
-            if(areaA.getId() != areaB.getId()) {
-                double startPointX = RandomUtils.nextDouble(areaA.getWestPoint().doubleValue(), areaA.getEastPoint().doubleValue());
-                double startPointY = RandomUtils.nextDouble(areaA.getSouthPoint().doubleValue(), areaA.getNorthPoint().doubleValue());
-                double endPointX = RandomUtils.nextDouble(areaB.getWestPoint().doubleValue(), areaB.getEastPoint().doubleValue());
-                double endPointY = RandomUtils.nextDouble(areaB.getSouthPoint().doubleValue(), areaB.getNorthPoint().doubleValue());
-                System.out.println("resultPath-->" + RandomUtil.generateRandomPath(startPointX, startPointY, endPointX, endPointY));
+    public void batchJourney() throws Exception{
+        List<User> userList = userService.selectList(new EntityWrapper<User>().eq("deposit_balance",99.0).ge("account_balance",0).eq("type",1));
+        List<Bicycle> bicycleList = bicycleService.selectList(new EntityWrapper<Bicycle>().eq("status",1).isNotNull("city_id"));
+        for (int i = 0; i < 520; i++) {
+            Bicycle selectedBicycle = bicycleList.get(RandomUtils.nextInt(0, bicycleList.size()));
+            User selectedUser = userList.get(RandomUtils.nextInt(0, userList.size()));
+            //borrow bicycle
+            Bicycle borrowBicycle = Bicycle.builder().build();
+            String borrowContent = JSON.toJSONString(borrowBicycle);
+            mockMvc.perform(get("/bicycles/borrow/" + selectedBicycle.getId()).contentType(MediaType.APPLICATION_JSON).content(borrowContent).sessionAttr("userid",selectedUser.getId())).andDo(print()).andReturn();
+            //return bicycle
+            City currentCity = cityService.selectById(selectedBicycle.getCityId());
+            City parentCity = cityService.selectById(currentCity.getParentId());
+            List<City> cities = cityService.selectList(new EntityWrapper<City>().eq("parent_id", parentCity.getParentId()));
+            List<Integer> cityIds = new ArrayList<>();
+            for (City city : cities) {
+                cityIds.add(city.getId());
             }
+            List<Area> areas = areaService.selectList(new EntityWrapper<Area>().in("city_id", cityIds));
+            Area area = areas.get(RandomUtils.nextInt(0, areas.size()));
+            BigDecimal endLocationX = BigDecimal.valueOf(RandomUtils.nextDouble(area.getWestPoint().doubleValue(), area.getEastPoint().doubleValue()));
+            BigDecimal endLocationY = BigDecimal.valueOf(RandomUtils.nextDouble(area.getSouthPoint().doubleValue(), area.getNorthPoint().doubleValue()));
+            LocalDateTime startTimeValue = LocalDateTime.now();
+            long rideTimeValue = RandomUtils.nextLong(0, 4800);
+            LocalDateTime endTimeValue = startTimeValue.plusSeconds(rideTimeValue);
+            String endTime = TypeUtils.castToString(1000 * endTimeValue.toEpochSecond(ZoneOffset.ofHours(8)));
+            Journey journey = Journey.builder().endLocationX(endLocationX).endLocationY(endLocationY).endTime(endTime).build();
+            String returnContent = JSON.toJSONString(journey);
+            mockMvc.perform(post("/bicycles/return/" + selectedBicycle.getId()).contentType(MediaType.APPLICATION_JSON).content(returnContent).sessionAttr("userid",selectedUser.getId())).andDo(print()).andReturn();
         }
+
     }
 
     /**
-     * 保存各种生成的模拟数据到数据库
+     * 保存各种生成的基础模拟数据到数据库
      */
     @Test
-    public void insertMockData(){
+    public void insertBasicMockData(){
         cityService.insertBatch(mockCity());
         userService.insertBatch(mockUsers());
         supplierService.insertBatch(mockSuppliers());

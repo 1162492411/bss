@@ -19,7 +19,7 @@ public interface IBicycleService extends IService<Bicycle> {
 
     Journey borrowBicycle(Bicycle bicycle, String userid) throws Exception;//借车
 
-    boolean returnBicycle(Integer bicycleId, String userId, Journey journey) throws Exception;//还车
+    boolean returnBicycle(String userId, Journey journey) throws Exception;//还车
 
     List<Bicycle> selectAllSimple();//查看所有车辆简略信息
 

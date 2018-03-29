@@ -26,6 +26,8 @@ public interface IUserService extends IService<User> {
 
     boolean checkAccountBalance(String id) throws NoSuchUserException, NoEnoughAccountBalanceException;//检查用户账户余额
 
+    boolean checkCredit(String id) throws Exception;//检查用户信用
+
     User findUser(String id) throws NoSuchUserException;//查找用户
 
     List<User> getAllStaff();
@@ -36,8 +38,6 @@ public interface IUserService extends IService<User> {
 
     boolean refundDeposit(String id, BigDecimal amount);//用户退还押金
 
-
-    //扣钱接口
-    boolean reduceAccount(String id, BigDecimal amount);
+    boolean reduceAccount(String id, BigDecimal amount); //扣钱接口
 
 }

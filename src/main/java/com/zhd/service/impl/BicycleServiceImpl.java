@@ -1,5 +1,6 @@
 package com.zhd.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.util.TypeUtils;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.zhd.enums.BicycleStatusEnum;
@@ -7,12 +8,15 @@ import com.zhd.exceptions.*;
 import com.zhd.mapper.SupplierMapper;
 import com.zhd.pojo.Bicycle;
 import com.zhd.mapper.BicycleMapper;
+import com.zhd.pojo.City;
 import com.zhd.pojo.Journey;
 import com.zhd.service.IBicycleService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.zhd.service.ICityService;
 import com.zhd.service.IJourneyService;
 import com.zhd.service.IUserService;
 import com.zhd.util.Constants;
+import com.zhd.util.RegeoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,16 +37,18 @@ public class BicycleServiceImpl extends ServiceImpl<BicycleMapper, Bicycle> impl
 
     @Autowired
     private BicycleMapper bicycleMapper;
-
     @Autowired
     private IUserService userService;
     @Autowired
     private IJourneyService journeyService;
+    @Autowired
+    private ICityService cityService;
 
     @Override
     public Journey borrowBicycle(Bicycle bicycle, String userid) throws Exception {
         userService.checkDepositBalance(userid);
         userService.checkAccountBalance(userid);
+        userService.checkCredit(userid);
         //check bicycle
         bicycle = this.selectById(bicycle.getId());
         if (bicycle == null) {
@@ -63,10 +69,13 @@ public class BicycleServiceImpl extends ServiceImpl<BicycleMapper, Bicycle> impl
     }
 
     @Override
-    public boolean returnBicycle(Integer bicycleId, String userId, Journey journey) throws Exception {
+    public boolean returnBicycle(String userId, Journey journey) throws Exception {
         try{
-            Bicycle bicycle = Bicycle.builder().id(bicycleId).locationX(journey.getEndLocationX()).locationY(journey.getEndLocationY()).status(BicycleStatusEnum.UNUSED.getCode()).build();
-            Bicycle bicycleInfo = Bicycle.builder().id(bicycleId).serviceTime(journey.getRideTime()).mileage(journey.getDistance()).build();
+            JSONObject jsonObject = RegeoUtil.getResponse(journey.getEndLocationX(), journey.getEndLocationY());
+            int adcode = Integer.valueOf(jsonObject.getJSONObject("addressComponent").getString("adcode"));
+            int cityId = cityService.selectOne(new EntityWrapper<City>().eq("code", adcode)).getId();
+            Bicycle bicycle = Bicycle.builder().id(journey.getBicycleId()).locationX(journey.getEndLocationX()).locationY(journey.getEndLocationY()).cityId(cityId == 0 ? Constants.VALUE_DEFAULT_CITY_ID : cityId).status(BicycleStatusEnum.UNUSED.getCode()).build();
+            Bicycle bicycleInfo = Bicycle.builder().id(journey.getBicycleId()).serviceTime(journey.getRideTime()).mileage(journey.getDistance()).build();
             boolean result = bicycleMapper.updateById(bicycle) > 0 && bicycleMapper.updateInfo(bicycleInfo) && journeyService.updateById(journey) && userService.reduceAccount(userId, journey.getAmount());
             if(result){
                 return true;

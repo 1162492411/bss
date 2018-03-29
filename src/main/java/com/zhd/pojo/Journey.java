@@ -33,25 +33,25 @@ public class Journey implements Serializable, BaseModel {
      * 记录编号
      */
     @TableId(value = "id", type = IdType.AUTO)
-    @NotNull(groups = {Update.class, Delete.class})
+    @NotNull(groups = {Delete.class})
     private Integer id;
     /**
      * 用户ID
      */
     @TableField("user_id")
-    @NotNull(groups = {Insert.class, Update.class})
+    @NotNull(groups = {Insert.class})
     private String userId;
     /**
      * 车辆ID
      */
     @TableField("bicycle_id")
-    @NotNull(groups = {Insert.class, Update.class})
+    @NotNull(groups = {Insert.class})
     private Integer bicycleId;
     /**
      * 开始时间
      */
     @TableField("start_time")
-    @NotNull(groups = {Insert.class, Update.class})
+    @NotNull(groups = {Insert.class})
     private String startTime;
     /**
      * 结束时间
@@ -63,7 +63,6 @@ public class Journey implements Serializable, BaseModel {
      * 骑行时间
      */
     @TableField("ride_time")
-    @NotNull(groups = Update.class)
     private String rideTime;
     /**
      * 骑行距离
@@ -72,7 +71,7 @@ public class Journey implements Serializable, BaseModel {
     /**
      * 骑行花费
      */
-    @NotNull(groups = Update.class)
+
     private BigDecimal amount;
 
     /**
@@ -90,12 +89,14 @@ public class Journey implements Serializable, BaseModel {
     /**
      * 终止位置X
      */
+    @NotNull(groups = Update.class)
     @TableField("end_location_x")
     private BigDecimal endLocationX;
 
     /**
      * 终止位置Y
      */
+    @NotNull(groups = Update.class)
     @TableField("end_location_y")
     private BigDecimal endLocationY;
 

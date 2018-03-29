@@ -25,7 +25,8 @@ create table bicycle
 	supplier int null comment '供应商ID',
 	service_time varchar(50) default '0' null comment '总使用时间',
 	investment_time varchar(50) null comment '投产时间',
-	mileage int default '0' null comment '行驶里程'
+	mileage int default '0' null comment '行驶里程',
+	city_id int null comment '当前所在行政区划ID'
 )
 	comment '车辆表' engine=InnoDB charset=utf8
 ;

@@ -3,6 +3,7 @@ package com.zhd.controllerTests;
 import static com.alibaba.fastjson.JSON.*;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.util.TypeUtils;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.zhd.BssTestEnvironment;
@@ -12,6 +13,7 @@ import com.zhd.pojo.*;
 import com.zhd.service.IJourneyService;
 import com.zhd.util.Constants;
 import com.zhd.util.LocationUtils;
+import com.zhd.util.RegeoUtil;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import org.springframework.http.MediaType;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.http.MediaType.*;
@@ -73,33 +76,39 @@ public class MockTest extends BssTestEnvironment {
     public void testBorrowBicycle() throws Exception{
         Bicycle bicycle = Bicycle.builder().build();
         String content = JSON.toJSONString(bicycle);
-        mockMvc.perform(get("/bicycles/borrow/41").contentType(MediaType.APPLICATION_JSON).content(content).sessionAttr("userid","11223344651")).andDo(print()).andReturn();
+        mockMvc.perform(get("/bicycles/borrow/394").contentType(MediaType.APPLICATION_JSON).content(content).sessionAttr("userid","11223344571")).andDo(print()).andReturn();
     }
 
     @Test
     public void testReturnBicycle() throws Exception {
-//        List<Area> areaList = areaService.selectList(new EntityWrapper<>());
-//        Area area = areaList.get(RandomUtils.nextInt(0, areaList.size()));
-        Area area = areaService.selectById(37);
+        Bicycle bicycle = bicycleService.selectById("394");
+        City currentCity = cityService.selectById(bicycle.getCityId());
+        City parentCity = cityService.selectById(currentCity.getParentId());
+        List<City> cities = cityService.selectList(new EntityWrapper<City>().eq("parent_id", parentCity.getParentId()));
+        List<Integer> cityIds = new ArrayList<>();
+        for (City city : cities) {
+            cityIds.add(city.getId());
+        }
+        List<Area> areas = areaService.selectList(new EntityWrapper<Area>().in("city_id", cityIds));
+        Area area = areas.get(RandomUtils.nextInt(0, areas.size()));
         BigDecimal endLocationX = BigDecimal.valueOf(RandomUtils.nextDouble(area.getWestPoint().doubleValue(), area.getEastPoint().doubleValue()));
         BigDecimal endLocationY = BigDecimal.valueOf(RandomUtils.nextDouble(area.getSouthPoint().doubleValue(), area.getNorthPoint().doubleValue()));
         LocalDateTime startTimeValue = LocalDateTime.now();
-        String startTime = TypeUtils.castToString(startTimeValue.toEpochSecond(ZoneOffset.ofHours(8)));
         long rideTimeValue = RandomUtils.nextLong(0, 3600);
         LocalDateTime endTimeValue = startTimeValue.plusSeconds(rideTimeValue);
         String endTime = TypeUtils.castToString(1000 * endTimeValue.toEpochSecond(ZoneOffset.ofHours(8)));
-        Journey journey = Journey.builder().bicycleId(41).endLocationX(endLocationX).endLocationY(endLocationY).startTime(startTime).endTime(endTime).build();
+        Journey journey = Journey.builder().endLocationX(endLocationX).endLocationY(endLocationY).endTime(endTime).build();
         String content = JSON.toJSONString(journey);
-        System.out.println(content);
-        mockMvc.perform(post("/bicycles/return/41").contentType(MediaType.APPLICATION_JSON).content(content).sessionAttr("userid","11223344651")).andDo(print()).andReturn();
+        mockMvc.perform(post("/bicycles/return/" + bicycle.getId()).contentType(MediaType.APPLICATION_JSON).content(content).sessionAttr("userid","11223344571")).andDo(print()).andReturn();
     }
 
 
 
     @Test
     public void test() throws Exception{
-//        mockMvc.perform(post("/city/inputtips"))
+
     }
+
 
 
 

@@ -135,11 +135,9 @@ public class BicycleController extends BaseController{
         }
     }
 
-    @RequestMapping("return/{bicycleId}")
-    public JSONResponse returnBicycle(@PathVariable Integer bicycleId, @RequestBody Journey journey, HttpSession session){
+    @RequestMapping("return/{bicycleid}")
+    public JSONResponse returnBicycle(@RequestBody @Validated(Journey.Update.class) Journey journey, HttpSession session){
         try{
-            System.out.println("receive-->" + JSON.toJSONString(journey));
-            journey.setBicycleId(bicycleId);
             //check user
             String userid = String.valueOf(session.getAttribute("userid"));
             if(Constants.NULL_USER_ID.equals(userid)){
@@ -149,6 +147,8 @@ public class BicycleController extends BaseController{
             //行程的原始信息从数据库中查询，保证安全.若存在多个未结束行程，则选取第一个，即离当前时间最近的行程
             Journey formerJourney = journeyService.getContinuedJourneys(userid).get(0);
             journey.setId(formerJourney.getId());
+            journey.setBicycleId(formerJourney.getBicycleId());
+            journey.setStartTime(formerJourney.getStartTime());
             //prepare returnBicycle
             Area area = areaService.findArea(journey.getEndLocationX(),journey.getEndLocationY());
             long startTime = Long.parseLong(formerJourney.getStartTime());
@@ -160,7 +160,7 @@ public class BicycleController extends BaseController{
             journey.setPath(RandomUtil.generateRandomPath(formerJourney.getStartLocationX().doubleValue(),formerJourney.getStartLocationY().doubleValue(),journey.getEndLocationX().doubleValue(), journey.getEndLocationY().doubleValue()));
             journey.setStatus(JourneyStatusEnum.END.getCode());
             //returnBicycle
-            bicycleService.returnBicycle(bicycleId, userid,journey);
+            bicycleService.returnBicycle(userid,journey);
             return renderSuccess(Constants.TIP_RETURN_BICYCLE_SUCCESS);
         }catch (Exception e){
             renderError(e.getMessage());
