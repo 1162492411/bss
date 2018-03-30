@@ -78,7 +78,7 @@ public class BicycleController extends BaseController{
             if (bindingResult.hasErrors()) {
                 return renderError(bindingResult.getFieldError().getDefaultMessage());
             } else {
-                record.setInvestmentTime(TypeUtils.castToString(System.currentTimeMillis()));
+                record.setInvestmentTime(TypeUtils.castToString(System.currentTimeMillis() / 1000));
                 return bicycleService.insert(record) ? renderSuccess(record) : renderError();
             }
         } catch (Exception e) {
@@ -154,19 +154,18 @@ public class BicycleController extends BaseController{
             long startTime = Long.parseLong(formerJourney.getStartTime());
             long endTime = Long.parseLong(journey.getEndTime());
             journey.setUserId(userid);
-            journey.setRideTime(endTime - startTime + "");
-            journey.setDistance(LocationUtils.getDistance(formerJourney.getStartLocationX().doubleValue(), formerJourney.getStartLocationY().doubleValue(), journey.getEndLocationX().doubleValue(), journey.getEndLocationY().doubleValue()));
-            journey.setAmount(ConsumptionUtil.calculate(journey.getRideTime(), area == null ? -1 : area.getType(), user.getMonthlyTime()));
+            long rideTimeValue = endTime - startTime;
+            journey.setRideTime(TypeUtils.castToString(rideTimeValue));
             journey.setPath(RandomUtil.generateRandomPath(formerJourney.getStartLocationX().doubleValue(),formerJourney.getStartLocationY().doubleValue(),journey.getEndLocationX().doubleValue(), journey.getEndLocationY().doubleValue()));
+            journey.setDistance(LocationUtils.getJourneyDistance(journey.getPath()));
+            journey.setAmount(ConsumptionUtil.calculate(journey.getRideTime(), area == null ? -1 : area.getType(), user.getMonthlyTime()));
             journey.setStatus(JourneyStatusEnum.END.getCode());
             //returnBicycle
             bicycleService.returnBicycle(userid,journey);
             return renderSuccess(Constants.TIP_RETURN_BICYCLE_SUCCESS);
         }catch (Exception e){
-            renderError(e.getMessage());
+            return renderError(e.getMessage());
         }
-        return renderError(Constants.TIP_RETURN_BICYCLE_ERROR);
-
     }
 
 

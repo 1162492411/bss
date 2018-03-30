@@ -20,9 +20,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.springframework.http.MediaType.*;
@@ -81,7 +86,7 @@ public class MockTest extends BssTestEnvironment {
 
     @Test
     public void testReturnBicycle() throws Exception {
-        Bicycle bicycle = bicycleService.selectById("394");
+        Bicycle bicycle = bicycleService.selectById("466");
         City currentCity = cityService.selectById(bicycle.getCityId());
         City parentCity = cityService.selectById(currentCity.getParentId());
         List<City> cities = cityService.selectList(new EntityWrapper<City>().eq("parent_id", parentCity.getParentId()));
@@ -90,23 +95,32 @@ public class MockTest extends BssTestEnvironment {
             cityIds.add(city.getId());
         }
         List<Area> areas = areaService.selectList(new EntityWrapper<Area>().in("city_id", cityIds));
+        System.out.println("areas-->" + areas);
         Area area = areas.get(RandomUtils.nextInt(0, areas.size()));
+        System.out.println("selectedArea-->" + area);
         BigDecimal endLocationX = BigDecimal.valueOf(RandomUtils.nextDouble(area.getWestPoint().doubleValue(), area.getEastPoint().doubleValue()));
         BigDecimal endLocationY = BigDecimal.valueOf(RandomUtils.nextDouble(area.getSouthPoint().doubleValue(), area.getNorthPoint().doubleValue()));
-        LocalDateTime startTimeValue = LocalDateTime.now();
+
+//        LocalDateTime startTimeValue = LocalDateTime.now();
+        Journey formerJourney = journeyService.getContinuedJourneys("11223344843").get(0);
+        LocalDateTime startTimeValue =  LocalDateTime.ofInstant(Instant.ofEpochSecond(Long.parseLong(formerJourney.getStartTime())), ZoneId.of("Asia/Shanghai"));
         long rideTimeValue = RandomUtils.nextLong(0, 3600);
         LocalDateTime endTimeValue = startTimeValue.plusSeconds(rideTimeValue);
-        String endTime = TypeUtils.castToString(1000 * endTimeValue.toEpochSecond(ZoneOffset.ofHours(8)));
+        String endTime = TypeUtils.castToString(endTimeValue.toEpochSecond(ZoneOffset.ofHours(8)));
         Journey journey = Journey.builder().endLocationX(endLocationX).endLocationY(endLocationY).endTime(endTime).build();
         String content = JSON.toJSONString(journey);
-        mockMvc.perform(post("/bicycles/return/" + bicycle.getId()).contentType(MediaType.APPLICATION_JSON).content(content).sessionAttr("userid","11223344571")).andDo(print()).andReturn();
+        mockMvc.perform(post("/bicycles/return/" + bicycle.getId()).contentType(MediaType.APPLICATION_JSON).content(content).sessionAttr("userid","11223344843")).andDo(print()).andReturn();
     }
 
 
 
     @Test
     public void test() throws Exception{
-
+//        System.out.println(Instant.parse("1493682936"));
+//        LocalDateTime.parse("1493682936000", DateTimeFormatter.BASIC_ISO_DATE);
+        System.out.println();
+        System.out.println();
+//        LocalDateTime.ofInstant(Instant.ofEpochSecond(1493682936), ZoneId.of("CTT"));
     }
 
 

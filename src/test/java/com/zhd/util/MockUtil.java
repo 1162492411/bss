@@ -11,7 +11,9 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
@@ -156,7 +158,7 @@ public class MockUtil extends BssTestEnvironment{
     @Test
     public void batchInDeposit() throws Exception {
         int count = 0;
-        List<User> userList = userService.selectList(new EntityWrapper<User>().eq("type","1"));
+        List<User> userList = userService.selectList(new EntityWrapper<User>().eq("type","1").eq("deposit_balance",0));
         for (int i = 0; i < userList.size() ; i++) {
             if(RandomUtils.nextInt(0,100) > 10){
                 System.out.println("---第" + (++count) + "次----------------");
@@ -193,7 +195,7 @@ public class MockUtil extends BssTestEnvironment{
     public void batchJourney() throws Exception{
         List<User> userList = userService.selectList(new EntityWrapper<User>().eq("deposit_balance",99.0).ge("account_balance",0).eq("type",1));
         List<Bicycle> bicycleList = bicycleService.selectList(new EntityWrapper<Bicycle>().eq("status",1).isNotNull("city_id"));
-        for (int i = 0; i < 520; i++) {
+        for (int i = 0; i < 400; i++) {
             Bicycle selectedBicycle = bicycleList.get(RandomUtils.nextInt(0, bicycleList.size()));
             User selectedUser = userList.get(RandomUtils.nextInt(0, userList.size()));
             //borrow bicycle
@@ -212,10 +214,11 @@ public class MockUtil extends BssTestEnvironment{
             Area area = areas.get(RandomUtils.nextInt(0, areas.size()));
             BigDecimal endLocationX = BigDecimal.valueOf(RandomUtils.nextDouble(area.getWestPoint().doubleValue(), area.getEastPoint().doubleValue()));
             BigDecimal endLocationY = BigDecimal.valueOf(RandomUtils.nextDouble(area.getSouthPoint().doubleValue(), area.getNorthPoint().doubleValue()));
-            LocalDateTime startTimeValue = LocalDateTime.now();
+            Journey formerJourney = journeyService.getContinuedJourneys(selectedUser.getId()).get(0);
+            LocalDateTime startTimeValue =  LocalDateTime.ofInstant(Instant.ofEpochSecond(Long.parseLong(formerJourney.getStartTime())), ZoneId.of("Asia/Shanghai"));
             long rideTimeValue = RandomUtils.nextLong(0, 4800);
             LocalDateTime endTimeValue = startTimeValue.plusSeconds(rideTimeValue);
-            String endTime = TypeUtils.castToString(1000 * endTimeValue.toEpochSecond(ZoneOffset.ofHours(8)));
+            String endTime = TypeUtils.castToString(endTimeValue.toEpochSecond(ZoneOffset.ofHours(8)));
             Journey journey = Journey.builder().endLocationX(endLocationX).endLocationY(endLocationY).endTime(endTime).build();
             String returnContent = JSON.toJSONString(journey);
             mockMvc.perform(post("/bicycles/return/" + selectedBicycle.getId()).contentType(MediaType.APPLICATION_JSON).content(returnContent).sessionAttr("userid",selectedUser.getId())).andDo(print()).andReturn();
@@ -233,6 +236,26 @@ public class MockUtil extends BssTestEnvironment{
         supplierService.insertBatch(mockSuppliers());
         //停车点需手动添加
         bicycleService.insertBatch(mockBicycles());
+    }
+
+    @Test
+    public void test(){
+//        List<Journey> journeyList = journeyService.selectList(new EntityWrapper<Journey>().le("end_time",1496246400));
+//        int count = 0;
+//        for (Journey journey : journeyList) {
+//            System.out.println("第" + (++count) + "次");
+//            LocalDateTime startTimeValue = LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.valueOf(journey.getStartTime())), ZoneId.of("Asia/Shanghai")).plusMonths(8);
+//            LocalDateTime endTimeValue = LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.valueOf(journey.getEndTime())), ZoneId.of("Asia/Shanghai")).plusMonths(8);
+//            System.out.println("startTime-->" + startTimeValue + "---endTime-->" + endTimeValue);
+//            journey.setStartTime(TypeUtils.castToString(startTimeValue.toEpochSecond(ZoneOffset.ofHours(8))));
+//            journey.setEndTime(TypeUtils.castToString(endTimeValue.toEpochSecond(ZoneOffset.ofHours(8))));
+//            journeyService.updateById(journey);
+//        }
+
+        for (int i = 0; i < 200; i++) {
+            System.out.println(RandomUtil.generateRandomStartTimeString());
+        }
+
     }
 
 

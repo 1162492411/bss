@@ -58,7 +58,7 @@ public class TaskController extends BaseController {
             if (bindingResult.hasErrors()) {
                 return renderError(bindingResult.getFieldError().getDefaultMessage());
             } else {
-                record.setStartTime(TypeUtils.castToString(System.currentTimeMillis()));
+                record.setStartTime(TypeUtils.castToString(System.currentTimeMillis() / 1000));
                 if(StringUtils.isBlank(record.getName())){
                     record.setName(TaskTypeEnum.getByCode(record.getType()).toString() + record.getBicycle());
                 }
@@ -102,7 +102,7 @@ public class TaskController extends BaseController {
             } else {
                 String currentUserId = String.valueOf(session.getAttribute("userid"));
                 if (StringUtils.isNotEmpty(currentUserId) && (userService.isAdmin(currentUserId) || currentUserId.equals(taskService.selectById(record.getId()).getUser()))) {
-                    record.setEndTime(TypeUtils.castToString(System.currentTimeMillis()));
+                    record.setEndTime(TypeUtils.castToString(System.currentTimeMillis() / 1000));
                     record.setStatus(TaskStatusEnum.DONE.getCode());
                     bicycleService.updateById(Bicycle.builder().id(record.getBicycle()).status(calculateStatusAfterDone(record.getType())).build());
                     return taskService.updateById(record) ? renderSuccess(record) : renderError(Constants.UNKNOWN_EXCEPTION);

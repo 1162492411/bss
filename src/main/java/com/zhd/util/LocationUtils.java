@@ -1,5 +1,8 @@
 package com.zhd.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 坐标辅助工具
  */
@@ -31,4 +34,27 @@ public class LocationUtils {
         s = s*1000;
         return Double.valueOf(s).intValue();
     }
+
+    /**
+     * 计算行程的距离
+     * @param path 行程的轨迹
+     * @return 行程的实际距离
+     */
+    public static int getJourneyDistance(String path){
+        int distance = 0;
+        try{
+            String[] paths = path.split(",");
+            List<Double> pathData = new ArrayList<>();
+            for (int i = 0; i < paths.length; i ++) {
+                pathData.add(Double.parseDouble(paths[i]));
+            }
+            for (int i = 0; i < pathData.size() ; i += 2) {
+                distance += getDistance(pathData.get(i), pathData.get(i+1), pathData.get(i+2), pathData.get(i+3));
+            }
+        }catch (Exception e){
+            return distance;
+        }
+        return distance;
+    }
+
 }    

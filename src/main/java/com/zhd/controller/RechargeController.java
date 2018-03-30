@@ -61,7 +61,7 @@ public class RechargeController extends BaseController{
             if (bindingResult.hasErrors()) {
                 return renderError(bindingResult.getFieldError().getDefaultMessage());
             } else {
-                record.setRechargeTime(TypeUtils.castToString(System.currentTimeMillis()));
+                record.setRechargeTime(TypeUtils.castToString(System.currentTimeMillis() / 1000));
                 return rechargeService.recharge(record) ? renderSuccess() : renderError();
             }
         } catch (Exception e) {

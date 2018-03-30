@@ -30,7 +30,7 @@ public class ConsumptionUtil {
         int minutes =  Math.round(time / 1000 / 60);//format rideTime
         double originalAmount = calcuteByRideTime(minutes);
 
-        if(StringUtils.isNotBlank(monthlyTime) && Long.parseLong(monthlyTime) > System.currentTimeMillis() && minutes <= 120) {
+        if(StringUtils.isNotBlank(monthlyTime) && Long.parseLong(monthlyTime) > System.currentTimeMillis() / 1000 && minutes <= 120) {
             System.out.println("zero");
             return BigDecimal.ZERO;
         }
@@ -53,15 +53,23 @@ public class ConsumptionUtil {
     /**
      * 根据骑行时间计算应付金额
      * @param minutes 骑行分钟数
-     * 计算规则 : 1小时内均收费1元，1-2小时部分每半小时收费1元，超出2小时部分每小时收费4元，超出24小时则抛出RideTimeOutException
+     * 计算规则 : 1小时内均收费1元，1-2小时部分每半小时收费1元，超出2小时则抛出RideTimeOutException
      * @return 应付金额
      */
     private static double calcuteByRideTime(int minutes) throws RideTimeOutException {
-        if(minutes >= 0 && minutes <= 60) return 1;
-        else if(minutes > 60 && minutes <= 90) return 1.5;
-        else if(minutes > 90 && minutes <= 120) return 2;
-        else if(minutes > 120 && minutes <= 1440) return 2 + 4 * Math.round(minutes - 120);
-        else throw new RideTimeOutException();
+        if(minutes >= 0 && minutes <= 60) {
+            return 1;
+        }
+        else if(minutes > 60 && minutes <= 90) {
+            return 1.5;
+        }
+        else if(minutes > 90 && minutes <= 120) {
+            return 2;
+        }
+//        else if(minutes > 120 && minutes <= 1440) return 2 + 4 * Math.round(minutes - 120);
+        else {
+            throw new RideTimeOutException();
+        }
     }
 
 }

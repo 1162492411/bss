@@ -75,7 +75,7 @@ public class DepositController extends BaseController {
                     throw new NotLoginException();
                 }
                 deposit.setUserId(userid);
-                deposit.setOperateTime(TypeUtils.castToString(System.currentTimeMillis()));
+                deposit.setOperateTime(TypeUtils.castToString(System.currentTimeMillis() / 1000));
                 if (DepositTypeEnum.IN.getCode() == deposit.getType()) {
                     //交押金
                     if(userService.selectById(userid).getDepositBalance().intValue() >=  Constants.STANDARD_DEPOSIT.intValue()){

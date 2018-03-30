@@ -16,6 +16,7 @@ import com.zhd.service.ICityService;
 import com.zhd.service.IJourneyService;
 import com.zhd.service.IUserService;
 import com.zhd.util.Constants;
+import com.zhd.util.RandomUtil;
 import com.zhd.util.RegeoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,7 +60,7 @@ public class BicycleServiceImpl extends ServiceImpl<BicycleMapper, Bicycle> impl
         }
         //borrowBicycle
         bicycle.setStatus(BicycleStatusEnum.USING.getCode());
-        Journey journey = Journey.builder().bicycleId(bicycle.getId()).userId(userid).startTime(TypeUtils.castToString(System.currentTimeMillis())).startLocationX(bicycle.getLocationX()).startLocationY(bicycle.getLocationY()).build();
+        Journey journey = Journey.builder().bicycleId(bicycle.getId()).userId(userid).startTime(RandomUtil.generateRandomStartTimeString()).startLocationX(bicycle.getLocationX()).startLocationY(bicycle.getLocationY()).build();
         boolean result =  bicycleMapper.updateById(bicycle) > 0 && journeyService.insert(journey);
         if(result){
             return journey;

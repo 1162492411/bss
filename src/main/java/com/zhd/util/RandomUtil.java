@@ -1,9 +1,11 @@
 package com.zhd.util;
 
 
+import com.alibaba.fastjson.util.TypeUtils;
 import org.apache.commons.lang3.RandomUtils;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,13 +23,21 @@ public class RandomUtil {
      */
     public static LocalDateTime generateRandomStartTime(){
         int randomYear = 2017;
-        int randomMonth = RandomUtils.nextInt(1,12);
-        int randomDay = RandomUtils.nextInt(1,27);
+        int randomMonth = RandomUtils.nextInt(6,9);
+        int randomDay = RandomUtils.nextInt(1,30);
         int randomHour = RandomUtils.nextInt(7,22);
         int randomMinute  = RandomUtils.nextInt(1,60);
         int randomSecond = RandomUtils.nextInt(1,60);
         LocalDateTime localDateTime = LocalDateTime.of(randomYear,randomMonth,randomDay,randomHour,randomMinute, randomSecond);
         return localDateTime;
+    }
+
+    /**
+     * 返回随机时间的时间戳的字符串格式
+     * @return
+     */
+    public static String generateRandomStartTimeString(){
+        return TypeUtils.castToString(generateRandomStartTime().toEpochSecond(ZoneOffset.ofHours(8)));
     }
 
     /**

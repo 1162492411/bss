@@ -461,7 +461,7 @@ function initSelection(div, data) {
 function formatSeconds(div) {
     let result = "";
     if (!checkElementEmpty(div)) {
-        let val = parseInt($("#" + div).text()) / 1000;
+        let val = parseInt($("#" + div).text());
         if (dataNotEmpty(val)) {
             let min = Math.floor(val / 60),
                 second = parseInt(val % 60),
