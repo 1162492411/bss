@@ -1,6 +1,8 @@
 package com.zhd.controller;
 
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -69,10 +71,13 @@ public class PageController {
     @RequestMapping("taskModule/tasks")
     public void toTasks(){}
 
-    //todo : temp for dev
-    @RequestMapping("path")
-    public String toPath(){
-        return "orderModule/journeyPath";
-    }
+    /**
+     * 前往--报表模块-行程使用概况
+     */
+    @RequestMapping("reportModule/overview")
+    public void toOverview(){}
 
+
+    @RequestMapping("reportModule/cityReport")
+    public void toCityReport(){}
 }

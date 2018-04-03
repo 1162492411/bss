@@ -62,6 +62,9 @@ const userDepositPath = rootPath + "/deposit";//用户版-押金管理
 const citiesPath = rootPath + "/city";//行政区划的根目录
 const searchCityPath = citiesPath + "/search";//查询行政区划的URL
 const inputTipsPath = citiesPath + "/inputtips";//查询输入提示的URL
+const reportPath = rootPath + "/report";//报表信息的根目录
+const overviewReportPath = reportPath + "/overview";//使用概况报表的URL
+
 
 const allUserStatus = [
     {"id" : 0, "name" : "未知", "class" : "danger"},

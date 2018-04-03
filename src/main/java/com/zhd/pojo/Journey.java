@@ -110,5 +110,17 @@ public class Journey implements Serializable, BaseModel {
      */
     private String path;
 
+    /**
+     * 起始区划
+     */
+    @TableField("start_city")
+    private Integer startCity;
+
+    /**
+     * 终止区划
+     */
+    @TableField("end_city")
+    private Integer endCity;
+
 
 }

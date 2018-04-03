@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * </p>
  *
  * @author zyg
- * @since 2018-02-05
+ * @since 2018-04-02
  */
 public interface DepositMapper extends BaseMapper<Deposit> {
 

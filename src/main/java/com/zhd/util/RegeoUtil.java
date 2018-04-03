@@ -18,7 +18,7 @@ public class RegeoUtil {
      * @param pointY 查询的点的纬度
      * @return 包含地理信息的有效信息
      */
-    public static JSONObject getResponse(BigDecimal pointX, BigDecimal pointY) {
+    public static JSONObject getCityByLocation(BigDecimal pointX, BigDecimal pointY) {
         String url = apiPath;
         if (!BigDecimal.ZERO.equals(pointX) && !BigDecimal.ZERO.equals(pointY)) {
             url += "&location=" + pointX.setScale(6, BigDecimal.ROUND_DOWN) + "," + pointY.setScale(6, BigDecimal.ROUND_DOWN);

@@ -40,6 +40,8 @@ public class BssTestEnvironment {
 	public IUserService userService;
 	@Autowired
 	public ICityService cityService;
+	@Autowired
+	public IJourneyReportService journeyReportService;
 
 	@Test
 	public void contextLoads() {

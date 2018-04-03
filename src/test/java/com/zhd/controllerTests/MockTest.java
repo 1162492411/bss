@@ -18,6 +18,7 @@ import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.Rollback;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -114,13 +115,23 @@ public class MockTest extends BssTestEnvironment {
 
 
 
+
     @Test
+    @Rollback(false)
     public void test() throws Exception{
-//        System.out.println(Instant.parse("1493682936"));
-//        LocalDateTime.parse("1493682936000", DateTimeFormatter.BASIC_ISO_DATE);
-        System.out.println();
-        System.out.println();
-//        LocalDateTime.ofInstant(Instant.ofEpochSecond(1493682936), ZoneId.of("CTT"));
+        List<Journey>  journeyList = journeyService.selectList(new EntityWrapper<Journey>());
+        for (int i = 0; i < journeyList.size() ; i++) {
+            Journey journey = journeyList.get(i);
+            Integer startCityCode = RegeoUtil.getCityByLocation(journey.getStartLocationX(),journey.getStartLocationY()).getJSONObject("addressComponent").getInteger("adcode");
+            Integer startCityId = cityService.selectOne(new EntityWrapper<City>().eq("code", startCityCode)).getId();
+            Integer endCityCode = RegeoUtil.getCityByLocation(journey.getEndLocationX(),journey.getEndLocationY()).getJSONObject("addressComponent").getInteger("adcode");
+            Integer endCityId = cityService.selectOne(new EntityWrapper<City>().eq("code", endCityCode)).getId();
+            Journey newJourney = Journey.builder().id(journey.getId()).startCity(startCityId).endCity(endCityId).build();
+            journeyService.updateById(newJourney);
+            System.out.println(newJourney.getId() + "--" + newJourney.getStartCity() + "---" + newJourney.getEndCity());
+            Thread.sleep(10);
+        }
+
     }
 
 

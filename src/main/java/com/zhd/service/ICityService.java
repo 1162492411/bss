@@ -23,4 +23,6 @@ public interface ICityService extends IService<City> {
 
     City getSimpleByCode(Integer code);//根据区划编码选择区划的简略信息
 
+    List<Integer> getAllChildren(Integer id);//根据主键获取该区划所有子区划
+
 }

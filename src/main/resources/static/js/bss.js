@@ -6,6 +6,8 @@ var rectangleEditor;//添加区域页面待矩形编辑框
 var areaMap;//添加区域页面的地图
 var bicycleMap;//车辆分布页面的地图
 var pathMap;// 行程页面的行程轨迹的地图
+var overviewReportOptions;// 报表-使用概况的配置
+var overviewReportChart;//报表-使用概况的图表
 /*----------------扩展函数--------------*/
 Date.prototype.format = function (format) {
     let o = {
@@ -1186,6 +1188,78 @@ function initAddTaskModal(data) {
     });
     $modal.modal("show");
 }
+/*--------------------------------------------报表模块------------------------------*/
+
+function setFilterCity(){
+    let districtCode = $("#select-district").data("code");
+    let cityCode = $("#select-city").data("code");
+    let provinceCode = $("#select-province").data("code");
+    let selectCode;
+    if(districtCode !== undefined) selectCode = districtCode;
+    else if (cityCode !== undefined) selectCode = cityCode;
+    else if(provinceCode !== undefined) selectCode = provinceCode;
+    else alert("请选择行政区划!!");
+    if(selectCode !== undefined){
+        $.ajax({
+            type: 'POST',
+            url : searchCityPath,
+            sync : false,
+            contentType : 'application/json',
+            data : JSON.stringify(selectCode),
+            success : function(data) {
+                if(data.code == Codes.successResponse && !checkDataEmpty(data.result)){
+                    $("#overview-report-city-id").val(data.result.id);
+                    overviewReportSubmit(true);
+                }
+            }
+        });
+        this.unbind();
+        this.$element.removeData(NAMESPACE).removeClass('city-picker-input');
+        this.$textspan.remove();
+        this.$dropdown.remove();
+    }
+}
+
+
+/**
+ * 提交条件获取使用概况报表
+ */
+function overviewReportSubmit(appendMode){
+    let type = parseInt($("#overview-report-type :selected").val());
+    let startDate = $("#overview-report-start-date").val();
+    let endDate = $("#overview-report-end-date").val();
+    let cityId = parseInt($("#overview-report-city-id").val());
+    let sendData = {"type" : type, "startDate" : startDate, "endDate" : endDate, "cityId" : cityId};
+    $.ajax({
+        type: 'POST',
+        url: overviewReportPath,
+        data: JSON.stringify(sendData),
+        contentType: 'application/json',
+        success: function (data) {
+            if (data.code == Codes.successResponse) {
+                let appendData = {};
+                appendData.name = data.result.name[0];
+                appendData.data = data.result.yAxis;
+                if(!appendMode){
+                    overviewReportOptions.series = [];
+                }
+                overviewReportOptions.series.push(appendData);
+                overviewReportOptions.xAxis.categories = data.result.xAxis;
+                overviewReportChart = Highcharts.chart('report-overview-div', overviewReportOptions);
+            }
+            else {
+                showErrorData(data);
+            }
+        }
+    });
+}
+
+
+
+
+
+
+
 
 /*--------------------------------------------用户版------------------------------*/
 
