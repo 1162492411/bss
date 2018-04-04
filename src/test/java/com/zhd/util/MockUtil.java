@@ -143,8 +143,8 @@ public class MockUtil extends BssTestEnvironment{
             bicycle.setBatch("1702010010" + (999 - i));
             Supplier supplier = supplierList.get(RandomUtils.nextInt(0, supplierList.size()));
             bicycle.setSupplier(supplier.getId());
-            bicycle.setServiceTime("0");
-            bicycle.setInvestmentTime(TypeUtils.castToString(RandomUtil.generateRandomStartTime().toEpochSecond(ZoneOffset.ofHours(8))));
+            bicycle.setServiceTime(0L);
+            bicycle.setInvestmentTime(TypeUtils.castToString(DataUtil.generateRandomStartTime().toEpochSecond(ZoneOffset.ofHours(8))));
             bicycle.setMileage(0);
             System.out.println(JSON.toJSONString(bicycle));
             bicycleList.add(bicycle);
@@ -240,20 +240,20 @@ public class MockUtil extends BssTestEnvironment{
 
     @Test
     public void test(){
-//        List<Journey> journeyList = journeyService.selectList(new EntityWrapper<Journey>().le("end_time",1496246400));
-//        int count = 0;
-//        for (Journey journey : journeyList) {
-//            System.out.println("第" + (++count) + "次");
-//            LocalDateTime startTimeValue = LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.valueOf(journey.getStartTime())), ZoneId.of("Asia/Shanghai")).plusMonths(8);
-//            LocalDateTime endTimeValue = LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.valueOf(journey.getEndTime())), ZoneId.of("Asia/Shanghai")).plusMonths(8);
-//            System.out.println("startTime-->" + startTimeValue + "---endTime-->" + endTimeValue);
-//            journey.setStartTime(TypeUtils.castToString(startTimeValue.toEpochSecond(ZoneOffset.ofHours(8))));
-//            journey.setEndTime(TypeUtils.castToString(endTimeValue.toEpochSecond(ZoneOffset.ofHours(8))));
-//            journeyService.updateById(journey);
-//        }
+        List<Journey> journeyList = journeyService.selectList(new EntityWrapper<Journey>().le("end_time",1496246400));
+        int count = 0;
+        for (Journey journey : journeyList) {
+            System.out.println("第" + (++count) + "次");
+            LocalDateTime startTimeValue = LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.valueOf(journey.getStartTime())), ZoneId.of("Asia/Shanghai")).plusMonths(8);
+            LocalDateTime endTimeValue = LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.valueOf(journey.getEndTime())), ZoneId.of("Asia/Shanghai")).plusMonths(8);
+            System.out.println("startTime-->" + startTimeValue + "---endTime-->" + endTimeValue);
+            journey.setStartTime(TypeUtils.castToString(startTimeValue.toEpochSecond(ZoneOffset.ofHours(8))));
+            journey.setEndTime(TypeUtils.castToString(endTimeValue.toEpochSecond(ZoneOffset.ofHours(8))));
+            journeyService.updateById(journey);
+        }
 
         for (int i = 0; i < 200; i++) {
-            System.out.println(RandomUtil.generateRandomStartTimeString());
+            System.out.println(DataUtil.generateRandomStartTimeString());
         }
 
     }

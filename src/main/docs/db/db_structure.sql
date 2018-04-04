@@ -23,7 +23,7 @@ create table bicycle
 	location_y decimal(20,17) default '0.00000000000000000' null comment '当前位置Y坐标',
 	batch char(13) not null comment '生产批次',
 	supplier int null comment '供应商ID',
-	service_time varchar(50) default '0' null comment '总使用时间',
+	service_time int default '0' null comment '总使用时间',
 	investment_time varchar(50) null comment '投产时间',
 	mileage int default '0' null comment '行驶里程',
 	city_id int null comment '当前所在行政区划ID'
@@ -64,7 +64,7 @@ create table journey
 	user_id char(11) null comment '用户ID',
 	bicycle_id int null comment '车辆ID',
 	start_time varchar(50) null comment '起始时间',
-	ride_time varchar(50) default '0' null comment '骑行时间',
+	ride_time int default '0' null comment '骑行时间',
 	distance int default '0' null comment '骑行距离',
 	amount decimal(5,2) default '0.00' null comment '骑行花费',
 	end_time varchar(50) null,
@@ -73,7 +73,9 @@ create table journey
 	end_location_x decimal(20,17) default '0.00000000000000000' null comment '终止位置X',
 	end_location_y decimal(20,17) default '0.00000000000000000' null comment '终止位置Y',
 	status int default '0' null comment '行程状态',
-	path longtext null comment '运动轨迹'
+	path longtext null comment '运动轨迹',
+	start_city int null comment '起始区划编号',
+	end_city int null comment '终止行政区划编号'
 )
 	comment '行程记录表' engine=InnoDB charset=utf8
 ;

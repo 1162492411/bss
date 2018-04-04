@@ -14,7 +14,7 @@ import com.zhd.service.ICityService;
 import com.zhd.service.IJourneyService;
 import com.zhd.service.IUserService;
 import com.zhd.util.Constants;
-import com.zhd.util.RandomUtil;
+import com.zhd.util.DataUtil;
 import com.zhd.util.RegeoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,7 +60,7 @@ public class BicycleServiceImpl extends ServiceImpl<BicycleMapper, Bicycle> impl
         bicycle.setStatus(BicycleStatusEnum.USING.getCode());
         Integer startCityCode = RegeoUtil.getCityByLocation(bicycle.getLocationX(),bicycle.getLocationY()).getJSONObject("addressComponent").getInteger("adcode");
         Integer startCityId = cityService.selectOne(new EntityWrapper<City>().eq("code", startCityCode)).getId();
-        Journey journey = Journey.builder().bicycleId(bicycle.getId()).userId(userid).startTime(RandomUtil.generateRandomStartTimeString()).startLocationX(bicycle.getLocationX()).startLocationY(bicycle.getLocationY()).startCity(startCityId).build();
+        Journey journey = Journey.builder().bicycleId(bicycle.getId()).userId(userid).startTime(DataUtil.generateRandomStartTimeString()).startLocationX(bicycle.getLocationX()).startLocationY(bicycle.getLocationY()).startCity(startCityId).build();
         boolean result =  bicycleMapper.updateById(bicycle) > 0 && journeyService.insert(journey);
         if(result){
             return journey;
@@ -76,6 +76,7 @@ public class BicycleServiceImpl extends ServiceImpl<BicycleMapper, Bicycle> impl
             int adcode = Integer.valueOf(jsonObject.getJSONObject("addressComponent").getString("adcode"));
             int cityId = cityService.selectOne(new EntityWrapper<City>().eq("code", adcode)).getId();
             journey.setEndCity(cityId);
+            journey.setDistanceRound(Math.round(journey.getDistance()));
             Bicycle bicycle = Bicycle.builder().id(journey.getBicycleId()).locationX(journey.getEndLocationX()).locationY(journey.getEndLocationY()).cityId(cityId == 0 ? Constants.VALUE_DEFAULT_CITY_ID : cityId).status(BicycleStatusEnum.UNUSED.getCode()).build();
             Bicycle bicycleInfo = Bicycle.builder().id(journey.getBicycleId()).serviceTime(journey.getRideTime()).mileage(journey.getDistance()).build();
             boolean result = bicycleMapper.updateById(bicycle) > 0 && bicycleMapper.updateInfo(bicycleInfo) && journeyService.updateById(journey) && userService.reduceAccount(userId, journey.getAmount());

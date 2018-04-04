@@ -1,23 +1,18 @@
 package com.zhd.controller;
 
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.util.TypeUtils;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.zhd.convert.BicycleConvert;
-import com.zhd.enums.AreaTypeEnum;
-import com.zhd.enums.BicycleStatusEnum;
 import com.zhd.enums.JourneyStatusEnum;
-import com.zhd.exceptions.NoSuchBicycleException;
 import com.zhd.exceptions.NotLoginException;
-import com.zhd.exceptions.NotUseableBicycleException;
 import com.zhd.pojo.*;
 import com.zhd.service.*;
 import com.zhd.util.Constants;
 import com.zhd.util.ConsumptionUtil;
 import com.zhd.util.LocationUtils;
-import com.zhd.util.RandomUtil;
+import com.zhd.util.DataUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -155,8 +150,8 @@ public class BicycleController extends BaseController{
             long endTime = Long.parseLong(journey.getEndTime());
             journey.setUserId(userid);
             long rideTimeValue = endTime - startTime;
-            journey.setRideTime(TypeUtils.castToString(rideTimeValue));
-            journey.setPath(RandomUtil.generateRandomPath(formerJourney.getStartLocationX().doubleValue(),formerJourney.getStartLocationY().doubleValue(),journey.getEndLocationX().doubleValue(), journey.getEndLocationY().doubleValue()));
+            journey.setRideTime(rideTimeValue);
+            journey.setPath(DataUtil.generateRandomPath(formerJourney.getStartLocationX().doubleValue(),formerJourney.getStartLocationY().doubleValue(),journey.getEndLocationX().doubleValue(), journey.getEndLocationY().doubleValue()));
             journey.setDistance(LocationUtils.getJourneyDistance(journey.getPath()));
             journey.setAmount(ConsumptionUtil.calculate(journey.getRideTime(), area == null ? -1 : area.getType(), user.getMonthlyTime()));
             journey.setStatus(JourneyStatusEnum.END.getCode());

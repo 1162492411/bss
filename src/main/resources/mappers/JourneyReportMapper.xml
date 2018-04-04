@@ -38,5 +38,42 @@
         group by countKey
     </select>
 
+    <select id="countRideTime" resultType="java.util.Map">
+        SELECT
+        count(*) AS countValue,
+        (CASE
+        WHEN ride_time > 0 AND ride_time &lt;= 30 * 60 THEN '30分钟内'
+        WHEN ride_time > 30 * 60 AND ride_time &lt;=60 * 60 THEN '30-60分钟'
+        WHEN ride_time > 60 * 60 AND ride_time &lt;= 90 * 60 THEN '60-90分钟'
+        WHEN ride_time > 90 * 60 AND ride_time &lt;= 120 * 60 THEN '90-120分钟'
+        WHEN ride_time > 120 * 60 THEN '120分钟以上'
+        else '异常数据' END
+        ) AS countKey
+        FROM journey
+        where start_time BETWEEN unix_timestamp(#{begin}) and unix_timestamp(#{end})
+        <if test=" cityIds and cityIds.size > 0">
+            and start_city in
+            <foreach collection="cityIds" item="city" open="(" separator="," close=")">
+                #{city}
+            </foreach>
+        </if>
+        GROUP BY countKey
+    </select>
+
+
+    <select id="countRideDistance" resultType="java.util.Map">
+        select count(1) countValue, distance_round as countKey
+        from journey
+        where start_time BETWEEN unix_timestamp(#{begin}) and unix_timestamp(#{end})
+        <if test=" cityIds and cityIds.size > 0">
+            and start_city in
+            <foreach collection="cityIds" item="city" open="(" separator="," close=")">
+                #{city}
+            </foreach>
+        </if>
+        group by countKey
+        order by countKey
+    </select>
+
 
 </mapper>

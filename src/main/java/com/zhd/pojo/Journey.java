@@ -63,11 +63,18 @@ public class Journey implements Serializable, BaseModel {
      * 骑行时间
      */
     @TableField("ride_time")
-    private String rideTime;
+    private Long rideTime;
     /**
      * 骑行距离
      */
     private Integer distance;
+
+    /**
+     * 骑行距离向上取整
+     */
+    @TableField("distance_round")
+    private Integer distanceRound;
+
     /**
      * 骑行花费
      */

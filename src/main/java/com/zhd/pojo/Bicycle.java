@@ -76,7 +76,7 @@ public class Bicycle implements Serializable, BaseModel {
      */
     @TableField("service_time")
     @NotNull(groups = Update.class)
-    private String serviceTime;
+    private Long serviceTime;
     /**
      * 投产时间
      */

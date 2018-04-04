@@ -1225,11 +1225,12 @@ function setFilterCity(){
  * 提交条件获取使用概况报表
  */
 function overviewReportSubmit(appendMode){
-    let type = parseInt($("#overview-report-type :selected").val());
+    let statisticalType = parseInt($("#overview-report-statistical-type :selected").val());
+    let timeType = parseInt($("#overview-report-time-type :selected").val());
     let startDate = $("#overview-report-start-date").val();
     let endDate = $("#overview-report-end-date").val();
     let cityId = parseInt($("#overview-report-city-id").val());
-    let sendData = {"type" : type, "startDate" : startDate, "endDate" : endDate, "cityId" : cityId};
+    let sendData = {"statisticalType" : statisticalType, "timeType" : timeType, "startDate" : startDate, "endDate" : endDate, "cityId" : cityId};
     $.ajax({
         type: 'POST',
         url: overviewReportPath,
@@ -1237,14 +1238,23 @@ function overviewReportSubmit(appendMode){
         contentType: 'application/json',
         success: function (data) {
             if (data.code == Codes.successResponse) {
-                let appendData = {};
-                appendData.name = data.result.name[0];
-                appendData.data = data.result.yAxis;
-                if(!appendMode){
-                    overviewReportOptions.series = [];
+                let chartType = data.result.chartType[0];
+                if(chartType === "pie"){
+                    overviewReportOptions.chart.type = chartType;
+                    overviewReportOptions.series = data.result.series;
+
+                }else{
+                    let appendData = {};
+                    appendData.name = data.result.name[0];
+                    appendData.data = data.result.yAxis;
+                    appendData.color = allColor[Math.round(Math.random() * allColor.length)];
+                    if(!appendMode){
+                        overviewReportOptions.series = [];
+                    }
+                    overviewReportOptions.series.push(appendData);
+                    overviewReportOptions.xAxis.categories = data.result.xAxis;
                 }
-                overviewReportOptions.series.push(appendData);
-                overviewReportOptions.xAxis.categories = data.result.xAxis;
+
                 overviewReportChart = Highcharts.chart('report-overview-div', overviewReportOptions);
             }
             else {
@@ -1253,7 +1263,6 @@ function overviewReportSubmit(appendMode){
         }
     });
 }
-
 
 
 

@@ -119,18 +119,23 @@ public class MockTest extends BssTestEnvironment {
     @Test
     @Rollback(false)
     public void test() throws Exception{
+        long start = System.currentTimeMillis();
         List<Journey>  journeyList = journeyService.selectList(new EntityWrapper<Journey>());
         for (int i = 0; i < journeyList.size() ; i++) {
             Journey journey = journeyList.get(i);
-            Integer startCityCode = RegeoUtil.getCityByLocation(journey.getStartLocationX(),journey.getStartLocationY()).getJSONObject("addressComponent").getInteger("adcode");
-            Integer startCityId = cityService.selectOne(new EntityWrapper<City>().eq("code", startCityCode)).getId();
-            Integer endCityCode = RegeoUtil.getCityByLocation(journey.getEndLocationX(),journey.getEndLocationY()).getJSONObject("addressComponent").getInteger("adcode");
-            Integer endCityId = cityService.selectOne(new EntityWrapper<City>().eq("code", endCityCode)).getId();
-            Journey newJourney = Journey.builder().id(journey.getId()).startCity(startCityId).endCity(endCityId).build();
+//            Integer startCityCode = RegeoUtil.getCityByLocation(journey.getStartLocationX(),journey.getStartLocationY()).getJSONObject("addressComponent").getInteger("adcode");
+//            Integer startCityId = cityService.selectOne(new EntityWrapper<City>().eq("code", startCityCode)).getId();
+//            Integer endCityCode = RegeoUtil.getCityByLocation(journey.getEndLocationX(),journey.getEndLocationY()).getJSONObject("addressComponent").getInteger("adcode");
+//            Integer endCityId = cityService.selectOne(new EntityWrapper<City>().eq("code", endCityCode)).getId();
+//            Journey newJourney = Journey.builder().id(journey.getId()).endCity(endCityId).build();
+//            journeyService.updateById(newJourney);
+//            System.out.println(newJourney.getId() +  "---" + newJourney.getEndCity());
+            Journey newJourney = Journey.builder().id(journey.getId()).distanceRound((int)Math.floor(journey.getDistance()/ 1000) + 1).build();
             journeyService.updateById(newJourney);
-            System.out.println(newJourney.getId() + "--" + newJourney.getStartCity() + "---" + newJourney.getEndCity());
-            Thread.sleep(10);
+//            Thread.sleep(10);
         }
+        long end = System.currentTimeMillis();
+        System.out.println("->" + (end - start));
 
     }
 

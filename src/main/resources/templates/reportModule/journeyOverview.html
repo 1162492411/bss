@@ -30,11 +30,11 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                使用概况
+                行程概况
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-th-list"></i> 报表模块</a></li>
-                <li class="active">使用概况</li>
+                <li class="active">行程概况</li>
             </ol>
         </section>
         <!-- Main content -->
@@ -43,8 +43,16 @@
 
                 <div class="form-inline">
                     <div class="form-group">
-                        <label for="overview-report-type" class="control-label">类型选择</label>
-                        <select id="overview-report-type" class="form-control">
+                        <label for="overview-report-statistical-type" class="control-label">统计类型</label>
+                        <select id="overview-report-statistical-type" class="form-control">
+                            <option value="0">使用总数</option>
+                            <option value="1">骑行时间</option>
+                            <option value="2">骑行距离</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="overview-report-time-type" class="control-label">类型选择</label>
+                        <select id="overview-report-time-type" class="form-control">
                             <option value="0">时</option>
                             <option value="1">日</option>
                             <option value="2">月</option>
@@ -67,7 +75,6 @@
                         <button class="btn btn-warning" id="reset" type="button">重置</button>
                         <button class="btn btn-danger" type="button" onclick="setFilterCity()">确定</button>
                     </div>
-
                     <button class="btn btn-info" id="overview-report-submit" type="button" onclick="overviewReportSubmit(false)">查询</button>
                 </div>
 
@@ -107,14 +114,14 @@
                 type : 'line'
             },
             title: {
-                text: '使用概况'
+                text: '行程概况'
             },
             xAxis: {
                 categories: []
             },
             yAxis: {
                 title: {
-                    text: '使用总次数'
+                    text: '总数'
                 }
             },
             plotOptions: {
@@ -128,7 +135,6 @@
                 }
             },
             series : []
-            // series: [{name : data.result.name[0], data : data.result.yAxis}]
         };
         overviewReportChart = Highcharts.chart('report-overview-div', overviewReportOptions);
     });

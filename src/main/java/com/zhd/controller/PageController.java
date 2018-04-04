@@ -74,10 +74,13 @@ public class PageController {
     /**
      * 前往--报表模块-行程使用概况
      */
-    @RequestMapping("reportModule/overview")
+    @RequestMapping("reportModule/journeyOverview")
     public void toOverview(){}
 
 
-    @RequestMapping("reportModule/cityReport")
+    /**
+     * 前往--报表模块-行程统计
+     */
+    @RequestMapping("reportModule/journeyUsage")
     public void toCityReport(){}
 }
