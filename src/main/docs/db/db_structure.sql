@@ -67,7 +67,7 @@ create table journey
 	ride_time int default '0' null comment '骑行时间',
 	distance int default '0' null comment '骑行距离',
 	amount decimal(5,2) default '0.00' null comment '骑行花费',
-	end_time varchar(50) null,
+	end_time varchar(50) null comment '骑行终止时间',
 	start_location_x decimal(20,17) default '0.00000000000000000' null comment '起始位置X',
 	start_location_y decimal(20,17) default '0.00000000000000000' null comment '起始位置Y',
 	end_location_x decimal(20,17) default '0.00000000000000000' null comment '终止位置X',
@@ -75,7 +75,8 @@ create table journey
 	status int default '0' null comment '行程状态',
 	path longtext null comment '运动轨迹',
 	start_city int null comment '起始区划编号',
-	end_city int null comment '终止行政区划编号'
+	end_city int null comment '终止行政区划编号',
+	distance_round int null comment '骑行距离向上取整'
 )
 	comment '行程记录表' engine=InnoDB charset=utf8
 ;
