@@ -1227,10 +1227,11 @@ function setFilterCity(){
 function overviewReportSubmit(appendMode){
     let statisticalType = parseInt($("#overview-report-statistical-type :selected").val());
     let timeType = parseInt($("#overview-report-time-type :selected").val());
+    let chartType = $("#overview-report-chart-type :selected").val();
     let startDate = $("#overview-report-start-date").val();
     let endDate = $("#overview-report-end-date").val();
     let cityId = parseInt($("#overview-report-city-id").val());
-    let sendData = {"statisticalType" : statisticalType, "timeType" : timeType, "startDate" : startDate, "endDate" : endDate, "cityId" : cityId};
+    let sendData = {"chartType" : chartType, "statisticalType" : statisticalType, "timeType" : timeType, "startDate" : startDate, "endDate" : endDate, "cityId" : cityId};
     $.ajax({
         type: 'POST',
         url: overviewReportPath,
@@ -1238,11 +1239,40 @@ function overviewReportSubmit(appendMode){
         contentType: 'application/json',
         success: function (data) {
             if (data.code == Codes.successResponse) {
-                let chartType = data.result.chartType[0];
-                if(chartType === "pie"){
-                    overviewReportOptions.chart.type = chartType;
-                    overviewReportOptions.series = data.result.series;
-
+                let dataChartType = data.result.chartType[0];
+                if(dataChartType === "pie"){
+                    overviewReportChart = Highcharts.chart('report-overview-div', {
+                        chart: {
+                            plotBackgroundColor: null,
+                            plotBorderWidth: null,
+                            plotShadow: false,
+                            type: 'pie'
+                        },
+                        title: {
+                            text: data.result.title[0]
+                        },
+                        tooltip: {
+                            pointFormat: '{point.y}: <b>占比{point.percentage:.1f}%</b>'
+                        },
+                        plotOptions: {
+                            pie: {
+                                allowPointSelect: true,
+                                cursor: 'pointer',
+                                showInLegend: true,
+                                dataLabels: {
+                                    enabled: true,
+                                    formatter: function () {
+                                        return '<span style="color: ' + this.point.color + '"> 值：' + this.y + '，占比' +  parseFloat(this.percentage).toFixed(2) + '%</span>';
+                                    }
+                                  }
+                                }
+                        },
+                        series: [{
+                            name: 'Brands',
+                            colorByPoint: true,
+                            data: data.result.seriesData
+                        }]
+                    });
                 }else{
                     let appendData = {};
                     appendData.name = data.result.name[0];
@@ -1253,15 +1283,30 @@ function overviewReportSubmit(appendMode){
                     }
                     overviewReportOptions.series.push(appendData);
                     overviewReportOptions.xAxis.categories = data.result.xAxis;
+                    overviewReportChart = Highcharts.chart('report-overview-div', overviewReportOptions);
                 }
-
-                overviewReportChart = Highcharts.chart('report-overview-div', overviewReportOptions);
             }
             else {
                 showErrorData(data);
             }
         }
     });
+}
+
+/**
+ * 生成直线图表
+ * @param data
+ */
+function generateLineChart(data){
+
+}
+
+/**
+ * 生成饼图图表
+ * @param data
+ */
+function generatePieChart(data){
+
 }
 
 

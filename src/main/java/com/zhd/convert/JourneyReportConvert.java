@@ -17,9 +17,13 @@ public class JourneyReportConvert {
      * 将使用概况(按小时)转化
      * @param dataList 统计数据
      * @param cityNames 区划名称
+     * @param chartType 图表类型
      */
-    public static Map<String, List> convertOverviewByHour(List<Map<String, Object>> dataList, List<String> cityNames){
-        return commonConvertLine(dataList, DEFAULT_HOURS_XAXIS, DataUtil.generateZeroLongList(DEFAULT_HOURS_XAXIS.size()),cityNames);
+    public static Map<String, List> convertOverviewByHour(List<Map<String, Object>> dataList, List<String> cityNames, String chartType){
+        switch(chartType){
+            case "pie" : return commonConvertPie(dataList,cityNames);
+            default : return commonConvertLine(dataList, DEFAULT_HOURS_XAXIS, DataUtil.generateZeroLongList(DEFAULT_HOURS_XAXIS.size()),cityNames);
+        }
     }
 
     /**
@@ -29,9 +33,12 @@ public class JourneyReportConvert {
      * @param startDate 起始时间
      * @param endDate 终止时间
      */
-    public static Map<String, List> convertOverviewByDay(List<Map<String, Object>> dataList, List<String> cityNames, LocalDate startDate, LocalDate endDate){
-        List<String> xAxis = DataUtil.generateDays(startDate, endDate);
-        return commonConvertLine(dataList, xAxis, DataUtil.generateZeroLongList(xAxis.size()),cityNames);
+    public static Map<String, List> convertOverviewByDay(List<Map<String, Object>> dataList, List<String> cityNames, LocalDate startDate, LocalDate endDate, String chartType){
+        switch(chartType){
+            case "pie" : return commonConvertPie(dataList,cityNames);
+            default : List<String> xAxis = DataUtil.generateDays(startDate, endDate);
+                return commonConvertLine(dataList, xAxis, DataUtil.generateZeroLongList(xAxis.size()),cityNames);
+        }
     }
 
     /**
@@ -41,19 +48,26 @@ public class JourneyReportConvert {
      * @param startDate 起始时间
      * @param endDate 终止时间
      */
-    public static Map<String, List> convertOverviewByMonth(List<Map<String, Object>> dataList, List<String> cityNames, LocalDate startDate, LocalDate endDate){
-        List<String> xAxis = DataUtil.generateMonths(startDate, endDate);
-        return commonConvertLine(dataList, xAxis, DataUtil.generateZeroLongList(xAxis.size()),cityNames);
+    public static Map<String, List> convertOverviewByMonth(List<Map<String, Object>> dataList, List<String> cityNames, LocalDate startDate, LocalDate endDate, String chartType){
+        switch(chartType){
+            case "pie" : return commonConvertPie(dataList, cityNames);
+            default :
+                List<String> xAxis = DataUtil.generateMonths(startDate, endDate);
+                return commonConvertLine(dataList, xAxis, DataUtil.generateZeroLongList(xAxis.size()),cityNames);
+        }
     }
+
 
     /**
      * 将骑行时间统计情况转化
      * @param dataList 统计数据
      * @param cityNames 区划名称
      */
-    public static Map<String,List> convertRideTime(List<Map<String,Object>> dataList, List<String> cityNames){
-        Map<String,List> result = commonConvertLine(dataList, DEFAULT_RIDETIME_XAXIS, DataUtil.generateZeroLongList(DEFAULT_RIDETIME_XAXIS.size()), cityNames);
-        return result;
+    public static Map<String,List> convertRideTime(List<Map<String,Object>> dataList, List<String> cityNames, String chartType){
+        switch(chartType){
+            case "pie" : return commonConvertPie(dataList, cityNames);
+            default : return commonConvertLine(dataList, DEFAULT_RIDETIME_XAXIS, DataUtil.generateZeroLongList(DEFAULT_RIDETIME_XAXIS.size()), cityNames);
+        }
     }
 
     /**
@@ -61,23 +75,23 @@ public class JourneyReportConvert {
      * @param dataList 统计数据
      * @param cityNames 区划名称
      */
-    public static Map<String,List> convertRideDistance(List<Map<String,Object>> dataList, List<String> cityNames){
-        if(CollectionUtils.isNotEmpty(dataList)){
-            List<Integer> resultX = new ArrayList<>();
-            for (Map<String,Object> dataMap : dataList) {
-                Integer countKey = Integer.valueOf(String.valueOf(dataMap.get("countKey")));
-                if(! resultX.contains(countKey)){
-                    resultX.add(countKey);
+    public static Map<String,List> convertRideDistance(List<Map<String,Object>> dataList, List<String> cityNames, String chartType){
+        switch(chartType){
+            case "pie" : return commonConvertPie(dataList, cityNames);
+            default:
+                List<Integer> resultX = new ArrayList<>();
+                for (Map<String,Object> dataMap : dataList) {
+                    Integer countKey = Integer.valueOf(String.valueOf(dataMap.get("countKey")));
+                    if(! resultX.contains(countKey)){
+                        resultX.add(countKey);
+                    }
                 }
-            }
-            Collections.sort(resultX, Comparator.comparingInt(o -> o));
-            List<String> xAxis = new ArrayList<>(resultX.size());
-            for (int i = 0; i < resultX.size(); i++) {
-                xAxis.add(resultX.get(i).toString());
-            }
-            return commonConvertLine(dataList, xAxis, DataUtil.generateZeroLongList(xAxis.size()), cityNames);
-        }else{
-            return Collections.EMPTY_MAP;
+                Collections.sort(resultX, Comparator.comparingInt(o -> o));
+                List<String> xAxis = new ArrayList<>(resultX.size());
+                for (int i = 0; i < resultX.size(); i++) {
+                    xAxis.add(resultX.get(i).toString());
+                }
+                return commonConvertLine(dataList, xAxis, DataUtil.generateZeroLongList(xAxis.size()), cityNames);
         }
     }
 
@@ -94,6 +108,7 @@ public class JourneyReportConvert {
         result.put("xAxis", xAxis);
         result.put("yAxis", yAxis);
         result.put("name", cityNames);
+        result.put("chartType", Arrays.asList("line"));
         if(CollectionUtils.isNotEmpty(dataList)){
             for (int i = 0; i < dataList.size(); i++) {
                 Map<String,Object> dataMap = dataList.get(i);
@@ -117,22 +132,24 @@ public class JourneyReportConvert {
      * @param cityNames 行政区划的名称
      * @return
      */
-    //todo : 该方法未完成
     public static Map<String, List> commonConvertPie(List<Map<String, Object>> dataList, List<String> cityNames){
         Map<String, List> result = new HashMap<>(2);
         result.put("chartType", Arrays.asList("pie"));
         result.put("name", cityNames);
+        result.put("seriesData",Collections.EMPTY_LIST);
+        result.put("title", Arrays.asList(cityNames.get(0) + "统计图"));
         if(CollectionUtils.isNotEmpty(dataList)){
+            List seriesList = new ArrayList();
             for (int i = 0; i < dataList.size(); i++) {
                 Map<String,Object> dataMap = dataList.get(i);
                 String key = String.valueOf(dataMap.get("countKey"));
                 Long value = (Long) dataMap.get("countValue");
-                List yAxisList = result.get("yAxis");
-                int index = result.get("xAxis").indexOf(key);
-                if(index != -1){
-                    yAxisList.set(index, value);
-                }
+                Map<String,Object> resultMap = new HashMap<>();
+                resultMap.put("name", key);
+                resultMap.put("y", value);
+                seriesList.add(resultMap);
             }
+            result.put("seriesData", seriesList);
             return result;
         }else{
             return result;
