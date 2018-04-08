@@ -28,6 +28,10 @@ public class ReportController extends BaseController {
     @RequestMapping(value = "overview", method = RequestMethod.POST)
     public JSONResponse overview(@RequestBody Map<String,Object> params){
         try{
+            String chartType = String.valueOf(params.get("chartType"));
+            if(StringUtils.isBlank(chartType)){
+                chartType = "line";
+            }
             Integer statisticalType = (Integer)params.get("statisticalType");
             Integer timeType = (Integer)params.get("timeType");
             Object cityIdValue = params.get("cityId");
@@ -46,13 +50,13 @@ public class ReportController extends BaseController {
                     switch(statisticalType){
                         case 0 :
                             switch(timeType){
-                                case 0 : return renderSuccess(JourneyReportConvert.convertOverviewByHour(journeyReportService.countByHour(startDate,endDate,cityId), Arrays.asList(cityName)));
-                                case 1 : return renderSuccess(JourneyReportConvert.convertOverviewByDay(journeyReportService.countByDay(startDate, endDate, cityId),Arrays.asList(cityName), start ,end));
-                                case 2 : return renderSuccess(JourneyReportConvert.convertOverviewByMonth(journeyReportService.countByMonth(startDate, endDate, cityId),Arrays.asList(cityName), start ,end));
-                                default: return renderError();
-                            }
-                        case 1 :  return renderSuccess(JourneyReportConvert.convertRideTime(journeyReportService.countRideTime(startDate, endDate, cityId), Arrays.asList(cityName)));
-                        case 2 : return renderSuccess(JourneyReportConvert.convertRideDistance(journeyReportService.countRideDistance(startDate,endDate, cityId), Arrays.asList(cityName)));
+                            case 0 : return renderSuccess(JourneyReportConvert.convertOverviewByHour(journeyReportService.countByHour(startDate,endDate,cityId), Arrays.asList(cityName), chartType));
+                            case 1 : return renderSuccess(JourneyReportConvert.convertOverviewByDay(journeyReportService.countByDay(startDate, endDate, cityId),Arrays.asList(cityName), start ,end, chartType));
+                            case 2 : return renderSuccess(JourneyReportConvert.convertOverviewByMonth(journeyReportService.countByMonth(startDate, endDate, cityId),Arrays.asList(cityName), start ,end, chartType));
+                            default: return renderError();
+                        }
+                        case 1 :  return renderSuccess(JourneyReportConvert.convertRideTime(journeyReportService.countRideTime(startDate, endDate, cityId), Arrays.asList(cityName),chartType));
+                        case 2 : return renderSuccess(JourneyReportConvert.convertRideDistance(journeyReportService.countRideDistance(startDate,endDate, cityId), Arrays.asList(cityName), chartType));
                         default: return renderError();
                     }
                 }else{

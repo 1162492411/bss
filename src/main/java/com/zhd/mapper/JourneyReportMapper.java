@@ -1,6 +1,8 @@
 package com.zhd.mapper;
 
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
 import java.util.List;
 import java.util.Map;
 
@@ -23,4 +25,5 @@ public interface JourneyReportMapper {
     List<Map<String,Object>> countRideTime(@Param("begin")String beiginDay, @Param("end")String endDay , @Param("cityIds")List<Integer> cityIds);//统计某区域的所有子区域的统计周期内的骑行时间
 
     List<Map<String,Object>> countRideDistance(@Param("begin")String beiginDay, @Param("end")String endDay , @Param("cityIds")List<Integer> cityIds);//统计某区域的所有子区域的统计周期内的骑行距离
+
 }

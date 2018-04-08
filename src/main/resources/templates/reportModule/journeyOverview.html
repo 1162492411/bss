@@ -51,7 +51,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="overview-report-time-type" class="control-label">类型选择</label>
+                        <label for="overview-report-time-type" class="control-label">时间类型</label>
                         <select id="overview-report-time-type" class="form-control">
                             <option value="0">时</option>
                             <option value="1">日</option>
@@ -59,10 +59,18 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="overview-report-start-date" class="control-label">区间选择</label>
+                        <label for="overview-report-start-date" class="control-label">时间区间</label>
                         <input type="text" class="form-control" data-date-format="yyyy-mm-dd" id="overview-report-start-date" />
                         <span th:text=" -- " />
                         <input type="text" class="form-control" data-date-format="yyyy-mm-dd" id="overview-report-end-date" />
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label for="overview-report-chart-type" class="control-label">图表类型</label>
+                        <select id="overview-report-chart-type" class="form-control">
+                            <option value="line">折线图</option>
+                            <option value="pie">饼图</option>
+                        </select>
                     </div>
                     <span>区划选择</span>
                     <input type="hidden" id="overview-report-city-id"/>
@@ -134,7 +142,9 @@
                     }
                 }
             },
-            series : []
+            series : [
+
+            ]
         };
         overviewReportChart = Highcharts.chart('report-overview-div', overviewReportOptions);
     });
