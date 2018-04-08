@@ -5,6 +5,7 @@ import com.alibaba.fastjson.util.TypeUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomUtils;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -97,6 +98,28 @@ public class DataUtil {
                 result.add(i,0L);
             }
             return result;
+        }
+    }
+
+    /**
+     * 生成List<List<Long>>
+     * @param counts 内部List的个数
+     * @param size list的长度
+     * @return
+     */
+    public static List<List<BigDecimal>> generateZeroBigDecimalListList(int counts, int size){
+        if(size <= 0) {
+            return Collections.EMPTY_LIST;
+        }else{
+            List<List<BigDecimal>> resultList = new ArrayList<>(counts);
+            for (int i = 0; i < counts; i++) {
+                List<BigDecimal> currentList = new ArrayList<>(size);
+                for (int j = 0; j < size; j++) {
+                    currentList.add(j,BigDecimal.ZERO);
+                }
+                resultList.add(currentList);
+            }
+            return resultList;
         }
     }
 

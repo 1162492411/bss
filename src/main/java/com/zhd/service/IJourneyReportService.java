@@ -8,15 +8,19 @@ import java.util.Map;
  */
 public interface IJourneyReportService {
 
-    List<Map<String, Object>> countByHour(String beginDay, String endDay, Integer cityId);//在统计周期内统计每小时使用总数
+    List<Map<String, Object>> countByHour(String beginDay, String endDay, Integer cityId);//统计每小时使用总数
 
-    List<Map<String, Object>> countByDay(String beginDay, String endDay, Integer cityId);//在统计周期内统计每日使用总数
+    List<Map<String, Object>> countByDay(String beginDay, String endDay, Integer cityId);//统计每日使用总数
 
-    List<Map<String, Object>> countByMonth(String beginMonth, String endMonth, Integer cityId);//在统计周期内统计每月使用总数
+    List<Map<String, Object>> countByMonth(String beginMonth, String endMonth, Integer cityId);//统计每月使用总数
 
-    List<Map<String,Object>> countRideTime(String begin, String end, Integer cityId);
+    List<Map<String,Object>> countRideTime(String begin, String end, Integer cityId);//统计骑行时间分布情况
 
-    List<Map<String,Object>> countRideDistance(String begin, String end, Integer cityId);
+    List<Map<String,Object>> countRideDistance(String begin, String end, Integer cityId);//统计骑行距离分布情况
+
+    List<Map<String, Object>> countFlowByDay(String begin, String end, Integer cityId);//统计每日车辆流动情况
+
+    List<Map<String, Object>> countFlowByMonth(String begin, String end, Integer cityId);//统计每月车辆流动情况
 
 
 

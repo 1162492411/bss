@@ -41,4 +41,14 @@ public class JourneyReportServiceImpl implements IJourneyReportService {
     public List<Map<String, Object>> countRideDistance(String begin, String end, Integer cityId) {
         return journeyReportMapper.countRideDistance(begin,end, cityService.getAllChildren(cityId));
     }
+
+    @Override
+    public List<Map<String, Object>> countFlowByDay(String begin, String end, Integer cityId) {
+        return journeyReportMapper.countFlowByDay(begin, end, cityService.getAllChildren(cityId));
+    }
+
+    @Override
+    public List<Map<String, Object>> countFlowByMonth(String begin, String end, Integer cityId) {
+        return journeyReportMapper.countFlowByMonth(begin, end, cityService.getAllChildren(cityId));
+    }
 }

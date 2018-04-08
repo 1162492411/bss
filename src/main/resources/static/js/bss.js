@@ -1274,14 +1274,21 @@ function overviewReportSubmit(appendMode){
                         }]
                     });
                 }else{
-                    let appendData = {};
-                    appendData.name = data.result.name[0];
-                    appendData.data = data.result.yAxis;
-                    appendData.color = allColor[Math.round(Math.random() * allColor.length)];
+                    //todo : 此处需要判断seriesData是否是object或array
+                    let appendData;
+                    // appendData.name = data.result.name[0];
+                    // appendData.data = data.result.yAxis;
+                    appendData = Array.from(data.result.seriesData);
+                    // appendData.color = allColor[Math.round(Math.random() * allColor.length)];
                     if(!appendMode){
                         overviewReportOptions.series = [];
+                        overviewReportOptions.series = appendData;
                     }
-                    overviewReportOptions.series.push(appendData);
+                    else{
+
+                        overviewReportOptions.series = appendData;
+                    }
+                    overviewReportOptions.chart.type = dataChartType;
                     overviewReportOptions.xAxis.categories = data.result.xAxis;
                     overviewReportChart = Highcharts.chart('report-overview-div', overviewReportOptions);
                 }

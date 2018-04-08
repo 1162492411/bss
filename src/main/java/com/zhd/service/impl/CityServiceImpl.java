@@ -47,15 +47,21 @@ public class CityServiceImpl extends ServiceImpl<CityMapper, City> implements IC
         City city = cityMapper.selectById(id);
         List<Integer> childrenIds = new ArrayList<>();
         if(city != null){
-            String codePref = "";
             String code = String.valueOf(city.getCode());
-            switch(city.getLevel()){
-                case 1 :  codePref = code.substring(0,3);break;
-                case 2 :  codePref = code.substring(0,4);break;
-                default : childrenIds.add(city.getId()); return childrenIds;
+            int cityLevel = city.getLevel();
+            List<City> cityList;
+            if(cityLevel == 0){
+                cityList = cityMapper.selectList(new EntityWrapper<City>().setSqlSelect("id").ne("id", city.getId()));
+            }else if(cityLevel == 1){
+                cityList = cityMapper.selectList(new EntityWrapper<City>().setSqlSelect("id").like(
+                        true,"code", code.substring(0,3), SqlLike.RIGHT).ne("id",city.getId()));
+            }else if(cityLevel == 2){
+                cityList = cityMapper.selectList(new EntityWrapper<City>().setSqlSelect("id").like(
+                        true,"code", code.substring(0,5), SqlLike.RIGHT).ne("id",city.getId()));
+            }else{
+                childrenIds.add(city.getId());
+                return childrenIds;
             }
-            List<City> cityList = cityMapper.selectList(new EntityWrapper<City>().like(
-                    true,"code", codePref, SqlLike.RIGHT).ne("id",city.getId()));
             for (int i = 0; i < cityList.size(); i++) {
                 childrenIds.add(cityList.get(i).getId());
             }

@@ -3,6 +3,7 @@ package com.zhd.controllerTests;
 import com.zhd.BssTestEnvironment;
 import com.zhd.convert.JourneyReportConvert;
 import com.zhd.mapper.JourneyReportMapper;
+import com.zhd.service.impl.CityServiceImpl;
 import com.zhd.util.DataUtil;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,13 @@ public class ServiceTest extends BssTestEnvironment {
 
 //        System.out.println(JourneyReportConvert.convertRideDistance(journeyReportService.countRideDistance("2017-06-01","2017-06-15",0), Arrays.asList("ceshi")));
 
+//        System.out.println(JourneyReportConvert.convertFlow(journeyReportService.countFlowByDay("2017-06-01","2017-06-30",1049),Arrays.asList("ceshi"),"line"));
+
+        System.out.println(cityService.getAllChildren(907));
+
+
     }
 
-    //todo : 测试转换后的数据能否在前台被显示
 
 
 }

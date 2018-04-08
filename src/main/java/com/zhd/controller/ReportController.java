@@ -57,6 +57,8 @@ public class ReportController extends BaseController {
                         }
                         case 1 :  return renderSuccess(JourneyReportConvert.convertRideTime(journeyReportService.countRideTime(startDate, endDate, cityId), Arrays.asList(cityName),chartType));
                         case 2 : return renderSuccess(JourneyReportConvert.convertRideDistance(journeyReportService.countRideDistance(startDate,endDate, cityId), Arrays.asList(cityName), chartType));
+                        case 3 : return renderSuccess(JourneyReportConvert.convertFlow(journeyReportService.countFlowByDay(startDate, endDate, cityId),Arrays.asList(cityName), chartType));
+                        //todo : case 3 待扩展为按时/天/月统计
                         default: return renderError();
                     }
                 }else{
