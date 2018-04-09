@@ -7,6 +7,7 @@ import com.zhd.service.IJourneyReportService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -14,8 +15,9 @@ import java.util.Map;
 
 /**
  * 报表控制器
+ *
  * @Author zyg
-     */
+ */
 @RestController
 @RequestMapping("report")
 public class ReportController extends BaseController {
@@ -26,48 +28,46 @@ public class ReportController extends BaseController {
     private ICityService cityService;
 
     @RequestMapping(value = "overview", method = RequestMethod.POST)
-    public JSONResponse overview(@RequestBody Map<String,Object> params){
-        try{
+    public JSONResponse overview(@RequestBody Map<String, Object> params) {
+        try {
             String chartType = String.valueOf(params.get("chartType"));
-            if(StringUtils.isBlank(chartType)){
+            if (StringUtils.isBlank(chartType)) {
                 chartType = "line";
             }
-            Integer statisticalType = (Integer)params.get("statisticalType");
-            Integer timeType = (Integer)params.get("timeType");
+            Integer statisticalType = (Integer) params.get("statisticalType");
+            Integer timeType = (Integer) params.get("timeType");
             Object cityIdValue = params.get("cityId");
             Integer cityId = 0;
             String cityName = "";
-            if(cityIdValue != null){
+            if (cityIdValue != null) {
                 cityId = (Integer) cityIdValue;
                 cityName = cityService.selectById(cityId).getName();
             }
             String startDate = String.valueOf(params.get("startDate"));
             String endDate = String.valueOf(params.get("endDate"));
-            if(StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)){
+            if (StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)) {
                 LocalDate start = LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE);
                 LocalDate end = LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE);
-                if(end.isAfter(start)){
-                    switch(statisticalType){
-                        case 0 :
-                            switch(timeType){
-                            case 0 : return renderSuccess(JourneyReportConvert.convertOverviewByHour(journeyReportService.countByHour(startDate,endDate,cityId), Arrays.asList(cityName), chartType));
-                            case 1 : return renderSuccess(JourneyReportConvert.convertOverviewByDay(journeyReportService.countByDay(startDate, endDate, cityId),Arrays.asList(cityName), start ,end, chartType));
-                            case 2 : return renderSuccess(JourneyReportConvert.convertOverviewByMonth(journeyReportService.countByMonth(startDate, endDate, cityId),Arrays.asList(cityName), start ,end, chartType));
-                            default: return renderError();
-                        }
-                        case 1 :  return renderSuccess(JourneyReportConvert.convertRideTime(journeyReportService.countRideTime(startDate, endDate, cityId), Arrays.asList(cityName),chartType));
-                        case 2 : return renderSuccess(JourneyReportConvert.convertRideDistance(journeyReportService.countRideDistance(startDate,endDate, cityId), Arrays.asList(cityName), chartType));
-                        case 3 : return renderSuccess(JourneyReportConvert.convertFlow(journeyReportService.countFlowByDay(startDate, endDate, cityId),Arrays.asList(cityName), chartType));
-                        //todo : case 3 待扩展为按时/天/月统计
-                        default: return renderError();
+                if (end.isAfter(start)) {
+                    switch (statisticalType) {
+                        case 0:
+                            return renderSuccess(JourneyReportConvert.convertOverview(journeyReportService.countUseCount(startDate, endDate, cityId, timeType), cityName, start, end, chartType, timeType));
+                        case 1:
+                            return renderSuccess(JourneyReportConvert.convertRideTime(journeyReportService.countRideTime(startDate, endDate, cityId), cityName, chartType));
+                        case 2:
+                            return renderSuccess(JourneyReportConvert.convertRideDistance(journeyReportService.countRideDistance(startDate, endDate, cityId), cityName, chartType));
+                        case 3:
+                            return renderSuccess(JourneyReportConvert.convertFlow(journeyReportService.countFlow(startDate, endDate, cityId, timeType), cityName, chartType, timeType));
+                        default:
+                            return renderError();
                     }
-                }else{
+                } else {
                     return renderError();
                 }
-            }else{
+            } else {
                 return renderError();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             return renderError(e.getMessage());
         }
     }

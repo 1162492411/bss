@@ -1239,7 +1239,7 @@ function overviewReportSubmit(appendMode){
         contentType: 'application/json',
         success: function (data) {
             if (data.code == Codes.successResponse) {
-                let dataChartType = data.result.chartType[0];
+                let dataChartType = data.result.chartType;
                 if(dataChartType === "pie"){
                     overviewReportChart = Highcharts.chart('report-overview-div', {
                         chart: {
@@ -1249,7 +1249,7 @@ function overviewReportSubmit(appendMode){
                             type: 'pie'
                         },
                         title: {
-                            text: data.result.title[0]
+                            text: data.result.title
                         },
                         tooltip: {
                             pointFormat: '{point.y}: <b>占比{point.percentage:.1f}%</b>'
@@ -1274,18 +1274,14 @@ function overviewReportSubmit(appendMode){
                         }]
                     });
                 }else{
-                    //todo : 此处需要判断seriesData是否是object或array
                     let appendData;
-                    // appendData.name = data.result.name[0];
-                    // appendData.data = data.result.yAxis;
                     appendData = Array.from(data.result.seriesData);
-                    // appendData.color = allColor[Math.round(Math.random() * allColor.length)];
-                    if(!appendMode){
-                        overviewReportOptions.series = [];
-                        overviewReportOptions.series = appendData;
+                    if(appendMode){
+                        appendData.forEach(function(obj){
+                           overviewReportOptions.series.push(obj);
+                        });
                     }
                     else{
-
                         overviewReportOptions.series = appendData;
                     }
                     overviewReportOptions.chart.type = dataChartType;
@@ -1301,26 +1297,14 @@ function overviewReportSubmit(appendMode){
 }
 
 /**
- * 生成直线图表
- * @param data
+ * 重置图表页面的图表信息
  */
-function generateLineChart(data){
-
+function resetChart(){
+    overviewReportOptions.series = [];
+    while(overviewReportChart.series.length){
+        overviewReportChart.series[0].remove();
+    }
 }
-
-/**
- * 生成饼图图表
- * @param data
- */
-function generatePieChart(data){
-
-}
-
-
-
-
-
-
 
 /*--------------------------------------------用户版------------------------------*/
 

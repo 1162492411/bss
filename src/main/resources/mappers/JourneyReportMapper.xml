@@ -174,7 +174,7 @@
     </select>
 
     <!-- 统计某区域的所有子区域的统计周期内的每月车辆流动情况 -->
-    <select id="countFlowByDay" resultType="java.util.Map">
+    <select id="countFlowByMonth" resultType="java.util.Map">
         select
         start_time countKey,
         sum(case when start_city not in

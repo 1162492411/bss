@@ -12,4 +12,6 @@ public class Serie {
     private String name;
 
     private List data;
+
+    private String color;
 }

@@ -17,6 +17,7 @@ import java.util.*;
  */
 public class DataUtil {
     public static final double TOO_MIN_DIFF = 0.0001;
+    public static final List<String> ALL_COLORS = Arrays.asList("#FFDEAD","#000000","#2F4F4F","#696969","#778899","#000080","#00BFFF","#6A5ACD","#4169E1","#7FFFD4","#006400","#20B2AA","#7CFC00","#8B4513","#B22222","#FF0000","#CDB79E","#6959CD","#0000CD","#FF6EB4","#EE0000","#FF4500","#FF7F00","#FF8C69","#8B658B","#008B00","#00FF7F");
 
     /**
      * 随机生成起始时间
@@ -107,11 +108,33 @@ public class DataUtil {
      * @param size list的长度
      * @return
      */
-    public static List<List<BigDecimal>> generateZeroBigDecimalListList(int counts, int size){
+    public static List<List> generateZeroLongListList(int counts, int size){
         if(size <= 0) {
             return Collections.EMPTY_LIST;
         }else{
-            List<List<BigDecimal>> resultList = new ArrayList<>(counts);
+            List<List> resultList = new ArrayList<>(counts);
+            for (int i = 0; i < counts; i++) {
+                List<Long> currentList = new ArrayList<>(size);
+                for (int j = 0; j < size; j++) {
+                    currentList.add(j,0L);
+                }
+                resultList.add(currentList);
+            }
+            return resultList;
+        }
+    }
+
+    /**
+     * 生成List<List<BigDecimal>>
+     * @param counts 内部List的个数
+     * @param size list的长度
+     * @return
+     */
+    public static List<List> generateZeroBigDecimalListList(int counts, int size){
+        if(size <= 0) {
+            return Collections.EMPTY_LIST;
+        }else{
+            List<List> resultList = new ArrayList<>(counts);
             for (int i = 0; i < counts; i++) {
                 List<BigDecimal> currentList = new ArrayList<>(size);
                 for (int j = 0; j < size; j++) {
@@ -158,6 +181,29 @@ public class DataUtil {
         else{
             return Collections.emptyList();
         }
+    }
+
+    /**
+     * 随机生成颜色
+     * @return
+     */
+    public static List<String> generateRandomColor(int size){
+        List<String> colors = new ArrayList<>();
+        if(size <= 0 ){
+            throw new IllegalArgumentException("size is too small");
+        }else if(size >= ALL_COLORS.size()){
+            for (int i = 0; i < size; i++) {
+                colors.add(ALL_COLORS.get(RandomUtils.nextInt(0,ALL_COLORS.size())));
+            }
+        }else{
+            while (colors.size() < size){
+                String color = ALL_COLORS.get(RandomUtils.nextInt(0,ALL_COLORS.size()));
+                if(!colors.contains(color)){
+                    colors.add(color);
+                }
+            }
+        }
+        return colors;
     }
 
 }
