@@ -68,4 +68,18 @@ public class CityServiceImpl extends ServiceImpl<CityMapper, City> implements IC
         }
         return childrenIds;
     }
+
+    @Override
+    public List<Integer> getNextLevelChildren(Integer id) {
+        List<City> cityList = cityMapper.selectList(new EntityWrapper<City>().eq("parent_id",id).ne("id", id));
+        List<Integer> cityIds = new ArrayList<>();
+        if(CollectionUtils.isEmpty(cityList)){
+            cityIds.add(id);
+        }else{
+            for (City city : cityList) {
+                cityIds.add(city.getId());
+            }
+        }
+        return cityIds;
+    }
 }

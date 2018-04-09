@@ -1,12 +1,14 @@
 package com.zhd.convert;
 
-import com.zhd.pojo.Serie;
 import com.zhd.util.DataUtil;
-import org.apache.commons.collections.CollectionUtils;
-
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
+import static com.zhd.util.ChartUtil.commonConvertColumn;
+import static com.zhd.util.ChartUtil.commonConvertLine;
+import static com.zhd.util.ChartUtil.commonConvertPie;
+import static com.zhd.util.Constants.CHART_TYPE_COLUMN;
+import static com.zhd.util.Constants.CHART_TYPE_LINE;
+import static com.zhd.util.Constants.CHART_TYPE_PIE;
 
 /**
  * 行程报表转换类
@@ -18,7 +20,6 @@ public class JourneyReportConvert {
     private static final List<String> FLOW_NAMES = Arrays.asList("流入", "区域内流动", "流出");
     private static final List<String> SINGLE_KEYS = Arrays.asList("countValue");
 
-
     /**
      * 将使用概况转化
      *
@@ -27,26 +28,99 @@ public class JourneyReportConvert {
      * @param chartType 图表类型
      */
     public static Map<String, Object> convertOverview(List<Map<String, Object>> dataList, String cityName, LocalDate startDate, LocalDate endDate, String chartType, int timeType) {
-        List<String> xAxis;
-        switch (chartType) {
-            case "pie":
-                return commonConvertPie(dataList, cityName);
-            default:
-                switch (timeType) {
-                    case 0:
-                        return commonConvertLine(dataList, DEFAULT_HOURS_XAXIS, DataUtil.generateZeroLongListList(1, DEFAULT_HOURS_XAXIS.size()), cityName, SINGLE_KEYS, Arrays.asList("每小时使用情况"));
-                    case 1 :
-                        xAxis = DataUtil.generateDays(startDate, endDate);
-                        return commonConvertLine(dataList, xAxis, DataUtil.generateZeroLongListList(1, xAxis.size()), cityName, SINGLE_KEYS, Arrays.asList("每日使用情况"));
-                    case 2 :
-                        xAxis = DataUtil.generateMonths(startDate, endDate);
-                        return commonConvertLine(dataList, xAxis, DataUtil.generateZeroLongListList(1, xAxis.size()), cityName, SINGLE_KEYS, Arrays.asList("每月使用情况"));
-                    default:
-                       return Collections.EMPTY_MAP;
-                }
+        switch(timeType){
+            case 0 : return convertOverviewByHour(dataList, cityName, chartType);
+            case 1 : return convertOverviewByDay(dataList,cityName,startDate,endDate, chartType);
+            case 2 : return convertOverviewByMonth(dataList,cityName,startDate,endDate, chartType);
+            case 3 : return convertOverviewByCity(dataList, cityName, chartType);
+            default: return Collections.EMPTY_MAP;
         }
     }
 
+    /**
+     * 将使用概况(按小时分组)转化
+     *
+     * @param dataList  统计数据
+     * @param cityName  区划名称
+     * @param chartType 图表类型
+     * @return
+     */
+    private static Map<String, Object> convertOverviewByHour(List<Map<String, Object>> dataList, String cityName,String chartType) {
+        switch (chartType) {
+            case CHART_TYPE_PIE :
+                return commonConvertPie(dataList, cityName);
+            case CHART_TYPE_COLUMN :
+                return commonConvertColumn(dataList, DEFAULT_HOURS_XAXIS, DataUtil.generateZeroLongListList(1, DEFAULT_HOURS_XAXIS.size()), cityName, SINGLE_KEYS, Arrays.asList("每小时使用情况"));
+            default :
+                return commonConvertLine(dataList, DEFAULT_HOURS_XAXIS, DataUtil.generateZeroLongListList(1, DEFAULT_HOURS_XAXIS.size()), cityName, SINGLE_KEYS, Arrays.asList("每小时使用情况"));
+        }
+    }
+
+    /**
+     * 将使用概况(按天分组)转化
+     *
+     * @param dataList  统计数据
+     * @param cityName  区划名称
+     * @param chartType 图表类型
+     * @return
+     */
+    private static Map<String, Object> convertOverviewByDay(List<Map<String, Object>> dataList, String cityName, LocalDate startDate, LocalDate endDate, String chartType) {
+        List<String> xAxis = DataUtil.generateDays(startDate, endDate);
+        switch (chartType) {
+            case CHART_TYPE_PIE :
+                return commonConvertPie(dataList, cityName);
+            case CHART_TYPE_COLUMN :
+                return commonConvertColumn(dataList, xAxis, DataUtil.generateZeroLongListList(1, xAxis.size()), cityName, SINGLE_KEYS, Arrays.asList("每日使用情况"));
+            default :
+                return commonConvertLine(dataList, xAxis, DataUtil.generateZeroLongListList(1, xAxis.size()), cityName, SINGLE_KEYS, Arrays.asList("每日使用情况"));
+        }
+    }
+
+    /**
+     * 将使用概况(按月分组)转化
+     *
+     * @param dataList  统计数据
+     * @param cityName  区划名称
+     * @param chartType 图表类型
+     * @return
+     */
+    private static Map<String, Object> convertOverviewByMonth(List<Map<String, Object>> dataList, String cityName, LocalDate startDate, LocalDate endDate, String chartType) {
+        List<String> xAxis = DataUtil.generateMonths(startDate, endDate);
+        switch (chartType) {
+            case CHART_TYPE_PIE :
+                return commonConvertPie(dataList, cityName);
+            case CHART_TYPE_COLUMN :
+                return commonConvertColumn(dataList, xAxis, DataUtil.generateZeroLongListList(1, xAxis.size()), cityName, SINGLE_KEYS, Arrays.asList("每月使用情况"));
+            default :
+                return commonConvertLine(dataList, xAxis, DataUtil.generateZeroLongListList(1, xAxis.size()), cityName, SINGLE_KEYS, Arrays.asList("每月使用情况"));
+        }
+    }
+
+    /**
+     * 将使用概况(按子区划分组)转化
+     *
+     * @param dataList  统计数据
+     * @param cityName  区划名称
+     * @param chartType 图表类型
+     * @return
+     */
+    private static Map<String, Object> convertOverviewByCity(List<Map<String, Object>> dataList, String cityName,String chartType) {
+        List<String> xAxis = new ArrayList<>();
+        for (Map<String, Object> dataMap : dataList) {
+            String countKey = String.valueOf(dataMap.get("countKey"));
+            if (!xAxis.contains(countKey)) {
+                xAxis.add(countKey);
+            }
+        }
+        switch (chartType) {
+            case CHART_TYPE_PIE :
+                return commonConvertPie(dataList, cityName);
+            case CHART_TYPE_COLUMN :
+                return commonConvertColumn(dataList, xAxis, DataUtil.generateZeroLongListList(1, xAxis.size()), cityName, SINGLE_KEYS, Arrays.asList("各区划使用情况"));
+            default :
+                return commonConvertLine(dataList, xAxis, DataUtil.generateZeroLongListList(1, xAxis.size()), cityName, SINGLE_KEYS, Arrays.asList("各区划使用情况"));
+        }
+    }
 
     /**
      * 将骑行时间统计情况转化
@@ -56,7 +130,7 @@ public class JourneyReportConvert {
      */
     public static Map<String, Object> convertRideTime(List<Map<String, Object>> dataList, String cityName, String chartType) {
         switch (chartType) {
-            case "pie":
+            case CHART_TYPE_PIE:
                 return commonConvertPie(dataList, cityName);
             default:
                 return commonConvertLine(dataList, DEFAULT_RIDETIME_XAXIS, DataUtil.generateZeroLongListList(1, DEFAULT_RIDETIME_XAXIS.size()), cityName, SINGLE_KEYS, Arrays.asList("骑行时间情况"));
@@ -71,7 +145,7 @@ public class JourneyReportConvert {
      */
     public static Map<String, Object> convertRideDistance(List<Map<String, Object>> dataList, String cityName, String chartType) {
         switch (chartType) {
-            case "pie":
+            case CHART_TYPE_PIE:
                 return commonConvertPie(dataList, cityName);
             default:
                 List<Integer> resultX = new ArrayList<>();
@@ -99,135 +173,43 @@ public class JourneyReportConvert {
      * @return
      */
     public static Map<String, Object> convertFlow(List<Map<String, Object>> dataList, String cityName, String chartType, int timeType) {
-        List<String> resultX = new ArrayList<>();
-        for (Map<String, Object> dataMap : dataList) {
-            String countKey = String.valueOf(dataMap.get("countKey"));
-            if (!resultX.contains(countKey)) {
-                resultX.add(countKey);
-            }
-        }
-        switch (chartType) {
-            case "line" :
-                switch (timeType) {
-                    case 0:
-                        return commonConvertLine(dataList, DEFAULT_HOURS_XAXIS, DataUtil.generateZeroBigDecimalListList(FLOW_KEYS.size(), DEFAULT_HOURS_XAXIS.size()), cityName, FLOW_KEYS, FLOW_NAMES);
-                    default:
-                        return commonConvertLine(dataList, resultX, DataUtil.generateZeroBigDecimalListList(FLOW_KEYS.size(), resultX.size()), cityName, FLOW_KEYS, FLOW_NAMES);
-                }
-            default:
-                switch (timeType) {
-                    case 0:
-                        return commonConvertColumn(dataList, DEFAULT_HOURS_XAXIS, DataUtil.generateZeroBigDecimalListList(1, DEFAULT_HOURS_XAXIS.size()), cityName, FLOW_KEYS, FLOW_NAMES);
-                    default:
-                        return commonConvertColumn(dataList, resultX, DataUtil.generateZeroBigDecimalListList(FLOW_KEYS.size(), resultX.size()), cityName, FLOW_KEYS, FLOW_NAMES);
-                }
+        switch(timeType){
+            case 0 : return convertFlowByHour(dataList, cityName, chartType);
+            default : return convertFlowByDayOrMonth(dataList, cityName, chartType);
         }
     }
 
     /**
-     * 公共转化类,将统计数据转化为适合直线图的单值的格式
-     *
+     * 将流动情况(按小时分组)转化
      * @param dataList 统计数据
-     * @param xAxis    X轴数据
-     * @param yAxis    Y轴数据
-     * @param cityName 行政区划的名称
-     * @return
+     * @param cityName 区划名称
+     * @param chartType 图表类型
      */
-    public static Map<String, Object> commonConvertLine(List<Map<String, Object>> dataList, List<String> xAxis, List<List> yAxis, String cityName, List<String> keys, List<String> names) {
-        Map<String, Object> result = new HashMap<>(2);
-        result.put("xAxis", xAxis);
-        result.put("name", cityName);
-        result.put("chartType", "line");
-        List<Serie> series = new ArrayList<>(keys.size());
-        if (CollectionUtils.isNotEmpty(dataList)) {
-            for (int i = 0; i < dataList.size(); i++) {
-                Map<String, Object> dataMap = dataList.get(i);
-                String key = String.valueOf(dataMap.get("countKey"));
-                int index = ((List) result.get("xAxis")).indexOf(key);
-                for (int j = 0; j < keys.size(); j++) {
-                    List currentList = yAxis.get(j);
-                    BigDecimal value = BigDecimal.valueOf(Long.parseLong(String.valueOf(dataMap.get(keys.get(j)))));
-                    if (index != -1) {
-                        currentList.set(index, value);
-                    }
-                }
-            }
+    private static Map<String, Object> convertFlowByHour(List<Map<String, Object>> dataList, String cityName, String chartType){
+        switch(chartType){
+            case CHART_TYPE_COLUMN :
+                return commonConvertLine(dataList, DEFAULT_HOURS_XAXIS, DataUtil.generateZeroBigDecimalListList(FLOW_KEYS.size(), DEFAULT_HOURS_XAXIS.size()), cityName, FLOW_KEYS, FLOW_NAMES);
+            default :
+                return commonConvertColumn(dataList, DEFAULT_HOURS_XAXIS, DataUtil.generateZeroBigDecimalListList(FLOW_KEYS.size(), DEFAULT_HOURS_XAXIS.size()), cityName, FLOW_KEYS, FLOW_NAMES);
         }
-        List<String> colors = DataUtil.generateRandomColor(keys.size());
-        for (int i = 0; i < keys.size(); i++) {
-            series.add(Serie.builder().name(cityName + names.get(i)).data(yAxis.get(i)).color(colors.get(i)).build());
-        }
-        result.put("seriesData", series);
-        return result;
     }
 
     /**
-     * 公共转化类,将统计数据转化为适合柱状图的多值的格式
-     *
+     * 将流动情况(按天/月分组)转化
      * @param dataList 统计数据
-     * @param xAxis    X轴数据
-     * @param yAxis    Y轴数据
-     * @param cityName 行政区划的名称
-     * @param keys     各键的值
-     * @return
+     * @param cityName 区划名称
+     * @param chartType 图表类型
      */
-    public static Map<String, Object> commonConvertColumn(List<Map<String, Object>> dataList, List<String> xAxis, List<List> yAxis, String cityName, List<String> keys, List<String> names) {
-        Map<String, Object> result = new HashMap<>(2);
-        result.put("xAxis", xAxis);
-        result.put("chartType", "column");
-        result.put("name", cityName);
-        List<Serie> series = new ArrayList();
-        if (CollectionUtils.isNotEmpty(dataList)) {
-            for (int i = 0; i < dataList.size(); i++) {
-                Map<String, Object> dataMap = dataList.get(i);
-                String key = String.valueOf(dataMap.get("countKey"));
-                int index = ((List) result.get("xAxis")).indexOf(key);
-                for (int j = 0; j < keys.size(); j++) {
-                    List currentList = yAxis.get(j);
-                    BigDecimal value = BigDecimal.valueOf(Long.parseLong(String.valueOf(dataMap.get(keys.get(j)))));
-                    if (index != -1) {
-                        currentList.set(index, value);
-                    }
-                }
-            }
+    private static Map<String, Object> convertFlowByDayOrMonth(List<Map<String, Object>> dataList, String cityName, String chartType){
+        switch(chartType){
+            case CHART_TYPE_LINE :
+                return commonConvertLine(dataList, DEFAULT_HOURS_XAXIS, DataUtil.generateZeroBigDecimalListList(FLOW_KEYS.size(), DEFAULT_HOURS_XAXIS.size()), cityName, FLOW_KEYS, FLOW_NAMES);
+            default :
+                return commonConvertColumn(dataList, DEFAULT_HOURS_XAXIS, DataUtil.generateZeroBigDecimalListList(FLOW_KEYS.size(), DEFAULT_HOURS_XAXIS.size()), cityName, FLOW_KEYS, FLOW_NAMES);
         }
-        List<String> colors = DataUtil.generateRandomColor(keys.size());
-        for (int i = 0; i < keys.size(); i++) {
-            series.add(Serie.builder().name(cityName +  names.get(i)).data(yAxis.get(i)).color(colors.get(i)).build());
-        }
-        result.put("seriesData", series);
-        return result;
     }
 
-    /**
-     * 公共转化类,将统计数据转化为适合饼图的格式
-     *
-     * @param dataList 统计数据
-     * @param cityName 行政区划的名称
-     * @return
-     */
-    public static Map<String, Object> commonConvertPie(List<Map<String, Object>> dataList, String cityName) {
-        Map<String, Object> result = new HashMap<>(2);
-        result.put("chartType", "pie");
-        result.put("seriesData", Collections.EMPTY_LIST);
-        result.put("title", cityName + "统计图");
-        if (CollectionUtils.isNotEmpty(dataList)) {
-            List seriesList = new ArrayList();
-            for (int i = 0; i < dataList.size(); i++) {
-                Map<String, Object> dataMap = dataList.get(i);
-                String key = String.valueOf(dataMap.get("countKey"));
-                Long value = (Long) dataMap.get("countValue");
-                Map<String, Object> resultMap = new HashMap<>();
-                resultMap.put("name", key);
-                resultMap.put("y", value);
-                seriesList.add(resultMap);
-            }
-            result.put("seriesData", seriesList);
-            return result;
-        } else {
-            return result;
-        }
-    }
+
 
 
 }

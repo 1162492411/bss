@@ -1226,7 +1226,7 @@ function setFilterCity(){
  */
 function overviewReportSubmit(appendMode){
     let statisticalType = parseInt($("#overview-report-statistical-type :selected").val());
-    let timeType = parseInt($("#overview-report-time-type :selected").val());
+    let timeType = parseInt($("#overview-report-group-type :selected").val());
     let chartType = $("#overview-report-chart-type :selected").val();
     let startDate = $("#overview-report-start-date").val();
     let endDate = $("#overview-report-end-date").val();

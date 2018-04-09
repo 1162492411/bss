@@ -82,5 +82,9 @@ public class Constants {
     public static final double VALUE_DEFAULT_LOCATION_X = 116.40739440917969000;
     public static final double VALUE_DEFAULT_LOCATION_Y = 39.90420913696289000;
 
+    //highcharts
+    public static final String CHART_TYPE_LINE = "line";//直线图
+    public static final String CHART_TYPE_COLUMN = "column";//柱状图
+    public static final String CHART_TYPE_PIE = "pie";//饼图
 
 }

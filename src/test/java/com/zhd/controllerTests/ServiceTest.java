@@ -1,5 +1,6 @@
 package com.zhd.controllerTests;
 
+import com.alibaba.fastjson.JSON;
 import com.zhd.BssTestEnvironment;
 import com.zhd.convert.JourneyReportConvert;
 import com.zhd.mapper.JourneyReportMapper;
@@ -30,6 +31,10 @@ public class ServiceTest extends BssTestEnvironment {
 //        System.out.println(JourneyReportConvert.convertFlow(journeyReportService.countFlowByDay("2017-06-01","2017-06-30",1049),Arrays.asList("ceshi"),"line"));
 
 //        System.out.println(cityService.getAllChildren(907));
+
+//        System.out.println(JSON.toJSONString(cityService.getNextLevelChildren(907)));
+        System.out.println(JSON.toJSONString(journeyReportService.countUseCountByCity("2017-06-01","2018-07-01",1)));
+
 
     }
 

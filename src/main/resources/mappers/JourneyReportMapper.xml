@@ -41,6 +41,15 @@
         group by countKey
     </select>
 
+    <select id="countByCity" resultType="java.lang.Integer">
+        select count(1) countValue from journey
+        where start_time BETWEEN unix_timestamp(#{begin}) and unix_timestamp(#{end})
+        and start_city in
+        <foreach collection="cityIds" item="city" open="(" separator="," close=")">
+            #{city}
+        </foreach>
+    </select>
+
     <!-- 统计某区域的所有子区域的统计周期内的骑行时间 -->
     <select id="countRideTime" resultType="java.util.Map">
         SELECT

@@ -25,4 +25,6 @@ public interface ICityService extends IService<City> {
 
     List<Integer> getAllChildren(Integer id);//根据主键获取该区划所有子区划
 
+    List<Integer> getNextLevelChildren(Integer id);//根据主键获取该区划下级子区划
+
 }
