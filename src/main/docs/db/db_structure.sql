@@ -1,3 +1,19 @@
+create table apply
+(
+	id int auto_increment comment '自增主键'
+		primary key,
+	type int default '0' null comment '申请类型',
+	status int default '0' null comment '申请状态',
+	object varchar(100) null comment '申请操作对象',
+	user_id int null comment '申请人',
+	description varchar(255) default '' null comment '申请描述',
+	start_time varchar(50) default '' null comment '提交时间',
+	end_time varchar(50) default '' null comment '完成时间',
+	operator_id int null comment '处理人'
+)
+	comment '用户申请表' engine=InnoDB
+;
+
 create table area
 (
 	id int auto_increment comment '区域编号'

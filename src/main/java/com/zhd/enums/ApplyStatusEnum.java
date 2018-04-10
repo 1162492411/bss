@@ -3,31 +3,30 @@ package com.zhd.enums;
 import com.baomidou.mybatisplus.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
 import java.io.Serializable;
 
-@AllArgsConstructor
+/**
+ * 申请状态枚举类
+ */
 @Getter
-public enum UserStatusEnum implements IEnum{
+@AllArgsConstructor
+public enum ApplyStatusEnum implements IEnum {
 
     UNKNOWN(0,"未知"),
-
-    NORMAL(1,"正常"),
-
-    TEMP_BAN(2,"封禁");
-
-//    DISABLED(3,"停用");
+    HAS_SUBMIT(1,"已提交"),
+    HANDLING(2,"正在处理"),
+    DONE(3,"处理完成");
 
     private int code;
     private String status;
 
-    public static UserStatusEnum getByCode(int code){
-        if(code <= 0) {
+    public static ApplyStatusEnum getByCode(int code){
+        if(code <= 0){
             return UNKNOWN;
         }
-        for (UserStatusEnum userStatusEnum : values()) {
-            if(code == userStatusEnum.getCode()){
-                return userStatusEnum;
+        for (ApplyStatusEnum applyStatusEnum: values()) {
+            if(code == applyStatusEnum.getCode()) {
+                return  applyStatusEnum;
             }
         }
         return UNKNOWN;
@@ -42,4 +41,6 @@ public enum UserStatusEnum implements IEnum{
     public String toString() {
         return this.status;
     }
+
+
 }

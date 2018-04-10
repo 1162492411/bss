@@ -19,9 +19,13 @@ public enum TaskTypeEnum implements IEnum{
     private String type;
 
     public static TaskTypeEnum getByCode(int code){
-        if(code <= 0) return UNKNOWN;
+        if(code <= 0) {
+            return UNKNOWN;
+        }
         for (TaskTypeEnum taskTypeEnum : values()) {
-            if(code == taskTypeEnum.getCode()) return taskTypeEnum;
+            if(code == taskTypeEnum.getCode()) {
+                return taskTypeEnum;
+            }
         }
         return UNKNOWN;
     }

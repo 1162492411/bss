@@ -29,7 +29,9 @@ public class AreaConvert{
      * @throws InvocationTargetException
      */
     public static Map convertToVO(Area area) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        if(area == null) throw new NullPointerException(Constants.TIP_EMPTY_DATA);
+        if(area == null) {
+            throw new NullPointerException(Constants.TIP_EMPTY_DATA);
+        }
         Map map = BeanUtils.describe(area);
         map.remove("class");
         map.put("type", AreaTypeEnum.getByCode(area.getType()));

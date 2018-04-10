@@ -30,7 +30,9 @@ public class AreaController extends BaseController {
     @GetMapping("list/{current}")
     public JSONResponse oldList(@PathVariable("current") int pageNum, Page<Area> page) {
         try {
-            if(pageNum <= 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+            if(pageNum <= 0){
+                throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+            }
             return renderSuccess(AreaConvert.convertToVOPageInfo(areaService.selectPage(page, new EntityWrapper<Area>().orderBy("type"))));
         } catch (Exception e) {
             return renderError(e.getMessage());

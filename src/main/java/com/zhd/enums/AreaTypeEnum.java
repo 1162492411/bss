@@ -3,8 +3,6 @@ package com.zhd.enums;
 import com.baomidou.mybatisplus.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.io.Serializable;
 
@@ -18,7 +16,7 @@ public enum AreaTypeEnum implements IEnum{
     BAN(3,"禁停区");
 
     private int code;
-    private String areaType;
+    private String type;
 
     public static AreaTypeEnum getByCode(int code){
         if(code <= 0) return UNKNOWN;
@@ -35,7 +33,7 @@ public enum AreaTypeEnum implements IEnum{
 
     @Override
     public String toString() {
-        return this.areaType;
+        return this.type;
     }
 
 

@@ -1231,7 +1231,7 @@ function overviewReportSubmit(appendMode){
     let startDate = $("#overview-report-start-date").val();
     let endDate = $("#overview-report-end-date").val();
     let cityId = parseInt($("#overview-report-city-id").val());
-    let sendData = {"chartType" : chartType, "statisticalType" : statisticalType, "timeType" : timeType, "startDate" : startDate, "endDate" : endDate, "cityId" : cityId};
+    let sendData = {"chartType" : chartType, "statisticalType" : statisticalType, "groupType" : timeType, "startDate" : startDate, "endDate" : endDate, "cityId" : cityId};
     $.ajax({
         type: 'POST',
         url: overviewReportPath,

@@ -35,7 +35,7 @@ public class ReportController extends BaseController {
                 chartType = "line";
             }
             Integer statisticalType = (Integer) params.get("statisticalType");
-            Integer timeType = (Integer) params.get("timeType");
+            Integer groupType = (Integer) params.get("groupType");
             Object cityIdValue = params.get("cityId");
             Integer cityId = 0;
             String cityName = "";
@@ -51,13 +51,13 @@ public class ReportController extends BaseController {
                 if (end.isAfter(start)) {
                     switch (statisticalType) {
                         case 0:
-                            return renderSuccess(JourneyReportConvert.convertOverview(journeyReportService.countUseCount(startDate, endDate, cityId, timeType), cityName, start, end, chartType, timeType));
+                            return renderSuccess(JourneyReportConvert.convertOverview(journeyReportService.countUseCount(startDate, endDate, cityId, groupType), cityName, start, end, chartType, groupType));
                         case 1:
                             return renderSuccess(JourneyReportConvert.convertRideTime(journeyReportService.countRideTime(startDate, endDate, cityId), cityName, chartType));
                         case 2:
                             return renderSuccess(JourneyReportConvert.convertRideDistance(journeyReportService.countRideDistance(startDate, endDate, cityId), cityName, chartType));
                         case 3:
-                            return renderSuccess(JourneyReportConvert.convertFlow(journeyReportService.countFlow(startDate, endDate, cityId, timeType), cityName, chartType, timeType));
+                            return renderSuccess(JourneyReportConvert.convertFlow(journeyReportService.countFlow(startDate, endDate, cityId, groupType), cityName, chartType, groupType));
                         default:
                             return renderError();
                     }

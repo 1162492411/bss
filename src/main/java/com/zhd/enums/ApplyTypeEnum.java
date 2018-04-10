@@ -8,23 +8,23 @@ import java.io.Serializable;
 
 @Getter
 @AllArgsConstructor
-public enum TaskStatusEnum implements IEnum{
+public enum ApplyTypeEnum implements IEnum {
 
     UNKNOWN(0,"未知"),
-    WAIT_SOMEONE(1,"待分配"),
-    WAIT_COMPLETE(2,"待执行"),
-    DONE(3,"已完成");
+    REFUND_DEPOSIT(1,"提取押金"),
+    REFUND_ACCOUNT(2,"提取余额"),
+    EXCEPTION_JOURNEY(3,"提交异常行程");
 
     private int code;
-    private String status;
+    private String type;
 
-    public static TaskStatusEnum getByCode(int code){
+    public static ApplyTypeEnum getByCode(int code){
         if(code <= 0){
             return UNKNOWN;
         }
-        for (TaskStatusEnum taskStatusEnum : values()) {
-            if(code == taskStatusEnum.getCode()){
-                return taskStatusEnum;
+        for (ApplyTypeEnum applyTypeEnum: values()) {
+            if(code == applyTypeEnum.getCode()) {
+                return  applyTypeEnum;
             }
         }
         return UNKNOWN;
@@ -37,6 +37,6 @@ public enum TaskStatusEnum implements IEnum{
 
     @Override
     public String toString() {
-        return this.status;
+        return this.type;
     }
 }

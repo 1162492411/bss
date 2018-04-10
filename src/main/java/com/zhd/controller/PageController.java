@@ -72,15 +72,14 @@ public class PageController {
     public void toTasks(){}
 
     /**
-     * 前往--报表模块-行程使用概况
+     * 前往--报表模块-行程概况
      */
     @RequestMapping("reportModule/journeyOverview")
-    public void toOverview(){}
-
+    public void toJourneyOverview(){}
 
     /**
-     * 前往--报表模块-行程统计
+     * 前往--报表模块-任务概况
      */
-    @RequestMapping("reportModule/journeyUsage")
-    public void toCityReport(){}
+    @RequestMapping("reportModule/taskOverview")
+    public void toTaskOverview(){}
 }
