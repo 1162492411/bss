@@ -45,7 +45,6 @@ public class Constants {
     public static final String TIP_BAN_AREA = "停留在了禁停区";
     public static final String[] AREA_NAMES = {"编号","区域名","类型","区域最北部","区域最南部","区域最西部","区域最东部"};
     public static final String[] AREA_KEYS = {"id", "name", "type", "northPoint", "southPoint", "westPoint", "eastPoint"};
-    public static final String TIP_RETURN_TO_KNOWN_AREA = "请停留在指定区域";
 
     //supplier
     public static final String[] SUPPLIER_KEYS = {"id","name","address"};
@@ -66,13 +65,19 @@ public class Constants {
     public static final String[] RECHARGE_KEYS = {"id","userId","type","rechargeTime","amount"};
     public static final String[] RECHARGE_NAMES = {"记录编号","账户","渠道","时间","金额"};
     public static final String TIP_RECHARGE_ACCOUNT_ERROR = "充值账户失败";
+    public static final String TIP_REFUND_ACCOUNT_SUCCESS = "提取余额成功";
+    public static final String TIP_REFUND_ACCOUNT_ERROR = "提取余额失败";
 
     //deposit
     public static final String TIP_ENOUGH_DEPOSIT = "已缴纳过押金";
     public static final String TIP_NO_DEPOSIT = "未缴纳押金";
     public static final String TIP_RECHARGE_DEPOSIT_ERROR = "缴纳押金失败";
+    public static final String TIP_REFUND_DEPOSIT_SUCCESS = "提取押金成功";
     public static final String TIP_REFUND_DEPOSIT_ERROR = "提取押金失败";
 
+    //apply
+    public static final String[] APPLY_KEYS = {"id","type","status","amount","userId","description","startTime","endTime","operatorId"};
+    public static final String[] APPLY_NAMES = {"编号","类型","状态","金额","用户","描述","开始时间","结束时间","操作人"};
 
     //ali
     public static final String TIP_ALI_ERROR = "连接阿里接口失败！请联系服务员";

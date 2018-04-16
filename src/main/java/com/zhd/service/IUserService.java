@@ -30,7 +30,7 @@ public interface IUserService extends IService<User> {
 
     User findUser(String id) throws NoSuchUserException;//查找用户
 
-    List<User> getAllStaff();
+    List<User> getAllStaff();//获取所有员工的简略信息
 
     boolean rechargeAccount(String id, BigDecimal amount);//用户充值账户余额
 
@@ -38,6 +38,6 @@ public interface IUserService extends IService<User> {
 
     boolean refundDeposit(String id, BigDecimal amount);//用户退还押金
 
-    boolean reduceAccount(String id, BigDecimal amount); //扣钱接口
+    boolean reduceAccount(String id, BigDecimal amount) throws NoEnoughAccountBalanceException; //扣钱接口
 
 }

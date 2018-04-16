@@ -12,8 +12,7 @@ public enum ApplyTypeEnum implements IEnum {
 
     UNKNOWN(0,"未知"),
     REFUND_DEPOSIT(1,"提取押金"),
-    REFUND_ACCOUNT(2,"提取余额"),
-    EXCEPTION_JOURNEY(3,"提交异常行程");
+    REFUND_ACCOUNT(2,"提取余额");
 
     private int code;
     private String type;

@@ -64,6 +64,7 @@ const searchCityPath = citiesPath + "/search";//查询行政区划的URL
 const inputTipsPath = citiesPath + "/inputtips";//查询输入提示的URL
 const reportPath = rootPath + "/report";//报表信息的根目录
 const overviewReportPath = reportPath + "/overview";//使用概况报表的URL
+const appliesPath = rootPath + "/apply";//获取申请信息的根目录
 
 
 const allUserStatus = [
@@ -121,6 +122,12 @@ const allDepositType = [
     {"id" : 0, "name" : "未知", "class" : "danger"},
     {"id" : 1, "name" : "存入", "class" : ""},
     {"id" : 2, "name" : "取出", "class" : ""}
+];//所有押金操作类型信息
+
+const allApplyType = [
+    {"id" : 0, "name" : "未知", "class" : "danger"},
+    {"id" : 1, "name" : "提取押金", "class" : ""},
+    {"id" : 2, "name" : "提取余额", "class" : ""}
 ];//所有押金操作类型信息
 
 

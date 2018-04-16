@@ -1323,6 +1323,16 @@ function loadUserRecharges(page) {
     internalLoadDatas(userRechargesPath, page, "rechargeTable", "rechargesPagination", [], "loadUserRecharges");
 }
 
+/**
+ * 用户操作押金
+ */
 function userOperateDeposit() {
     internalUserAddData("deposit", userDepositPath);
+}
+
+/**
+ * 用户提交申请
+ */
+function userSubmitApply(){
+    internalUserAddData("apply",appliesPath);
 }

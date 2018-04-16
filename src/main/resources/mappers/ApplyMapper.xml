@@ -7,7 +7,7 @@
         <id column="id" property="id" />
         <result column="type" property="type" />
         <result column="status" property="status" />
-        <result column="object" property="object" />
+        <result column="amount" property="value" />
         <result column="user_id" property="userId" />
         <result column="description" property="description" />
         <result column="start_time" property="startTime" />
@@ -17,7 +17,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-      id, type, status, object, user_id as userId, description, start_time as startTime, end_time as endTime, operator_id as operatorId
+      id, type, status, amount, user_id as userId, description, start_time as startTime, end_time as endTime, operator_id as operatorId
     </sql>
 
 

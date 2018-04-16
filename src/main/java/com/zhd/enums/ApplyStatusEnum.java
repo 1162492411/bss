@@ -14,8 +14,7 @@ public enum ApplyStatusEnum implements IEnum {
 
     UNKNOWN(0,"未知"),
     HAS_SUBMIT(1,"已提交"),
-    HANDLING(2,"正在处理"),
-    DONE(3,"处理完成");
+    DONE(2,"处理完成");
 
     private int code;
     private String status;

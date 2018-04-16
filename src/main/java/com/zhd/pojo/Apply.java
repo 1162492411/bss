@@ -8,7 +8,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * 用户申请
@@ -27,23 +29,27 @@ public class Apply implements Serializable, BaseModel {
     /**
      * 申请类型
      */
+    @NotNull(groups = {Insert.class,Update.class})
     private Integer type;
 
     /**
      * 申请状态
      */
+    @NotNull(groups = {Insert.class})
     private Integer status;
 
     /**
-     * 申请操作对象
+     * 申请金额
      */
-    private String object;
+    @NotNull(groups = {Insert.class, Update.class})
+    private BigDecimal amount;
 
     /**
      * 申请人
      */
     @TableField("user_id")
-    private Integer userId;
+    private String userId;
+
     /**
      * 申请描述
      */

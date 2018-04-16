@@ -101,17 +101,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public boolean refundDeposit(String id, BigDecimal amount) {
-        return userMapper.refundDeposit(id, amount) > 0;
+        if(userMapper.selectById(id).getDepositBalance().doubleValue() >= Constants.STANDARD_DEPOSIT.doubleValue()){
+            return userMapper.refundDeposit(id, amount) > 0;
+        }else{
+            return false;
+        }
     }
 
     @Override
-    public boolean reduceAccount(String id, BigDecimal amount) {
+    public boolean reduceAccount(String id, BigDecimal amount) throws NoEnoughAccountBalanceException {
         if(userMapper.reduceAccount(id,amount) > 0){
           BigDecimal accountBalance = userMapper.selectById(id).getAccountBalance();
           if(accountBalance.doubleValue() > 0){
               userMapper.increaseCredit(id);
           }else{
-              userMapper.reduceCredit(id);
+              throw new NoEnoughAccountBalanceException();
           }
           return true;
         }
