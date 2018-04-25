@@ -22,6 +22,8 @@ public interface IUserService extends IService<User> {
 
     boolean isAdmin(String id);
 
+    boolean isStaff(String id);
+
     boolean checkDepositBalance(String id) throws NoEnoughDepositException, NoSuchUserException;//检查用户押金
 
     boolean checkAccountBalance(String id) throws NoSuchUserException, NoEnoughAccountBalanceException;//检查用户账户余额

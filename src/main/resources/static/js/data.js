@@ -45,6 +45,9 @@ const taskMethods = [
 const journeyMethods = [
     {"name": "查看轨迹", "method": "showPath"}
 ];//行程管理的方法
+const applyMethods = [
+    {"name": "完成", "method": "doneApply"}
+];
 
 const rootPath = "http://localhost:8080";//网站根目录
 const usersPath = rootPath + "/users";//获取用户数据的根目录

@@ -41,7 +41,7 @@ public class Apply implements Serializable, BaseModel {
     /**
      * 申请金额
      */
-    @NotNull(groups = {Insert.class, Update.class})
+    @NotNull(groups = {Update.class})
     private BigDecimal amount;
 
     /**

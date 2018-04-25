@@ -39,6 +39,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
+    public boolean isStaff(String id) {
+        return userMapper.selectById(id).getType().equals(UserTypeEnum.STAFF.getCode());
+    }
+
+    @Override
     public boolean checkDepositBalance(String id) throws NoEnoughDepositException, NoSuchUserException {
         User user = userMapper.selectOne(User.builder().id(id).status(UserStatusEnum.NORMAL.getCode()).build());
         if(user == null){

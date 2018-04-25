@@ -1,5 +1,6 @@
 package com.zhd.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.util.TypeUtils;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -34,7 +35,7 @@ import java.util.List;
  * @author zyg
  * @since 2018-04-10
  */
-@Controller
+@RestController
 @RequestMapping("apply")
 public class ApplyController extends BaseController {
 
@@ -44,7 +45,8 @@ public class ApplyController extends BaseController {
     private IUserService userService;
 
     @PostMapping
-    public JSONResponse insert(@Validated(Apply.Insert.class) Apply apply, BindingResult bindingResult, HttpSession session){
+    public JSONResponse insert(@RequestBody @Validated(Apply.Insert.class) Apply apply, BindingResult bindingResult, HttpSession session){
+        System.out.println("receive apply-->" + JSON.toJSONString(apply));
         try {
             if (bindingResult.hasErrors()) {
                 return renderError(bindingResult.getFieldError().getDefaultMessage());
@@ -63,6 +65,7 @@ public class ApplyController extends BaseController {
             return renderError(e.getMessage());
         }
     }
+
     @PutMapping
     public JSONResponse done(@Validated(Apply.Update.class) Apply apply, BindingResult bindingResult, HttpSession session){
         try{
@@ -73,14 +76,9 @@ public class ApplyController extends BaseController {
                 if (StringUtils.isBlank(userid)) {
                     throw new NotLoginException();
                 }
-                if(userService.isAdmin(userid)){
-                    if(apply.getType().equals(ApplyTypeEnum.REFUND_DEPOSIT.getCode())){
-                        return userService.refundDeposit(apply.getUserId(), Constants.STANDARD_DEPOSIT) ? renderSuccess(Constants.TIP_REFUND_DEPOSIT_SUCCESS) : renderError(Constants.TIP_REFUND_DEPOSIT_ERROR);
-                    }else if(apply.getType().equals(ApplyTypeEnum.REFUND_ACCOUNT.getCode())){
-                        return userService.reduceAccount(apply.getUserId(),apply.getAmount()) ? renderSuccess(Constants.TIP_REFUND_ACCOUNT_SUCCESS) : renderError(Constants.TIP_REFUND_ACCOUNT_ERROR);
-                    }else{
-                        return renderError("申请类型不正确");
-                    }
+                if(userService.isAdmin(userid) || userService.isStaff(userid)){
+                    //todo : apply 应该从数据库查询
+                    return renderSuccess(applyService.doneApply(apply));
                 }else{
                     return renderError(Constants.TIP_NO_PERMISSION);
                 }
@@ -102,8 +100,5 @@ public class ApplyController extends BaseController {
         }
     }
 
-
-
-    //todo : 查看申请列表
 
 }

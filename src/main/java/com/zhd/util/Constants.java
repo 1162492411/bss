@@ -78,6 +78,7 @@ public class Constants {
     //apply
     public static final String[] APPLY_KEYS = {"id","type","status","amount","userId","description","startTime","endTime","operatorId"};
     public static final String[] APPLY_NAMES = {"编号","类型","状态","金额","用户","描述","开始时间","结束时间","操作人"};
+    public static final String TIP_UNKNOWN_APPLY_TYPE = "未知的申请类型";
 
     //ali
     public static final String TIP_ALI_ERROR = "连接阿里接口失败！请联系服务员";

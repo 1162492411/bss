@@ -28,4 +28,11 @@ public class UserPageController {
     @RequestMapping("deposit")
     public void toDeposit(){}
 
+    /**
+     * 前往--用户版--提交申请
+     */
+    @RequestMapping("apply")
+    public void toApply(){}
+
+
 }

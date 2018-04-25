@@ -1188,6 +1188,43 @@ function initAddTaskModal(data) {
     });
     $modal.modal("show");
 }
+
+/**
+ * 加载申请信息
+ * @param page 指定的页数
+ */
+function loadApplies(page) {
+    internalLoadDatas(appliesPath + "/list", page, "applyTable", "appliesPagination", applyMethods, "loadApplies");
+    $("#taskTableBody").find("[id$='status']").each(function () {
+        if ($(this).text() === '已完成')
+            $(this).parent().find("[id$='Btn']").empty();
+        paintColumn($(this).attr("id"), allTaskStatus);
+    });
+}
+
+/**
+ * 完成用户申请
+ * @param apply 用户申请
+ */
+function doneApply(apply){
+    //todo : put apply
+    $.ajax({
+        type: 'PUT',
+        url: appliesPath,
+        data: JSON.stringify(apply),
+        contentType: 'application/json',
+        success: function (data) {
+            if (data.code == Codes.successResponse) {
+                alert(JSON.stringify(data.message));
+                window.location.reload();
+            }
+            else {
+                showErrorData(data);
+            }
+        }
+    });
+}
+
 /*--------------------------------------------报表模块------------------------------*/
 
 function setFilterCity(){
@@ -1334,5 +1371,25 @@ function userOperateDeposit() {
  * 用户提交申请
  */
 function userSubmitApply(){
-    internalUserAddData("apply",appliesPath);
+    let sendData = {
+        "type": parseInt($("#add-apply-modal-type").val()),
+        "status"  : parseInt($("#add-apply-modal-status").val()),
+        "amount" : parseFloat($("#add-apply-modal-amount").val()),
+        "description" : $("#add-apply-modal-description").val()
+    };
+    $.ajax({
+        type: 'POST',
+        url: appliesPath,
+        data: JSON.stringify(sendData),
+        contentType: 'application/json',
+        success: function (data) {
+            if (data.code == Codes.successResponse) {
+                alert(JSON.stringify(data.result));
+                window.location.reload();
+            }
+            else {
+                showErrorData(data);
+            }
+        }
+    });
 }

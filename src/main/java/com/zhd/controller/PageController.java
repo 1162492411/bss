@@ -72,6 +72,12 @@ public class PageController {
     public void toTasks(){}
 
     /**
+     * 前往--任务模块-申请处理
+     */
+    @RequestMapping("taskModule/applies")
+    public void toApplies(){}
+
+    /**
      * 前往--报表模块-行程概况
      */
     @RequestMapping("reportModule/journeyOverview")
