@@ -1,0 +1,1 @@
+INSERT INTO db_bss.apply (id, type, status, amount, user_id, description, start_time, end_time, operator_id) VALUES (1, 1, 1, 11.00, '11223344557', '', '1524030942251', '', '20100102065');
