@@ -89,7 +89,7 @@ const allBicycleStatus = [
     {"id" : 3, "name" : "待移动", "class" : "warning", "icon" : "http://ocgfh1n3q.bkt.clouddn.com/coor_warning.png"},
     {"id" : 4, "name" : "待维修", "class" : "danger", "icon" : "http://ocgfh1n3q.bkt.clouddn.com/coor_danger.png"},
     {"id" : 5, "name" : "待报废", "class" : "danger", "icon" : "http://ocgfh1n3q.bkt.clouddn.com/coor_danger.png"},
-    {"id" : 6, "name" : "待删除", "class" : "danger", "icon" : "http://ocgfh1n3q.bkt.clouddn.com/coor_danger.png"}
+    {"id" : 6, "name" : "待删除", "class" : "danger", "icon" : "http://ocgfh1n3q.bkt.clouddn.com/coor_error.png"}
 ];//所有车辆状态信息
 
 const allAreaType = [
