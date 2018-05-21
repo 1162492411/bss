@@ -1,12 +1,14 @@
 package com.zhd.controller;
 
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.zhd.convert.SupplierConvert;
 import com.zhd.pojo.*;
 import com.zhd.service.ISupplierService;
 import com.zhd.util.Constants;
 import com.zhd.util.PageUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -25,6 +27,20 @@ import org.springframework.web.bind.annotation.*;
 public class SupplierController extends BaseController{
     @Autowired
     private ISupplierService supplierService;
+
+    @GetMapping("list/{keyword}/{current}")
+    public JSONResponse searchList(@PathVariable("keyword")String keyword, @PathVariable("current") Integer pageNum, Page<Supplier> page) {
+        try {
+            if(pageNum <= 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+            if(StringUtils.isNotBlank(keyword)){
+                return renderSuccess(SupplierConvert.convertToPageInfo(supplierService.selectPage(page, new EntityWrapper<Supplier>().like("brand", keyword).or().like("name", keyword).or().like("address", keyword))));
+            }else{
+                return renderSuccess(SupplierConvert.convertToPageInfo(supplierService.selectPage(page)));
+            }
+        } catch (Exception e) {
+            return renderError(e.getMessage());
+        }
+    }
 
     @GetMapping("list/{current}")
     public JSONResponse list(@PathVariable("current") Integer pageNum, Page<Supplier> page) {

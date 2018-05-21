@@ -5,6 +5,8 @@ import com.alibaba.fastjson.util.TypeUtils;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.zhd.convert.BicycleConvert;
+import com.zhd.enums.BicycleStatusEnum;
+import com.zhd.enums.BicycleTypeEnum;
 import com.zhd.enums.JourneyStatusEnum;
 import com.zhd.exceptions.NotLoginException;
 import com.zhd.pojo.*;
@@ -13,6 +15,7 @@ import com.zhd.util.Constants;
 import com.zhd.util.ConsumptionUtil;
 import com.zhd.util.LocationUtils;
 import com.zhd.util.DataUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -49,6 +52,38 @@ public class BicycleController extends BaseController{
         try{
             return renderSuccess(BicycleConvert.convertSimple(bicycleService.selectAllSimple()));
         }catch (Exception e){
+            return renderError(e.getMessage());
+        }
+    }
+
+    @GetMapping("list/{keyword}/{current}")
+    public JSONResponse searchList(@PathVariable("keyword")String keyword,  @PathVariable("current") int pageNum, Page<Bicycle> page) {
+        try {
+            if(pageNum <= 0) {
+                throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+            }
+            if(StringUtils.isNotBlank(keyword)){
+                //按车辆状态查询
+                int resultStatus = BicycleStatusEnum.getByStatus(keyword);
+                if(resultStatus > 0){
+                    page = bicycleService.selectPage(page, new EntityWrapper<Bicycle>().eq("status", resultStatus).orderBy("status", false));
+                }
+                //按车辆类型查询
+                int resultType = BicycleTypeEnum.getByType(keyword);
+                if(resultType > 0){
+                    page = bicycleService.selectPage(page, new EntityWrapper<Bicycle>().eq("type", resultType).orderBy("status", false));
+                }
+                //按供应商查询
+                Supplier searchSupplier = supplierService.selectOne(new EntityWrapper<Supplier>().like("name", keyword).or().like("brand", keyword));
+                if(searchSupplier != null){
+                    page = bicycleService.selectPage(page, new EntityWrapper<Bicycle>().eq("supplier", searchSupplier.getId()).orderBy("status", false));
+                }
+            }else{
+                page = bicycleService.selectPage(page, new EntityWrapper<Bicycle>().like("id", keyword).orderBy("status", false));
+            }
+            List<Supplier> supplierList = supplierService.selectList(null);
+            return renderSuccess(BicycleConvert.convertToVOPageInfo(page,supplierList));
+        } catch (Exception e) {
             return renderError(e.getMessage());
         }
     }
@@ -113,6 +148,7 @@ public class BicycleController extends BaseController{
 
     @RequestMapping("borrow/{id}")
     public JSONResponse borrowBicycle(Bicycle borrowBicycle, HttpSession session){
+        System.out.println("borrowBicyle is-->" + borrowBicycle);
         try{
             //check user && deposit
             String userid = String.valueOf(session.getAttribute("userid"));
@@ -146,6 +182,7 @@ public class BicycleController extends BaseController{
             journey.setStartTime(formerJourney.getStartTime());
             //prepare returnBicycle
             Area area = areaService.findArea(journey.getEndLocationX(),journey.getEndLocationY());
+            journey.setEndArea(area== null? area.getId() : -1);
             long startTime = Long.parseLong(formerJourney.getStartTime());
             long endTime = Long.parseLong(journey.getEndTime());
             journey.setUserId(userid);

@@ -1,8 +1,6 @@
 package com.zhd.controller;
 
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -58,6 +56,23 @@ public class PageController {
     @RequestMapping("orderModule/journeys")
     public void toJourneys(){}
 
+    /**
+     * 前往--订单模块-充值记录
+     */
+    @RequestMapping("orderModule/recharges")
+    public void toRecharges(){}
+
+    /**
+     * 前往--订单模块-押金记录
+     */
+    @RequestMapping("orderModule/deposits")
+    public void toDeposits(){}
+
+    /**
+     * 前往--订单模块-包月记录
+     */
+    @RequestMapping("orderModule/vips")
+    public void toVips(){}
 
     /**
      * 前往--任务模块-车辆分布

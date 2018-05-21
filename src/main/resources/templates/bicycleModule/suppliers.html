@@ -26,10 +26,13 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>
-                供应商列表
+            <div class="form-inline">
+                <span>供应商列表</span>
+                <input type="text" placeholder="名称/品牌/地址关键字" id="search-supplier-form-input" class="form-control" />
+                <button class="Button Button--blue" onclick="searchSupplier()">查询</button>
                 <button class="Button Button--blue" data-toggle="modal" data-target="#add-supplier-modal">添加</button>
-            </h1>
+            </div>
+
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-bicycle"></i> 车辆模块</a></li>
                 <li class="active">供应商管理</li>
@@ -95,6 +98,14 @@ immediately after the control sidebar -->
                                            placeholder="供应商名"/>
                                 </div>
                             </div>
+                            <!-- 供应商品牌 -->
+                            <div class="form-group">
+                                <label for="update-supplier-modal-brand" class="col-sm-3 control-label">供应商品牌</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="col-sm-10 form-control" id="update-supplier-modal-brand" name="updateName"
+                                           placeholder="供应商品牌"/>
+                                </div>
+                            </div>
                             <!-- 供应商地址 -->
                             <div class="form-group">
                                 <label for="update-supplier-modal-address" class="col-sm-3 control-label">供应商地址</label>
@@ -103,6 +114,8 @@ immediately after the control sidebar -->
                                            placeholder="供应商地址"/>
                                 </div>
                             </div>
+
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">放弃</button>
@@ -136,6 +149,14 @@ immediately after the control sidebar -->
                                 <div class="col-sm-8">
                                     <input type="text" class="col-sm-10 form-control" id="add-supplier-modal-name"
                                            name="addName" placeholder="供应商名"/>
+                                </div>
+                            </div>
+                            <!-- 供应商品牌 -->
+                            <div class="form-group">
+                                <label for="add-supplier-modal-brand" class="col-sm-3 control-label">供应商品牌</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="col-sm-10 form-control" id="add-supplier-modal-brand"
+                                           name="addName" placeholder="供应商品牌"/>
                                 </div>
                             </div>
                             <!-- 供应商地址 -->

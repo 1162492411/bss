@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.enums.IEnum;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 
@@ -37,6 +38,20 @@ public enum BicycleStatusEnum implements IEnum{
             if(code == bicycleStatusEnum.getCode()) return bicycleStatusEnum;
         }
         return UNKNOWN;
+    }
+
+    public static int getByStatus(String status){
+        if(StringUtils.isNotBlank(status)){
+            switch(status){
+                case "空闲中" : return UNUSED.getCode();
+                case "使用中" : return USING.getCode();
+                case "待移动" : return WAIT_MOVE.getCode();
+                case "待维修" : return WAIT_REPAIR.getCode();
+                case "待报废" : return WAIT_SCRAP.getCode();
+                case "待删除" : return WAIT_DELETE.getCode();
+            }
+        }
+        return -1;
     }
 
     @Override

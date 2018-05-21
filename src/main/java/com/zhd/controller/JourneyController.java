@@ -1,6 +1,7 @@
 package com.zhd.controller;
 
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.zhd.convert.AreaConvert;
 import com.zhd.convert.JourneyConvert;
@@ -10,6 +11,7 @@ import com.zhd.pojo.JSONResponse;
 import com.zhd.pojo.Journey;
 import com.zhd.service.IJourneyService;
 import com.zhd.util.Constants;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -31,6 +33,22 @@ public class JourneyController extends BaseController{
 
     @Autowired
     private IJourneyService journeyService;
+
+    @GetMapping("list/{keyword}/{current}")
+    public JSONResponse searchList(@PathVariable("keyword")String keyword, @PathVariable("current") int pageNum, Page<Journey> page) {
+        try {
+            if(pageNum <= 0) {
+                throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+            }
+            if(StringUtils.isNotBlank(keyword)){
+                return renderSuccess(JourneyConvert.convertToVOPageIngo(journeyService.selectPage(page, new EntityWrapper<Journey>().like("user_id", keyword).or().like("bicycle_id", keyword))));
+            }else {
+                return renderSuccess(JourneyConvert.convertToVOPageIngo(journeyService.selectPage(page)));
+            }
+        } catch (Exception e) {
+            return renderError(e.getMessage());
+        }
+    }
 
     @GetMapping("list/{current}")
     public JSONResponse list(@PathVariable("current") int pageNum, Page<Journey> page) {

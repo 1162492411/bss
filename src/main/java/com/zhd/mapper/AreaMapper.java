@@ -22,5 +22,6 @@ public interface AreaMapper extends BaseMapper<Area> {
 
     Boolean insertCollection(@Param("areas") List<Area> list);
 
+    List<Integer> selectAllByCityIds(@Param("cityIds") List<Integer> cityIds);
 
 }

@@ -5,14 +5,16 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name:  com.mysql.jdbc.Driver
     url:  jdbc:mysql://localhost:3306/db_bss?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true
-    username:  root
+    username:  user0
     password:  da68aff0
+#    password: 123456
   aop:
     auto: true
     proxy-target-class: false
   http:
     encoding:
       force: true
+
 
 ## mybatis-plus
 mybatis-plus:
@@ -35,5 +37,5 @@ mybatis-plus:
 
 ##logging
   logging:
-    level: info
+    level: debug
 

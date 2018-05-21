@@ -47,8 +47,8 @@ public class Constants {
     public static final String[] AREA_KEYS = {"id", "name", "type", "northPoint", "southPoint", "westPoint", "eastPoint"};
 
     //supplier
-    public static final String[] SUPPLIER_KEYS = {"id","name","address"};
-    public static final String[] SUPPLIER_NAMES = {"编号","名称","地址"};
+    public static final String[] SUPPLIER_KEYS = {"id","name","brand","address"};
+    public static final String[] SUPPLIER_NAMES = {"编号","名称","品牌","地址"};
 
     //bicycle
     public static final String[] BICYCLE_KEYS = {"id","status","type","serviceTime","investmentTime","mileage","batch","supplier"};
@@ -58,8 +58,8 @@ public class Constants {
     public static final String TIP_RETURN_BICYCLE_ERROR = "还车失败";
 
     //task
-    public static final String[] TASK_KEYS = {"id","name","user","bicycle","type","status"};
-    public static final String[] TASK_NAMES = {"任务编号","任务名","处理人","车辆","类型","状态"};
+    public static final String[] TASK_KEYS = {"id","name","user","bicycle","type","status","taskTime"};
+    public static final String[] TASK_NAMES = {"任务编号","任务名","处理人","车辆","类型","状态","耗时"};
 
     //rechargeAccount
     public static final String[] RECHARGE_KEYS = {"id","userId","type","rechargeTime","amount"};
@@ -69,11 +69,18 @@ public class Constants {
     public static final String TIP_REFUND_ACCOUNT_ERROR = "提取余额失败";
 
     //deposit
+    public static final String[] DEPOSIT_KEYS = {"id","userId","type","operateTime","amount"};
+    public static final String[] DEPOSIT_NAMES = {"记录编号","账户","操作类型","时间","金额"};
     public static final String TIP_ENOUGH_DEPOSIT = "已缴纳过押金";
     public static final String TIP_NO_DEPOSIT = "未缴纳押金";
     public static final String TIP_RECHARGE_DEPOSIT_ERROR = "缴纳押金失败";
     public static final String TIP_REFUND_DEPOSIT_SUCCESS = "提取押金成功";
     public static final String TIP_REFUND_DEPOSIT_ERROR = "提取押金失败";
+
+    //vip
+    public static final String[] VIP_KEYS = {"id","userId","vipTime","operateTime","amount"};
+    public static final String[] VIP_NAMES = {"记录编号","账户","月数","操作时间","金额"};
+    public static final int VIP_COUNT = 15;//每月包月的金额
 
     //apply
     public static final String[] APPLY_KEYS = {"id","type","status","amount","userId","description","startTime","endTime","operatorId"};

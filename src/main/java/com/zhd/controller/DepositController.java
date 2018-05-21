@@ -1,6 +1,7 @@
 package com.zhd.controller;
 
 import com.alibaba.fastjson.util.TypeUtils;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.zhd.convert.DepositConvert;
 import com.zhd.enums.DepositTypeEnum;
@@ -40,6 +41,26 @@ public class DepositController extends BaseController {
     public JSONResponse get(Area record) {
         try {
             return renderSuccess(DepositConvert.convertToVO(depositService.selectById(record.getId())));
+        } catch (Exception e) {
+            return renderError(e.getMessage());
+        }
+    }
+
+    @GetMapping("list/{keyword}/{current}")
+    public JSONResponse searchList(@PathVariable("keyword")String keyword, @PathVariable("current") int pageNum, Page<Deposit> page) {
+        try {
+            if (pageNum <= 0) {
+                throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+            }
+            if(StringUtils.isNotBlank(keyword)){
+                int resultType = DepositTypeEnum.getByType(keyword);
+                if(resultType != -1){
+                    return renderSuccess(DepositConvert.convertToVOPageInfo(depositService.selectPage(page, new EntityWrapper<Deposit>().eq("type", resultType))));
+                }
+                return renderSuccess(DepositConvert.convertToVOPageInfo(depositService.selectPage(page, new EntityWrapper<Deposit>().like("user_id", keyword))));
+            }else{
+                return renderSuccess(DepositConvert.convertToVOPageInfo(depositService.selectPage(page)));
+            }
         } catch (Exception e) {
             return renderError(e.getMessage());
         }

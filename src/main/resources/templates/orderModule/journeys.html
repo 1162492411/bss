@@ -26,9 +26,11 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>
-                行程列表
-            </h1>
+            <div class="form-inline">
+                <span>行程列表</span>
+                <input type="text" placeholder="用户/车辆关键字" id="search-journey-form-input" class="form-control" />
+                <button class="Button Button--blue" onclick="searchJourney()">查询</button>
+            </div>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-th-list"></i> 订单模块</a></li>
                 <li class="active">行程管理</li>
@@ -62,18 +64,18 @@
     <!-- 行程轨迹 -->
     <div class="modal" id="show-journey-modal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
-            <div class="modal-content" style="width:1000px">
+            <div class="modal-content" style="width:100%">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">行程轨迹</h4>
                 </div>
                 <div class="modal-body">
-                    <div id="journeyDiv" style="height:800px"></div>
+                    <div id="journeyDiv" style="height:500px"></div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- 星辰轨迹结束 -->
+    <!-- 行程轨迹结束 -->
 
     <!-- Add the sidebar's background. This div must be placed
 immediately after the control sidebar -->

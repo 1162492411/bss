@@ -8,6 +8,8 @@ var bicycleMap;//车辆分布页面的地图
 var pathMap;// 行程页面的行程轨迹的地图
 var overviewReportOptions;// 报表-使用概况的配置
 var overviewReportChart;//报表-使用概况的图表
+var taskReportOptions;// 报表-任务概况的配置
+var taskReportChart;//报表-任务概况的图表
 /*----------------扩展函数--------------*/
 Date.prototype.format = function (format) {
     let o = {
@@ -232,12 +234,13 @@ function generateSingleTableMethods(div, data, methods) {
 
 /**
  * 初始化分页
+ * @param total 数据总数
  * @param currentPage 当前页码
  * @param totalPage 总页码
  * @param id 分页的ID
  * @param method 每个分页按钮触发的函数
  */
-function initPag(currentPage, totalPage, id, method) {
+function initPag(total, currentPage, totalPage, id, method) {
     let c = parseInt(currentPage);
     let t = parseInt(totalPage);
     let prevString = "";
@@ -270,6 +273,53 @@ function initPag(currentPage, totalPage, id, method) {
     $("#" + id).append(suffString);
 //处理"下一页"
     if (c < t) $("#" + id).append("<li id='pagNext'><span onclick=" + method + "(" + (c + 1) + ")> >> </span></li>");
+    $("#" + id).append("<span style='line-height:30px'>共" + total + "条,第" + c + "/" + t + "页<span>");
+}
+
+
+/**
+ * 初始化分页-关键字版
+ * @param total 数据总数
+ * @param currentPage 当前页码
+ * @param totalPage 总页码
+ * @param id 分页的ID
+ * @param method 每个分页按钮触发的函数
+ * @param keyword 关键字
+ */
+function initPagKeyword(total, currentPage, totalPage, id, method, keyword) {
+    let c = parseInt(currentPage);
+    let t = parseInt(totalPage);
+    let prevString = "";
+    let suffString = "";
+    if (t <= 1) {//总页数过少时移除分页
+        $("#" + id).remove();
+        return;
+    }
+//处理"上一页"
+    if (c > 1) $("#" + id).append("<li id='pagLast'><span onclick=" + method + "(" + (c - 1) + ")> << </span></li>");
+//添加当前页码前的页数
+    if (c > 3) {
+        prevString += "<li><a>...</a></li>";
+        for (let i = c - 3; i < c; i++) prevString += "<li><span onclick=" + method + "('" + keyword + "'," + i + ")>" + i + "</span></li>";
+        $("#" + id).append(prevString);
+    }
+    else {
+        for (let i = 1; i < c; i++) prevString += "<li><span onclick=" + method + "('"+ keyword + "'," + i + ")>" + i + "</span></li>";
+        $("#" + id).append(prevString);
+    }
+//添加当前页码
+    $("#" + id).append("<li id='pageCurrent' class='active'><span>" + c + "</span></li>");
+//添加当前页码后的页数
+    if (c < t - 3) {
+        for (let j = c + 1; j <= c + 3; j++) suffString += "<li><span onclick=" + method + "('" + keyword + "'," + j + ")>" + j + "</span></li>";
+        suffString += "<li><a>...</a></li>";
+    }
+    else
+        for (let j = c + 1; j <= t; j++) suffString += "<li><span onclick=" + method + "('" + keyword + "'," + j + ")>" + j + "</span></li>";
+    $("#" + id).append(suffString);
+//处理"下一页"
+    if (c < t) $("#" + id).append("<li id='pagNext'><span onclick=" + method + "('" + keyword + "'," + (c + 1) + ")> >> </span></li>");
+    $("#" + id).append("<span style='line-height:30px'>共" + total + "条,第" + c + "/" + t + "页<span>");
 }
 
 /**
@@ -291,7 +341,42 @@ function internalLoadDatas(baseUrl, page, tableDiv, pagDiv, methods, reloadMetho
         success: function (data) {
             if (data.code == Codes.successResponse) {
                 generateTable(tableDiv, data.result, methods);
-                initPag(data.result.current, data.result.pages, pagDiv, reloadMethod);
+                initPag(data.result.total,data.result.current, data.result.pages, pagDiv, reloadMethod);
+            }
+            else {
+                showErrorData(data);
+            }
+
+        }
+    });
+}
+
+/**
+ * 从后台获取数据并渲染-带关键字版
+ * @param baseUrl 不带页码的后台数据url
+ * @param keyword 关键字
+ * @param page 请求的页数
+ * @param tableDiv 前台展现数据的table的id
+ * @param pagDiv 前台展现数据分页的id
+ * @param methods 前台展现数据的table的操作方法
+ * @param reloadMethod 更换页数时调用的方法
+ */
+function internalLoadDatasKeyword(baseUrl, page, tableDiv, pagDiv, methods, reloadMethod, keyword) {
+    $.ajax({
+        type: 'GET',
+        url: baseUrl + "/" + keyword + "/" + page,
+        async: false,
+        success: function (data) {
+            if (data.code == Codes.successResponse) {
+                if(dataNotEmpty(data.result)){
+                    resetDiv(tableDiv);
+                    resetDiv(pagDiv);
+                    generateTable(tableDiv, data.result, methods);
+                    initPagKeyword(data.result.total, data.result.current, data.result.pages, pagDiv, reloadMethod, keyword);
+                }
+                else{
+                    showErrorData(emptyDataTip);
+                }
             }
             else {
                 showErrorData(data);
@@ -509,8 +594,9 @@ function paintColumn(div, names) {
  */
 function formatDateTime(div) {
     if (!checkElementEmpty(div)) {
-        let $div = $("#" + div), $val = parseInt($div.text());
-        if (dataNotEmpty($val)) {
+        let $div = $("#" + div), $val = parseInt($div.text()) * 1000;
+        //此处乘1000是因为后台使用jdk8的timer，存储的是10位的数字，即秒数
+        if(dataNotEmpty($div.text())){
             $div.text(new Date($val).toLocaleString());
         }
         else
@@ -597,6 +683,25 @@ function addUser() {
     internalAddData("user", usersPath);
 }
 
+/**
+ * 查询用户
+ */
+function searchUser(){
+    let keyword = $("#search-user-form-input").val();
+    if(dataNotEmpty(keyword)){
+        internalLoadDatasKeyword(usersPath + "/list", 1, "userTable", "usersPagination", userMethods, "loadSearchUsers", keyword);
+    }
+}
+
+/**
+ * 加载第二页开始的查询用户表格
+ * @param keyword
+ * @param page
+ */
+function loadSearchUsers(keyword,page){
+    internalLoadDatasKeyword(usersPath + "/list", page, "userTable", "usersPagination", userMethods, "loadSearchUsers", keyword);
+}
+
 /*----------------车辆模块部分-------------------------*/
 
 /**
@@ -664,6 +769,25 @@ function loadAreaMap() {
         rectangleEditor = new AMap.RectangleEditor(areaMap, rectangle);
     });
 
+}
+
+/**
+ * 查询区域
+ */
+function searchArea(){
+    let keyword = $("#search-area-form-input").val();
+    if(dataNotEmpty(keyword)){
+        internalLoadDatasKeyword(areasPath + "/list", 1, "areaTable", "areasPagination", areaMethods, "loadSearchAreas", keyword);
+    }
+}
+
+/**
+ * 加载第二页开始的查询区域表格
+ * @param keyword
+ * @param page
+ */
+function loadSearchAreas(keyword,page){
+    internalLoadDatasKeyword(areasPath + "/list", page, "areaTable", "areasPagination", areaMethods, "loadSearchAreas", keyword);
 }
 
 /**
@@ -789,6 +913,25 @@ function addSupplier() {
 }
 
 /**
+ * 查询供应商
+ */
+function searchSupplier(){
+    let keyword = $("#search-supplier-form-input").val();
+    if(dataNotEmpty(keyword)){
+        internalLoadDatasKeyword(suppliersPath + "/list", 1, "supplierTable", "suppliersPagination", supplierMethods, "loadSearchSuppliers", keyword);
+    }
+}
+
+/**
+ * 加载第二页开始的查询供应商表格
+ * @param keyword
+ * @param page
+ */
+function loadSearchSuppliers(keyword,page){
+    internalLoadDatasKeyword(suppliersPath + "/list", page, "supplierTable", "suppliersPagination", supplierMethods, "loadSearchSuppliers", keyword);
+}
+
+/**
  * 加载车辆列表的数据
  * @param page 请求的页数
  */
@@ -875,7 +1018,7 @@ function initBicycleSupplier() {
  * @returns {boolean}
  */
 function checkBicycleStatus(type, status) {
-    alert("type-->" + type + ", status-->" + status);
+    // alert("type-->" + type + ", status-->" + status);
     let checkResult = false;
     if (type === "删除" && status === "待删除") {
         checkResult = true;
@@ -888,6 +1031,48 @@ function checkBicycleStatus(type, status) {
     }
     return checkResult;
 }
+
+/**
+ * 查询车辆
+ */
+function searchBicycle(){
+    let keyword = $("#search-bicycle-form-input").val();
+    if(dataNotEmpty(keyword)){
+        internalLoadDatasKeyword(bicyclesPath + "/list", 1, "bicycleTable", "bicyclesPagination", bicycleMethods, "loadSearchBicycles", keyword);
+        $("#bicycleTableBody").find("[id$='serviceTime']").each(function () {
+            formatSeconds($(this).attr("id"));
+        });
+        $("#bicycleTableBody").find("[id$='status']").each(function () {
+            paintColumn($(this).attr("id"), allBicycleStatus);
+        });
+        $("#bicycleTableBody").find("[id$='investmentTime']").each(function () {
+            formatDateTime($(this).attr("id"));
+        });
+        initSelection("add-bicycle-modal-type", allBicycleType);
+        initBicycleSupplier();
+    }
+}
+
+/**
+ * 加载第二页开始的查询车辆表格
+ * @param keyword
+ * @param page
+ */
+function loadSearchBicycles(keyword,page){
+    internalLoadDatasKeyword(bicyclesPath + "/list", page, "bicycleTable", "bicyclesPagination", bicycleMethods, "loadSearchBicycles", keyword);
+    $("#bicycleTableBody").find("[id$='serviceTime']").each(function () {
+        formatSeconds($(this).attr("id"));
+    });
+    $("#bicycleTableBody").find("[id$='status']").each(function () {
+        paintColumn($(this).attr("id"), allBicycleStatus);
+    });
+    $("#bicycleTableBody").find("[id$='investmentTime']").each(function () {
+        formatDateTime($(this).attr("id"));
+    });
+    initSelection("add-bicycle-modal-type", allBicycleType);
+    initBicycleSupplier();
+}
+
 
 /*---------------订单模块-----------------*/
 /**
@@ -960,6 +1145,138 @@ function showPath(data) {
 
 }
 
+/**
+ * 查询行程记录
+ */
+function searchJourney(){
+    let keyword = $("#search-journey-form-input").val();
+    if(dataNotEmpty(keyword)){
+        internalLoadDatasKeyword(journeysPath + "/list", 1, "journeyTable", "journeysPagination", journeyMethods, "loadSearchJourneys", keyword);
+        $("#journeyTableBody").find("[id$='rideTime']").each(function () {
+            formatSeconds($(this).attr("id"));
+        });
+    }
+}
+
+/**
+ * 加载第二页开始的查询行程记录
+ * @param keyword
+ * @param page
+ */
+function loadSearchJourneys(keyword,page){
+    internalLoadDatasKeyword(journeysPath + "/list", page, "journeyTable", "journeysPagination", journeyMethods, "loadSearchJourneys", keyword);
+    $("#journeyTableBody").find("[id$='rideTime']").each(function () {
+        formatSeconds($(this).attr("id"));
+    });
+}
+
+/**
+ * 加载充值记录
+ * @param page 页码
+ */
+function loadRecharges(page) {
+    internalLoadDatas(rechargesPath, page, "rechargeTable", "rechargesPagination", [], "loadRecharges");
+    $("#rechargeTableBody").find("[id$='rechargeTime']").each(function () {
+        formatDateTime($(this).attr("id"));
+    });
+}
+
+/**
+ * 查询充值记录
+ */
+function searchRecharge(){
+    let keyword = $("#search-recharge-form-input").val();
+    if(dataNotEmpty(keyword)){
+        internalLoadDatasKeyword(rechargesPath, 1, "rechargeTable", "rechargesPagination", [], "loadSearchRecharges", keyword);
+        $("#rechargeTableBody").find("[id$='rechargeTime']").each(function () {
+            formatDateTime($(this).attr("id"));
+        });
+    }
+}
+
+/**
+ * 加载第二页开始的查询充值记录
+ * @param keyword
+ * @param page
+ */
+function loadSearchRecharges(keyword,page){
+    internalLoadDatasKeyword(rechargesPath, page, "rechargeTable", "rechargesPagination", [], "loadSearchRecharges", keyword);
+    $("#rechargeTableBody").find("[id$='rechargeTime']").each(function () {
+        formatDateTime($(this).attr("id"));
+    });
+}
+
+/**
+ * 加载押金记录
+ * @param page 页码
+ */
+function loadDeposits(page) {
+    internalLoadDatas(userDepositPath + "/list", page, "depositTable", "depositsPagination", [], "loadDeposits");
+    $("#rechargeTableBody").find("[id$='operateTime']").each(function () {
+        formatDateTime($(this).attr("id"));
+    });
+}
+
+/**
+ * 查询押金记录
+ */
+function searchDeposit(){
+    let keyword = $("#search-deposit-form-input").val();
+    if(dataNotEmpty(keyword)){
+        internalLoadDatasKeyword(userDepositPath + "/list", 1, "depositTable", "depositsPagination", [], "loadSearchDeposits", keyword);
+        $("#depositTableBody").find("[id$='operateTime']").each(function () {
+            formatDateTime($(this).attr("id"));
+        });
+    }
+}
+
+/**
+ * 加载第二页开始的查询押金记录
+ * @param keyword
+ * @param page
+ */
+function loadSearchDeposits(keyword,page){
+    internalLoadDatasKeyword(userDepositPath + "/list", page, "depositTable", "depositsPagination", [], "loadSearchDeposits", keyword);
+    $("#depositTableBody").find("[id$='operateTime']").each(function () {
+        formatDateTime($(this).attr("id"));
+    });
+}
+
+/**
+ * 加载包月记录
+ * @param page 页码
+ */
+function loadVips(page) {
+    internalLoadDatas(vipPath + "/list", page, "vipTable", "vipsPagination", [], "loadVips");
+    $("#vipTableBody").find("[id$='operateTime']").each(function () {
+        formatDateTime($(this).attr("id"));
+    });
+}
+
+/**
+ * 查询包月记录
+ */
+function searchVip(){
+    let keyword = $("#search-vip-form-input").val();
+    if(dataNotEmpty(keyword)){
+        internalLoadDatasKeyword(vipPath + "/list", 1, "vipTable", "vipsPagination", [], "loadSearchVips", keyword);
+        $("#vipTableBody").find("[id$='operateTime']").each(function () {
+            formatDateTime($(this).attr("id"));
+        });
+    }
+}
+
+/**
+ * 加载第二页开始的查询包月记录
+ * @param keyword
+ * @param page
+ */
+function loadSearchVips(keyword,page){
+    internalLoadDatasKeyword(vipPath + "/list", page, "vipTable", "vipsPagination", [], "loadSearchVips", keyword);
+    $("#vipTableBody").find("[id$='operateTime']").each(function () {
+        formatDateTime($(this).attr("id"));
+    });
+}
 
 /*---------------任务模块----------------*/
 
@@ -1104,6 +1421,10 @@ function loadTasks(page) {
             $(this).parent().find("[id$='Btn']").empty();
         paintColumn($(this).attr("id"), allTaskStatus);
     });
+    $("#taskTableBody").find("[id$='taskTime']").each(function () {
+        // formatDateTime($(this).attr("id"));
+        formatSeconds($(this).attr("id"));
+    });
 }
 
 /**
@@ -1171,6 +1492,43 @@ function addTask() {
 }
 
 /**
+ * 查询任务记录
+ */
+function searchTask(){
+    let keyword = $("#search-task-form-input").val();
+    if(dataNotEmpty(keyword)){
+        internalLoadDatasKeyword(taskPath + "/list", 1, "taskTable", "tasksPagination", taskMethods, "loadSearchTasks", keyword);
+        $("#taskTableBody").find("[id$='status']").each(function () {
+            if ($(this).text() === '已完成')
+                $(this).parent().find("[id$='Btn']").empty();
+            paintColumn($(this).attr("id"), allTaskStatus);
+        });
+        $("#taskTableBody").find("[id$='taskTime']").each(function () {
+            // formatDateTime($(this).attr("id"));
+            formatSeconds($(this).attr("id"));
+        });
+    }
+}
+
+/**
+ * 加载第二页开始的查询任务记录
+ * @param keyword
+ * @param page
+ */
+function loadSearchTasks(keyword,page){
+    internalLoadDatasKeyword(taskPath + "/list", page, "taskTable", "tasksPagination", taskMethods, "loadSearchTasks", keyword);
+    $("#taskTableBody").find("[id$='status']").each(function () {
+        if ($(this).text() === '已完成')
+            $(this).parent().find("[id$='Btn']").empty();
+        paintColumn($(this).attr("id"), allTaskStatus);
+    });
+    $("#taskTableBody").find("[id$='taskTime']").each(function () {
+        // formatDateTime($(this).attr("id"));
+        formatSeconds($(this).attr("id"));
+    });
+}
+
+/**
  * 显示车辆分布页面的添加任务模态框
  * @param data 车辆信息
  */
@@ -1195,10 +1553,13 @@ function initAddTaskModal(data) {
  */
 function loadApplies(page) {
     internalLoadDatas(appliesPath + "/list", page, "applyTable", "appliesPagination", applyMethods, "loadApplies");
-    $("#taskTableBody").find("[id$='status']").each(function () {
-        if ($(this).text() === '已完成')
+    $("#applyTableBody").find("[id$='Time']").each(function () {
+        formatDateTime($(this).attr("id"));
+    });
+    $("#applyTableBody").find("[id$='status']").each(function () {
+        if ($(this).text() === '处理完成')
             $(this).parent().find("[id$='Btn']").empty();
-        paintColumn($(this).attr("id"), allTaskStatus);
+        // paintColumn($(this).attr("id"), allTaskStatus);
     });
 }
 
@@ -1208,10 +1569,11 @@ function loadApplies(page) {
  */
 function doneApply(apply){
     //todo : put apply
+    let sendData = {"id": parseInt(apply.id),"type": apply.type,"userId": apply.userId,"amount": apply.amount};
     $.ajax({
         type: 'PUT',
         url: appliesPath,
-        data: JSON.stringify(apply),
+        data: JSON.stringify(sendData),
         contentType: 'application/json',
         success: function (data) {
             if (data.code == Codes.successResponse) {
@@ -1225,9 +1587,49 @@ function doneApply(apply){
     });
 }
 
+
+/**
+ * 查询申请记录
+ */
+function searchApply(){
+    let keyword = $("#search-apply-form-input").val();
+    if(dataNotEmpty(keyword)){
+        internalLoadDatasKeyword(appliesPath + "/list", 1, "applyTable", "appliesPagination", applyMethods, "loadSearchApplies", keyword);
+        $("#applyTableBody").find("[id$='Time']").each(function () {
+            formatDateTime($(this).attr("id"));
+        });
+        $("#applyTableBody").find("[id$='status']").each(function () {
+            if ($(this).text() === '处理完成')
+                $(this).parent().find("[id$='Btn']").empty();
+            // paintColumn($(this).attr("id"), allTaskStatus);
+        });
+    }
+}
+
+/**
+ * 加载第二页开始的查询申请记录
+ * @param keyword
+ * @param page
+ */
+function loadSearchApplies(keyword,page){
+    internalLoadDatasKeyword(appliesPath + "/list", page, "applyTable", "appliesPagination", applyMethods, "loadSearchApplies", keyword);
+    $("#applyTableBody").find("[id$='Time']").each(function () {
+        formatDateTime($(this).attr("id"));
+    });
+    $("#applyTableBody").find("[id$='status']").each(function () {
+        if ($(this).text() === '处理完成')
+            $(this).parent().find("[id$='Btn']").empty();
+        // paintColumn($(this).attr("id"), allTaskStatus);
+    });
+}
+
 /*--------------------------------------------报表模块------------------------------*/
 
-function setFilterCity(){
+/**
+ * 选择城市后提交查询
+ * @param type 1-行程;2-任务
+ */
+function setFilterCity(type){
     let districtCode = $("#select-district").data("code");
     let cityCode = $("#select-city").data("code");
     let provinceCode = $("#select-province").data("code");
@@ -1245,8 +1647,13 @@ function setFilterCity(){
             data : JSON.stringify(selectCode),
             success : function(data) {
                 if(data.code == Codes.successResponse && !checkDataEmpty(data.result)){
-                    $("#overview-report-city-id").val(data.result.id);
-                    overviewReportSubmit(true);
+                    if(type == 1){
+                        $("#overview-report-city-id").val(data.result.id);
+                        journeyReportSubmit(true);
+                    }else{
+                        $("#task-report-city-id").val(data.result.id);
+                        taskReportSubmit(true);
+                    }
                 }
             }
         });
@@ -1259,9 +1666,9 @@ function setFilterCity(){
 
 
 /**
- * 提交条件获取使用概况报表
+ * 提交条件获取行程概况报表
  */
-function overviewReportSubmit(appendMode){
+function journeyReportSubmit(appendMode){
     let statisticalType = parseInt($("#overview-report-statistical-type :selected").val());
     let timeType = parseInt($("#overview-report-group-type :selected").val());
     let chartType = $("#overview-report-chart-type :selected").val();
@@ -1343,6 +1750,82 @@ function resetChart(){
     }
 }
 
+/**
+ * 提交条件获取任务概况报表
+ */
+function taskReportSubmit(appendMode){
+    let statisticalType = parseInt($("#task-report-statistical-type :selected").val());
+    let timeType = parseInt($("#task-report-group-type :selected").val());
+    let chartType = $("#task-report-chart-type :selected").val();
+    let startDate = $("#task-report-start-date").val();
+    let endDate = $("#task-report-end-date").val();
+    let cityId = parseInt($("#task-report-city-id").val());
+    let taskType = parseInt($("#task-report-task-type :selected").val());
+    let sendData = {"chartType" : chartType, "statisticalType" : statisticalType, "groupType" : timeType, "taskType" : taskType, "startDate" : startDate, "endDate" : endDate, "cityId" : cityId};
+    $.ajax({
+        type: 'POST',
+        url: taskReportPath,
+        data: JSON.stringify(sendData),
+        contentType: 'application/json',
+        success: function (data) {
+            if (data.code == Codes.successResponse) {
+                let dataChartType = data.result.chartType;
+                if(dataChartType === "pie"){
+                    taskReportChart = Highcharts.chart('report-task-div', {
+                        chart: {
+                            plotBackgroundColor: null,
+                            plotBorderWidth: null,
+                            plotShadow: false,
+                            type: 'pie'
+                        },
+                        title: {
+                            text: data.result.title
+                        },
+                        tooltip: {
+                            pointFormat: '{point.y}: <b>占比{point.percentage:.1f}%</b>'
+                        },
+                        plotOptions: {
+                            pie: {
+                                allowPointSelect: true,
+                                cursor: 'pointer',
+                                showInLegend: true,
+                                dataLabels: {
+                                    enabled: true,
+                                    formatter: function () {
+                                        return '<span style="color: ' + this.point.color + '"> 值：' + this.y + '，占比' +  parseFloat(this.percentage).toFixed(2) + '%</span>';
+                                    }
+                                }
+                            }
+                        },
+                        series: [{
+                            name: 'Brands',
+                            colorByPoint: true,
+                            data: data.result.seriesData
+                        }]
+                    });
+                }else{
+                    let appendData;
+                    appendData = Array.from(data.result.seriesData);
+                    if(appendMode){
+                        appendData.forEach(function(obj){
+                            taskReportOptions.series.push(obj);
+                        });
+                    }
+                    else{
+                        taskReportOptions.series = appendData;
+                    }
+                    taskReportOptions.chart.type = dataChartType;
+                    taskReportOptions.xAxis.categories = data.result.xAxis;
+                    taskReportChart = Highcharts.chart('report-task-div', taskReportOptions);
+                }
+            }
+            else {
+                showErrorData(data);
+            }
+        }
+    });
+}
+
 /*--------------------------------------------用户版------------------------------*/
 
 /**
@@ -1390,6 +1873,27 @@ function userSubmitApply(){
             else {
                 showErrorData(data);
             }
+        }
+    });
+}
+
+/**
+ * 用户购买包月
+ */
+function userVip() {
+    let sendData = {"vipTime" : parseInt($("#add-vip-modal-vipTime").val())};
+    $.ajax({
+        type: 'POST',
+        url: vipPath,
+        data: JSON.stringify(sendData),
+        contentType: 'application/json',
+        success: function (data) {
+            if (data.code == Codes.successResponse) {
+                alert(data.message);
+                window.location.reload();
+            }
+            else
+                showErrorData(data);
         }
     });
 }

@@ -3,6 +3,7 @@ package com.zhd.enums;
 import com.baomidou.mybatisplus.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 
@@ -34,6 +35,17 @@ public enum UserTypeEnum implements IEnum{
             }
         }
         return UNKNOWN;
+    }
+
+    public static int getByType(String type){
+        if(StringUtils.isNotBlank(type)){
+            switch(type){
+                case "普通用户" : return NORMAL.getCode();
+                case "员工" : return STAFF.getCode();
+                case "管理员" : return ADMIN.getCode();
+            }
+        }
+        return -1;
     }
 
     @Override

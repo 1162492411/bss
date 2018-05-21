@@ -7,7 +7,7 @@
         select from_unixtime(start_time,'%H') countKey , count(1) countValue from journey
         where start_time BETWEEN unix_timestamp(#{begin}) and unix_timestamp(#{end})
         <if test=" cityIds and cityIds.size > 0">
-            and start_city in
+            and start_area in
             <foreach collection="cityIds" item="city" open="(" separator="," close=")">
                 #{city}
             </foreach>
@@ -20,7 +20,7 @@
         select from_unixtime(start_time,'%Y-%m-%d') countKey , count(1) countValue from journey
         where start_time BETWEEN unix_timestamp(#{begin}) and unix_timestamp(#{end})
         <if test=" cityIds and cityIds.size > 0">
-            and start_city in
+            and start_area in
             <foreach collection="cityIds" item="city" open="(" separator="," close=")">
                 #{city}
             </foreach>
@@ -33,7 +33,7 @@
         select from_unixtime(start_time,'%Y-%m') countKey , count(1) countValue from journey
         where start_time BETWEEN unix_timestamp(#{begin}) and unix_timestamp(#{end})
         <if test=" cityIds and cityIds.size > 0">
-            and start_city in
+            and start_area in
             <foreach collection="cityIds" item="city" open="(" separator="," close=")">
                 #{city}
             </foreach>
@@ -44,7 +44,7 @@
     <select id="countByCity" resultType="java.lang.Integer">
         select count(1) countValue from journey
         where start_time BETWEEN unix_timestamp(#{begin}) and unix_timestamp(#{end})
-        and start_city in
+        and start_area in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
@@ -65,7 +65,7 @@
         FROM journey
         where start_time BETWEEN unix_timestamp(#{begin}) and unix_timestamp(#{end})
         <if test=" cityIds and cityIds.size > 0">
-            and start_city in
+            and start_area in
             <foreach collection="cityIds" item="city" open="(" separator="," close=")">
                 #{city}
             </foreach>
@@ -79,7 +79,7 @@
         from journey
         where start_time BETWEEN unix_timestamp(#{begin}) and unix_timestamp(#{end})
         <if test=" cityIds and cityIds.size > 0">
-            and start_city in
+            and start_area in
             <foreach collection="cityIds" item="city" open="(" separator="," close=")">
                 #{city}
             </foreach>
@@ -92,42 +92,42 @@
     <select id="countFlowByHour" resultType="java.util.Map">
         select
         start_time countKey,
-        sum(case when start_city not in
+        sum(case when start_area not in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
-        and end_city in
+        and end_area in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
         then 1 else 0 end) 'countIn',
-        sum(case when start_city in
+        sum(case when start_area in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
-        and end_city not in
+        and end_area not in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
         then 1 else 0 end) 'countOut',
-        sum(case when start_city in
+        sum(case when start_area in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
-        and end_city in
+        and end_area in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
         then 1 else 0 end) 'countInner'
         from
         (
-        SELECT from_unixtime(start_time,'%H') start_time , start_city, end_city FROM journey
+        SELECT from_unixtime(start_time,'%H') start_time , start_area, end_area FROM journey
         WHERE start_time BETWEEN unix_timestamp(#{begin}) AND unix_timestamp(#{end})
-        and start_city in
+        and start_area in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
-        or end_city in
+        or end_area in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
@@ -139,42 +139,42 @@
     <select id="countFlowByDay" resultType="java.util.Map">
         select
         start_time countKey,
-        sum(case when start_city not in
+        sum(case when start_area not in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
-        and end_city in
+        and end_area in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
         then 1 else 0 end) 'countIn',
-        sum(case when start_city in
+        sum(case when start_area in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
-        and end_city not in
+        and end_area not in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
         then 1 else 0 end) 'countOut',
-        sum(case when start_city in
+        sum(case when start_area in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
-        and end_city in
+        and end_area in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
         then 1 else 0 end) 'countInner'
         from
         (
-        SELECT from_unixtime(start_time,'%Y-%m-%d') start_time , start_city, end_city FROM journey
+        SELECT from_unixtime(start_time,'%Y-%m-%d') start_time , start_area, end_area FROM journey
         WHERE start_time BETWEEN unix_timestamp(#{begin}) AND unix_timestamp(#{end})
-        and start_city in
+        and start_area in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
-        or end_city in
+        or end_area in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
@@ -186,42 +186,42 @@
     <select id="countFlowByMonth" resultType="java.util.Map">
         select
         start_time countKey,
-        sum(case when start_city not in
+        sum(case when start_area not in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
-        and end_city in
+        and end_area in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
         then 1 else 0 end) 'countIn',
-        sum(case when start_city in
+        sum(case when start_area in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
-        and end_city not in
+        and end_area not in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
         then 1 else 0 end) 'countOut',
-        sum(case when start_city in
+        sum(case when start_area in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
-        and end_city in
+        and end_area in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
         then 1 else 0 end) 'countInner'
         from
         (
-        SELECT from_unixtime(start_time,'%Y-%m') start_time , start_city, end_city FROM journey
+        SELECT from_unixtime(start_time,'%Y-%m') start_time , start_area, end_area FROM journey
         WHERE start_time BETWEEN unix_timestamp(#{begin}) AND unix_timestamp(#{end})
-        and start_city in
+        and start_area in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
-        or end_city in
+        or end_area in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>

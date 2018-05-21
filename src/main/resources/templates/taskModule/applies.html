@@ -26,9 +26,11 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>
-                申请列表
-            </h1>
+            <div class="form-inline">
+                <span>申请列表</span>
+                <input type="text" placeholder="类型/状态/用户/处理人关键字" id="search-apply-form-input" class="form-control" />
+                <button class="Button Button--blue" onclick="searchApply()">查询</button>
+            </div>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-tasks"></i> 任务模块</a></li>
                 <li class="active">申请管理</li>

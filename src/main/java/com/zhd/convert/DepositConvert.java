@@ -43,6 +43,8 @@ public class DepositConvert {
         }
         resultPage.setRecords(resultList);
         PageUtil.copyPage(depositPage,resultPage);
+        resultPage.setKeys(Constants.DEPOSIT_KEYS);
+        resultPage.setNames(Constants.DEPOSIT_NAMES);
         return resultPage;
     }
 

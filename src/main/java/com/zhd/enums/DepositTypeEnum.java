@@ -7,6 +7,7 @@ package com.zhd.enums;
 import com.baomidou.mybatisplus.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 
@@ -32,6 +33,16 @@ public enum DepositTypeEnum implements IEnum{
             if(code == depositTypeEnum.getCode()) return depositTypeEnum;
         }
         return UNKNOWN;
+    }
+
+    public static int getByType(String type){
+        if(StringUtils.isNotEmpty(type)){
+            switch(type){
+                case "存入" : return IN.getCode();
+                case "取出" : return OUT.getCode();
+            }
+        }
+        return -1;
     }
 
 

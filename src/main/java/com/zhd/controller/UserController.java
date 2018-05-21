@@ -3,6 +3,7 @@ package com.zhd.controller;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.zhd.convert.UserConvert;
+import com.zhd.enums.UserStatusEnum;
 import com.zhd.enums.UserTypeEnum;
 import com.zhd.exceptions.NotLoginException;
 import com.zhd.pojo.JSONResponse;
@@ -31,6 +32,31 @@ public class UserController extends BaseController{
     @Autowired
     private IUserService userService;
 
+
+    @GetMapping("list/{keyword}/{current}")
+    public JSONResponse searchList(@PathVariable("keyword")String keyword, @PathVariable("current") int pageNum, Page<User> page) {
+        try {
+            if(pageNum <= 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+            if(StringUtils.isNotBlank(keyword)){
+                //按状态查询
+                int resultStatus = UserStatusEnum.getByStatus(keyword);
+                if(resultStatus > 0){
+                    return renderSuccess(UserConvert.convertToVOPageInfo(userService.selectPage(page, new EntityWrapper<User>().setSqlSelect("id,name,type,status").eq("status", resultStatus).ne("type", UserTypeEnum.ADMIN.getCode()).orderBy("status", false))));
+                }
+                //按账户类型查询
+                int resultType = UserTypeEnum.getByType(keyword);
+                if(resultType > 0){
+                    return renderSuccess(UserConvert.convertToVOPageInfo(userService.selectPage(page, new EntityWrapper<User>().setSqlSelect("id,name,type,status").eq("type", resultType).ne("type", UserTypeEnum.ADMIN.getCode()).orderBy("status", false))));
+                }
+                //按名称查询
+                return renderSuccess(UserConvert.convertToVOPageInfo(userService.selectPage(page, new EntityWrapper<User>().setSqlSelect("id,name,type,status").like("name", keyword).ne("type", UserTypeEnum.ADMIN.getCode()).orderBy("status", false))));
+            }else{
+                return renderSuccess(UserConvert.convertToVOPageInfo(userService.selectPage(page, new EntityWrapper<User>().setSqlSelect("id,name,type,status").ne("type", UserTypeEnum.ADMIN.getCode()).orderBy("status", false))));
+            }
+        } catch (Exception e) {
+            return renderError(e.getMessage());
+        }
+    }
 
     @GetMapping("list/{current}")
     public JSONResponse list(@PathVariable("current") int pageNum, Page<User> page) {

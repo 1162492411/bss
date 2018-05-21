@@ -11,12 +11,14 @@
         <result column="status" property="status" />
         <result column="start_time" property="startTime" />
         <result column="end_time" property="endTime" />
+        <result column="task_time" property="taskTime" />
         <result column="bicycle" property="bicycle" />
+        <result column="area" property="area" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, type, user, status, start_time AS startTime, end_time AS endTime, bicycle
+        id, name, type, user, status, start_time AS startTime, end_time AS endTime, task_time as taskTime, bicycle, area
     </sql>
 
 </mapper>

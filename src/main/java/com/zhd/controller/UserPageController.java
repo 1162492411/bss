@@ -34,5 +34,11 @@ public class UserPageController {
     @RequestMapping("apply")
     public void toApply(){}
 
+    /**
+     * 前往--用户版--购买包月
+     */
+    @RequestMapping("vip")
+    public void toVip(){}
+
 
 }

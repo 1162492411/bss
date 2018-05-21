@@ -22,6 +22,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 
 /**
  * <p>
@@ -41,6 +46,31 @@ public class TaskController extends BaseController {
     private IUserService userService;
     @Autowired
     private IBicycleService bicycleService;
+
+    @GetMapping("list/{keyword}/{current}")
+    public JSONResponse searchList(@PathVariable("keyword")String keyword, @PathVariable("current") int pageNum, Page<Task> page) {
+        try {
+            if (pageNum <= 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+            if(StringUtils.isNotBlank(keyword)){
+                 //按状态查询
+                int resultStatus = TaskStatusEnum.getByStatus(keyword);
+                if(resultStatus != -1){
+                    return renderSuccess(TaskConvert.convertToVOPageInfo(taskService.selectPage(page, new EntityWrapper<Task>().eq("status", resultStatus).orderBy("status"))));
+                }
+                //按类型查询
+                int resultType = TaskTypeEnum.getByType(keyword);
+                if(resultType != -1){
+                    return renderSuccess(TaskConvert.convertToVOPageInfo(taskService.selectPage(page, new EntityWrapper<Task>().eq("type", resultType).orderBy("status"))));
+                }
+                //按车辆或用户模糊查询
+                return renderSuccess(TaskConvert.convertToVOPageInfo(taskService.selectPage(page, new EntityWrapper<Task>().like("bicycle", keyword).or().like("user", keyword).orderBy("status"))));
+            }else{
+                return renderSuccess(TaskConvert.convertToVOPageInfo(taskService.selectPage(page, new EntityWrapper<Task>().orderBy("status"))));
+            }
+        } catch (Exception e) {
+            return renderError(e.getMessage());
+        }
+    }
 
     @GetMapping("list/{current}")
     public JSONResponse list(@PathVariable("current") int pageNum, Page<Task> page) {
@@ -103,6 +133,10 @@ public class TaskController extends BaseController {
                 String currentUserId = String.valueOf(session.getAttribute("userid"));
                 if (StringUtils.isNotEmpty(currentUserId) && (userService.isAdmin(currentUserId) || currentUserId.equals(taskService.selectById(record.getId()).getUser()))) {
                     record.setEndTime(TypeUtils.castToString(System.currentTimeMillis() / 1000));
+                    String startTime = taskService.selectById(record.getId()).getStartTime();
+                    LocalDateTime startTimeValue = LocalDateTime.ofInstant(Instant.ofEpochSecond(Long.parseLong(startTime)), ZoneId.of("Asia/Shanghai"));
+                    long taskTimeValue = ChronoUnit.SECONDS.between(startTimeValue, Instant.now());
+                    record.setTaskTime(TypeUtils.castToString(taskTimeValue));
                     record.setStatus(TaskStatusEnum.DONE.getCode());
                     bicycleService.updateById(Bicycle.builder().id(record.getBicycle()).status(calculateStatusAfterDone(record.getType())).build());
                     return taskService.updateById(record) ? renderSuccess(record) : renderError(Constants.UNKNOWN_EXCEPTION);
@@ -123,6 +157,8 @@ public class TaskController extends BaseController {
             } else if ((record = taskService.selectById(record.getId())) != null) {
                 String currentUserId = String.valueOf(session.getAttribute("userid"));
                 if (StringUtils.isNotEmpty(currentUserId) && userService.isAdmin(currentUserId)) {
+                    int bicycleId = taskService.selectById(record.getId()).getBicycle();
+                    bicycleService.updateById(Bicycle.builder().id(bicycleId).status(BicycleStatusEnum.UNUSED.getCode()).build());
                     return taskService.deleteById(record.getId()) ? renderSuccess(record) : renderError(Constants.UNKNOWN_EXCEPTION);
                 } else {
                     return renderError(Constants.TIP_NO_PERMISSION);

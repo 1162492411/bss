@@ -81,7 +81,7 @@ public class Area implements Serializable,BaseModel {
      * 所属行政区划
      */
     @TableField("city_id")
-    @NotNull(groups = {Insert.class, Update.class})
+    @NotNull(groups = {Insert.class})
     private Integer cityId;
 
 }

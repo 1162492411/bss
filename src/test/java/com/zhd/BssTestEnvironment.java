@@ -1,6 +1,9 @@
 package com.zhd;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.annotation.JSONType;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.zhd.pojo.User;
 import com.zhd.service.*;
 import org.junit.Before;
@@ -60,6 +63,7 @@ public class BssTestEnvironment {
 	}
 
 	@Test
+
 	public void reduceAccountBalance() throws Exception{
 		userService.reduceAccount("23456789011",BigDecimal.valueOf(1.00));
 	}

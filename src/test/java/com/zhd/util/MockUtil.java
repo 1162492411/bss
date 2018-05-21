@@ -10,12 +10,15 @@ import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
+import javax.xml.crypto.Data;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -203,14 +206,15 @@ public class MockUtil extends BssTestEnvironment{
             String borrowContent = JSON.toJSONString(borrowBicycle);
             mockMvc.perform(get("/bicycles/borrow/" + selectedBicycle.getId()).contentType(MediaType.APPLICATION_JSON).content(borrowContent).sessionAttr("userid",selectedUser.getId())).andDo(print()).andReturn();
             //return bicycle
-            City currentCity = cityService.selectById(selectedBicycle.getCityId());
-            City parentCity = cityService.selectById(currentCity.getParentId());
-            List<City> cities = cityService.selectList(new EntityWrapper<City>().eq("parent_id", parentCity.getParentId()));
-            List<Integer> cityIds = new ArrayList<>();
-            for (City city : cities) {
-                cityIds.add(city.getId());
-            }
-            List<Area> areas = areaService.selectList(new EntityWrapper<Area>().in("city_id", cityIds));
+//            City currentCity = cityService.selectById(selectedBicycle.getCityId());
+//            City parentCity = cityService.selectById(currentCity.getParentId());
+//            List<City> cities = cityService.selectList(new EntityWrapper<City>().eq("parent_id", parentCity.getParentId()));
+//            List<Integer> cityIds = new ArrayList<>();
+//            for (City city : cities) {
+//                cityIds.add(city.getId());
+//            }
+//            List<Area> areas = areaService.selectList(new EntityWrapper<Area>().in("city_id", cityIds));
+            List<Area> areas = areaService.selectList(new EntityWrapper<Area>().eq("city_id",selectedBicycle.getCityId()));
             Area area = areas.get(RandomUtils.nextInt(0, areas.size()));
             BigDecimal endLocationX = BigDecimal.valueOf(RandomUtils.nextDouble(area.getWestPoint().doubleValue(), area.getEastPoint().doubleValue()));
             BigDecimal endLocationY = BigDecimal.valueOf(RandomUtils.nextDouble(area.getSouthPoint().doubleValue(), area.getNorthPoint().doubleValue()));
@@ -225,6 +229,35 @@ public class MockUtil extends BssTestEnvironment{
         }
 
     }
+
+    /**
+     * 随机生成车辆维护任务并完成
+     */
+    @Test
+    public void batchTask() throws Exception{
+        List<Bicycle> bicycleList = bicycleService.selectAllSimple();
+        List<User> staffList = userService.getAllStaff();
+        for (int i = 0; i < 30; i++) {
+            Task task = new Task();
+            LocalDateTime startTime = DataUtil.generateRandomStartTime();
+            task.setStartTime(TypeUtils.castToString(startTime.toEpochSecond(ZoneOffset.ofHours(8))));
+            task.setBicycle(bicycleList.get(RandomUtils.nextInt(0, bicycleList.size())).getId());
+            int taskType = RandomUtils.nextInt(1,3);
+//            int taskType = 3;
+            task.setType(taskType);
+            task.setUser(staffList.get(RandomUtils.nextInt(0,staffList.size())).getId());
+            task.setStatus(3);
+            task.setEndTime(TypeUtils.castToString(startTime.plusHours(RandomUtils.nextLong(0L,72L)).toEpochSecond(ZoneOffset.ofHours(8))));
+            task.setName(TaskTypeEnum.getByCode(taskType).getType() + task.getBicycle());
+//            Bicycle bicycle = new Bicycle();
+//            bicycle.setId(task.getBicycle());
+//            bicycle.setStatus(BicycleStatusEnum.WAIT_DELETE.getCode());
+//            bicycleService.updateById(bicycle);
+            taskService.insert(task);
+        }
+    }
+
+
 
     /**
      * 保存各种生成的基础模拟数据到数据库
@@ -259,6 +292,28 @@ public class MockUtil extends BssTestEnvironment{
     }
 
 
+    @Test
+    public void fixJourney(){
+        List<Journey> journeyList = journeyService.selectList(new EntityWrapper<>());
+        for(Journey journey : journeyList){
+            Area startArea = areaService.findArea(journey.getStartLocationX(), journey.getStartLocationY());
+            Area endArea = areaService.findArea(journey.getEndLocationX(), journey.getEndLocationY());
+            if(startArea != null && endArea != null){
+                journey.setStartArea(startArea.getId());
+                journey.setEndArea(endArea.getId());
+                journeyService.updateById(journey);
+            }
+        }
+    }
 
+
+    @Test
+    public void fixTask(){
+        List<Task> taskList = taskService.selectList(null);
+        List<Integer> areaList = Arrays.asList(31,32,33,34,35,36,37,38,39,40,41,42,43,44);//河南所有区
+        for(Task task : taskList){
+            taskService.updateById(Task.builder().id(task.getId()).area(areaList.get(RandomUtils.nextInt(0, areaList.size()))).build());
+        }
+    }
 
 }

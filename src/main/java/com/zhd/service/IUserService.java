@@ -38,6 +38,8 @@ public interface IUserService extends IService<User> {
 
     boolean rechargeDeposit(String id, BigDecimal amount);//用户充值押金
 
+    boolean rechargeVip(String id, Integer vipTime, BigDecimal amount) throws NoSuchUserException, NoEnoughAccountBalanceException;//用户续费包月时间
+
     boolean refundDeposit(String id, BigDecimal amount);//用户退还押金
 
     boolean reduceAccount(String id, BigDecimal amount) throws NoEnoughAccountBalanceException; //扣钱接口

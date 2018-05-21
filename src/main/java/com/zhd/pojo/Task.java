@@ -70,6 +70,17 @@ public class Task implements Serializable,BaseModel {
     private String endTime;
 
     /**
+     * 任务耗时
+     */
+    @TableField("task_time")
+    private String taskTime;
+
+    /**
+     * 任务所在区域
+     */
+    private Integer area;
+
+    /**
      * 车辆编号
      */
     @NotNull(groups = {Insert.class, Update.class})

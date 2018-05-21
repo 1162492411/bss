@@ -120,14 +120,14 @@ public class Journey implements Serializable, BaseModel {
     /**
      * 起始区划
      */
-    @TableField("start_city")
-    private Integer startCity;
+    @TableField("start_area")
+    private Integer startArea;
 
     /**
      * 终止区划
      */
-    @TableField("end_city")
-    private Integer endCity;
+    @TableField("end_area")
+    private Integer endArea;
 
 
 }

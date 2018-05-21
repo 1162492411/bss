@@ -72,9 +72,9 @@
                 </a>
                 <ul class="treeview-menu">
                     <li><a th:href="@{/orderModule/journeys}"><i class="fa fa-list-ol"></i>行程管理</a></li>
-                    <!--<li><a href=""><i class="fa fa-circle-o"></i>押金管理</a></li>-->
-                    <!--<li><a href=""><i class="fa fa-circle-o"></i>充值记录</a></li>-->
-                    <!--<li><a href=""><i class="fa fa-circle-o"></i>消费记录</a></li>-->
+                    <li><a th:href="@{/orderModule/deposits}"><i class="fa fa-list-ol"></i>押金管理</a></li>
+                    <li><a th:href="@{/orderModule/recharges}"><i class="fa fa-list-ol"></i>充值记录</a></li>
+                    <li><a th:href="@{/orderModule/vips}"><i class="fa fa-list-ol"></i>包月记录</a></li>
                 </ul>
             </li>
             <!-- 任务模块 -->
@@ -130,6 +130,7 @@
                     <li><a th:href="@{/userVersion/recharges}"><i class="fa fa-map"></i>充值记录</a></li>
                     <li><a th:href="@{/userVersion/deposit}"><i class="fa fa-map">押金管理</i></a></li>
                     <li><a th:href="@{/userVersion/apply}"><i class="fa fa-map">申请</i></a></li>
+                    <li><a th:href="@{/userVersion/vip}"><i class="fa fa-map">购买包月</i></a></li>
                 </ul>
             </li>
         </ul>

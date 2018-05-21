@@ -24,13 +24,14 @@ public class Apply implements Serializable, BaseModel {
      * 主键ID
      */
     @TableId(value = "id", type = IdType.AUTO)
+    @NotNull(groups = Update.class)
     private Integer id;
 
     /**
      * 申请类型
      */
-    @NotNull(groups = {Insert.class,Update.class})
-    private Integer type;
+    @NotNull(groups = {Insert.class})
+    private String type;
 
     /**
      * 申请状态
@@ -41,7 +42,6 @@ public class Apply implements Serializable, BaseModel {
     /**
      * 申请金额
      */
-    @NotNull(groups = {Update.class})
     private BigDecimal amount;
 
     /**
@@ -72,5 +72,7 @@ public class Apply implements Serializable, BaseModel {
      */
     @TableField("operator_id")
     private String operatorId;
+
+
 
 }

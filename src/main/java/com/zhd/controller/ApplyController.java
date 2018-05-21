@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.zhd.convert.ApplyConvert;
 import com.zhd.convert.AreaConvert;
+import com.zhd.enums.ApplyStatusEnum;
 import com.zhd.enums.ApplyTypeEnum;
 import com.zhd.exceptions.NoSuchUserException;
 import com.zhd.exceptions.NotLoginException;
@@ -67,7 +68,7 @@ public class ApplyController extends BaseController {
     }
 
     @PutMapping
-    public JSONResponse done(@Validated(Apply.Update.class) Apply apply, BindingResult bindingResult, HttpSession session){
+    public JSONResponse done(@RequestBody @Validated(Apply.Update.class) Apply apply, BindingResult bindingResult, HttpSession session){
         try{
             if(bindingResult.hasErrors()){
                 return renderError(bindingResult.getFieldError().getDefaultMessage());
@@ -77,7 +78,7 @@ public class ApplyController extends BaseController {
                     throw new NotLoginException();
                 }
                 if(userService.isAdmin(userid) || userService.isStaff(userid)){
-                    //todo : apply 应该从数据库查询
+                    transType(apply);
                     return renderSuccess(applyService.doneApply(apply));
                 }else{
                     return renderError(Constants.TIP_NO_PERMISSION);
@@ -87,6 +88,49 @@ public class ApplyController extends BaseController {
             return renderError();
         }
     }
+
+    /**
+     * 将前台传递的类型转化为int
+     * @param apply
+     */
+    private void transType(Apply apply){
+        String applyString = apply.getType();
+        if(StringUtils.isBlank(applyString)){
+            apply.setType(ApplyTypeEnum.UNKNOWN.getCode());
+        }else if(ApplyTypeEnum.REFUND_DEPOSIT.getType().equals(applyString)){
+            apply.setType(ApplyTypeEnum.REFUND_DEPOSIT.getCode());
+        }else if(ApplyTypeEnum.REFUND_ACCOUNT.getType().equals(applyString)){
+            apply.setType(ApplyTypeEnum.REFUND_ACCOUNT.getCode());
+        }
+    }
+
+    @GetMapping("list/{keyword}/{current}")
+    public JSONResponse searchList(@PathVariable("keyword")String keyword, @PathVariable("current") int pageNum, Page<Apply> page) {
+        try {
+            if(pageNum <= 0){
+                throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+            }
+            if(StringUtils.isNotBlank(keyword)){
+                //按类型查询
+                String resultType = ApplyTypeEnum.getByType(keyword);
+                if(resultType != null){
+                    return renderSuccess(ApplyConvert.convertToVOPageInfo(applyService.selectPage(page, new EntityWrapper<Apply>().eq("type", resultType).orderBy("status"))));
+                }
+                //按状态查询
+                int resultStatus = ApplyStatusEnum.getByStatus(keyword);
+                if(resultStatus != -1){
+                    return renderSuccess(ApplyConvert.convertToVOPageInfo(applyService.selectPage(page, new EntityWrapper<Apply>().eq("status", resultStatus).orderBy("status"))));
+                }
+                //按用户/处理人查询
+                return renderSuccess(ApplyConvert.convertToVOPageInfo(applyService.selectPage(page, new EntityWrapper<Apply>().like("user_id",keyword).or().like("operator_id", keyword).orderBy("status"))));
+            }else{
+                return renderSuccess(ApplyConvert.convertToVOPageInfo(applyService.selectPage(page, new EntityWrapper<Apply>().orderBy("status"))));
+            }
+        } catch (Exception e) {
+            return renderError(e.getMessage());
+        }
+    }
+
 
     @GetMapping("list/{current}")
     public JSONResponse oldList(@PathVariable("current") int pageNum, Page<Apply> page) {

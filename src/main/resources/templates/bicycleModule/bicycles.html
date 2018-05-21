@@ -26,10 +26,13 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>
-                车辆列表
+            <div class="form-inline">
+                <span>车辆列表</span>
+                <input type="text" placeholder="状态/类型/供应商关键字" id="search-bicycle-form-input" class="form-control" />
+                <button class="Button Button--blue" onclick="searchBicycle()">查询</button>
                 <button class="Button Button--blue" data-toggle="modal" data-target="#add-bicycle-modal">添加</button>
-            </h1>
+            </div>
+
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-bicycle"></i> 车辆模块</a></li>
                 <li class="active">车辆管理</li>

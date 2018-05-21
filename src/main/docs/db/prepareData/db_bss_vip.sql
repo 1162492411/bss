@@ -1,0 +1,2 @@
+INSERT INTO db_bss.vip (user_id, vip_time, amount, operate_time) VALUES ('11223344559', 2, 30.00, null);
+INSERT INTO db_bss.vip (user_id, vip_time, amount, operate_time) VALUES ('11223344559', 1, 15.00, '1526885855');

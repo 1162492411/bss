@@ -1,5 +1,6 @@
 package com.zhd.service.impl;
 
+import com.alibaba.fastjson.util.TypeUtils;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.zhd.enums.UserStatusEnum;
 import com.zhd.enums.UserTypeEnum;
@@ -16,6 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
 
 /**
@@ -105,6 +110,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
+    public boolean rechargeVip(String id, Integer vipTime, BigDecimal amount) throws NoSuchUserException, NoEnoughAccountBalanceException {
+        User user = findUser(id);
+        LocalDateTime localDateTime;
+        try{
+            localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.valueOf(user.getMonthlyTime())), ZoneId.of("Asia/Shanghai")).plusMonths(vipTime);
+        }catch (Exception e){
+            localDateTime = LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Asia/Shanghai")).plusMonths(vipTime);
+        }
+        return reduceAccount(id, amount) && userMapper.updateById(User.builder().id(id).monthlyTime(TypeUtils.castToString(localDateTime.toEpochSecond(ZoneOffset.ofHours(8)))).build()) > 0;
+    }
+
+    @Override
     public boolean refundDeposit(String id, BigDecimal amount) {
         if(userMapper.selectById(id).getDepositBalance().doubleValue() >= Constants.STANDARD_DEPOSIT.doubleValue()){
             return userMapper.refundDeposit(id, amount) > 0;
@@ -118,11 +135,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if(userMapper.reduceAccount(id,amount) > 0){
           BigDecimal accountBalance = userMapper.selectById(id).getAccountBalance();
           if(accountBalance.doubleValue() > 0){
-              userMapper.increaseCredit(id);
+//              userMapper.increaseCredit(id);
+              return true;
           }else{
               throw new NoEnoughAccountBalanceException();
           }
-          return true;
         }
         return false;
     }

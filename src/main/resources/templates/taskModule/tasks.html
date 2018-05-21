@@ -26,9 +26,11 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>
-                任务列表
-            </h1>
+            <div class="form-inline">
+                <span>任务列表</span>
+                <input type="text" placeholder="处理人/车辆/类型/状态关键字" id="search-task-form-input" class="form-control" />
+                <button class="Button Button--blue" onclick="searchTask()">查询</button>
+            </div>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-tasks"></i> 任务模块</a></li>
                 <li class="active">任务管理</li>

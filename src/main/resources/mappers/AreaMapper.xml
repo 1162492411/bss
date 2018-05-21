@@ -26,6 +26,13 @@
         <!--</foreach>-->
     <!--</insert>-->
 
+    <select id="selectAllByCityIds" resultType="java.lang.Integer">
+        select id from area where city_id in
+        <foreach collection="cityIds" item="city" open="(" separator="," close=")">
+            #{city}
+        </foreach>
+    </select>
+
 
 
 </mapper>

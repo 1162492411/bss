@@ -26,9 +26,10 @@ public class JourneyReportConvert {
      * @param dataList  统计数据
      * @param cityName  区划名称
      * @param chartType 图表类型
+     * @param groupType 分组依据
      */
-    public static Map<String, Object> convertOverview(List<Map<String, Object>> dataList, String cityName, LocalDate startDate, LocalDate endDate, String chartType, int timeType) {
-        switch(timeType){
+    public static Map<String, Object> convertOverview(List<Map<String, Object>> dataList, String cityName, LocalDate startDate, LocalDate endDate, String chartType, int groupType) {
+        switch(groupType){
             case 0 : return convertOverviewByHour(dataList, cityName, chartType);
             case 1 : return convertOverviewByDay(dataList,cityName,startDate,endDate, chartType);
             case 2 : return convertOverviewByMonth(dataList,cityName,startDate,endDate, chartType);
@@ -186,12 +187,12 @@ public class JourneyReportConvert {
      * @param chartType 图表类型
      */
     private static Map<String, Object> convertFlowByHour(List<Map<String, Object>> dataList, String cityName, String chartType){
-        switch(chartType){
-            case CHART_TYPE_COLUMN :
-                return commonConvertLine(dataList, DEFAULT_HOURS_XAXIS, DataUtil.generateZeroBigDecimalListList(FLOW_KEYS.size(), DEFAULT_HOURS_XAXIS.size()), cityName, FLOW_KEYS, FLOW_NAMES);
-            default :
+//        switch(chartType){
+//            case CHART_TYPE_COLUMN :
+//                return commonConvertLine(dataList, DEFAULT_HOURS_XAXIS, DataUtil.generateZeroBigDecimalListList(FLOW_KEYS.size(), DEFAULT_HOURS_XAXIS.size()), cityName, FLOW_KEYS, FLOW_NAMES);
+//            default :
                 return commonConvertColumn(dataList, DEFAULT_HOURS_XAXIS, DataUtil.generateZeroBigDecimalListList(FLOW_KEYS.size(), DEFAULT_HOURS_XAXIS.size()), cityName, FLOW_KEYS, FLOW_NAMES);
-        }
+//        }
     }
 
     /**

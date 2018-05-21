@@ -17,6 +17,8 @@ const emptyStaff = {
     "name" : "暂不设置"
 };
 
+const emptyDataTip = "数据为空！";
+
 
 const userMethods = [
     {"name": "更新", "method": "updateUser"},
@@ -60,21 +62,31 @@ const allBicyclesPath = bicyclesPath + "/all";//获取所有车辆信息的根�
 const journeysPath = rootPath + "/journeys";//获取行程信息的根目录
 const taskPath = rootPath + "/tasks";//获取任务信息的根目录
 const userRechargePath = rootPath + "/recharge";//用户版-充值目录
-const userRechargesPath = userRechargePath + "/list";//用户版-充值记录
+const rechargesPath = userRechargePath + "/list";//Web端-充值记录
+const userRechargesPath = userRechargePath + "/user/list";//用户版-充值记录
 const userDepositPath = rootPath + "/deposit";//用户版-押金管理
 const citiesPath = rootPath + "/city";//行政区划的根目录
 const searchCityPath = citiesPath + "/search";//查询行政区划的URL
 const inputTipsPath = citiesPath + "/inputtips";//查询输入提示的URL
 const reportPath = rootPath + "/report";//报表信息的根目录
 const overviewReportPath = reportPath + "/overview";//使用概况报表的URL
+const taskReportPath = reportPath + "/task";//任务概况的URL
 const appliesPath = rootPath + "/apply";//获取申请信息的根目录
+const vipPath = rootPath + "/vip";//包月记录的根目录
 
 
 const allUserStatus = [
     {"id" : 0, "name" : "未知", "class" : "danger"},
     {"id" : 1, "name" : "正常", "class" : ""},
     {"id" : 2, "name" : "封禁", "class" : "warning"}
-];
+];//所有用户状态信息
+
+const allUserTypes = [
+    {"id" : 0, "name" : "未知", "class" : ""},
+    {"id" : 1, "name" : "普通用户", "class" : ""},
+    {"id" : 2, "name" : "员工", "class" : "info"},
+    {"id" : 3, "name" : "管理员", "class" : "warning"}
+];//所有用户类型星系
 
 const allBicycleType = [
     {"id" : 0, "name" : "未知", "class" : "danger"},

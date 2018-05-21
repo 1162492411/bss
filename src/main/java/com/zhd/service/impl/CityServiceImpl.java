@@ -60,6 +60,7 @@ public class CityServiceImpl extends ServiceImpl<CityMapper, City> implements IC
                         true,"code", code.substring(0,5), SqlLike.RIGHT).ne("id",city.getId()));
             }else{
                 childrenIds.add(city.getId());
+
                 return childrenIds;
             }
             for (int i = 0; i < cityList.size(); i++) {

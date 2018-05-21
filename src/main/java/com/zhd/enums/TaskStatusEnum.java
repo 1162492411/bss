@@ -3,6 +3,7 @@ package com.zhd.enums;
 import com.baomidou.mybatisplus.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 
@@ -28,6 +29,17 @@ public enum TaskStatusEnum implements IEnum{
             }
         }
         return UNKNOWN;
+    }
+
+    public static int getByStatus(String status){
+        if(StringUtils.isNotEmpty(status)){
+            switch (status){
+                case "待分配" : return 1;
+                case "待执行" : return 2;
+                case "已完成" : return 3;
+            }
+        }
+        return -1;
     }
 
     @Override

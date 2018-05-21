@@ -3,6 +3,7 @@ package com.zhd.enums;
 import com.baomidou.mybatisplus.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 
@@ -32,6 +33,17 @@ public enum UserStatusEnum implements IEnum{
         }
         return UNKNOWN;
     }
+
+    public static int getByStatus(String status){
+        if(StringUtils.isNotBlank(status)){
+            switch(status){
+                case "正常" : return NORMAL.getCode();
+                case "封禁" : return TEMP_BAN.getCode();
+            }
+        }
+        return -1;
+    }
+
 
     @Override
     public Serializable getValue() {

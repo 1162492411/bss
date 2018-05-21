@@ -35,7 +35,7 @@ public class ApplyServiceImpl extends ServiceImpl<ApplyMapper, Apply> implements
     @Override
     public String doneApply(Apply apply) throws NoEnoughAccountBalanceException {
         String result;
-        if(REFUND_DEPOSIT.getCode() == apply.getType()){
+        if(REFUND_DEPOSIT.getCode().equals(apply.getType())){
             if(userService.refundDeposit(apply.getUserId(), STANDARD_DEPOSIT)){
                 apply.setStatus(ApplyStatusEnum.DONE.getCode());
                 apply.setEndTime(TypeUtils.castToString(System.currentTimeMillis()));
@@ -43,7 +43,7 @@ public class ApplyServiceImpl extends ServiceImpl<ApplyMapper, Apply> implements
             }else{
                 result = TIP_REFUND_DEPOSIT_ERROR;
             }
-        }else if(REFUND_ACCOUNT.getCode() == apply.getType()){
+        }else if(REFUND_ACCOUNT.getCode().equals(apply.getType())){
             if(userService.reduceAccount(apply.getUserId(),apply.getAmount())){
                 apply.setStatus(ApplyStatusEnum.DONE.getCode());
                 apply.setEndTime(TypeUtils.castToString(System.currentTimeMillis()));

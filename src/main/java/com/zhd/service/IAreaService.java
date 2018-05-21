@@ -4,6 +4,7 @@ import com.zhd.pojo.Area;
 import com.baomidou.mybatisplus.service.IService;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * <p>
@@ -16,5 +17,8 @@ import java.math.BigDecimal;
 public interface IAreaService extends IService<Area> {
 
     Area findArea(BigDecimal locationX, BigDecimal locationY);
+
+
+    List<Integer> selectByCityIds(List<Integer> id);//根据cityIds批量选择其所有area
 
 }

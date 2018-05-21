@@ -1,11 +1,13 @@
 package com.zhd.mapper;
 
+import com.zhd.pojo.Area;
 import com.zhd.pojo.City;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import javax.annotation.security.PermitAll;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**

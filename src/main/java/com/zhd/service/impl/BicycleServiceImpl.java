@@ -4,15 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.zhd.enums.BicycleStatusEnum;
 import com.zhd.exceptions.*;
+import com.zhd.pojo.Area;
 import com.zhd.pojo.Bicycle;
 import com.zhd.mapper.BicycleMapper;
 import com.zhd.pojo.City;
 import com.zhd.pojo.Journey;
-import com.zhd.service.IBicycleService;
+import com.zhd.service.*;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.zhd.service.ICityService;
-import com.zhd.service.IJourneyService;
-import com.zhd.service.IUserService;
 import com.zhd.util.Constants;
 import com.zhd.util.DataUtil;
 import com.zhd.util.RegeoUtil;
@@ -41,7 +39,7 @@ public class BicycleServiceImpl extends ServiceImpl<BicycleMapper, Bicycle> impl
     @Autowired
     private IJourneyService journeyService;
     @Autowired
-    private ICityService cityService;
+    private IAreaService areaService;
 
     @Override
     public Journey borrowBicycle(Bicycle bicycle, String userid) throws Exception {
@@ -58,9 +56,10 @@ public class BicycleServiceImpl extends ServiceImpl<BicycleMapper, Bicycle> impl
         }
         //borrowBicycle
         bicycle.setStatus(BicycleStatusEnum.USING.getCode());
-        Integer startCityCode = RegeoUtil.getCityByLocation(bicycle.getLocationX(),bicycle.getLocationY()).getJSONObject("addressComponent").getInteger("adcode");
-        Integer startCityId = cityService.selectOne(new EntityWrapper<City>().eq("code", startCityCode)).getId();
-        Journey journey = Journey.builder().bicycleId(bicycle.getId()).userId(userid).startTime(DataUtil.generateRandomStartTimeString()).startLocationX(bicycle.getLocationX()).startLocationY(bicycle.getLocationY()).startCity(startCityId).build();
+        Area area = areaService.findArea(bicycle.getLocationX(), bicycle.getLocationY());
+//        Integer startCityCode = RegeoUtil.getCityByLocation(bicycle.getLocationX(),bicycle.getLocationY()).getJSONObject("addressComponent").getInteger("adcode");
+//        Integer startCityId = cityService.selectOne(new EntityWrapper<City>().eq("code", startCityCode)).getId();
+        Journey journey = Journey.builder().bicycleId(bicycle.getId()).userId(userid).startTime(DataUtil.generateRandomStartTimeString()).startLocationX(bicycle.getLocationX()).startLocationY(bicycle.getLocationY()).startArea(area.getId()).build();
         boolean result =  bicycleMapper.updateById(bicycle) > 0 && journeyService.insert(journey);
         if(result){
             return journey;
@@ -72,12 +71,11 @@ public class BicycleServiceImpl extends ServiceImpl<BicycleMapper, Bicycle> impl
     @Override
     public boolean returnBicycle(String userId, Journey journey) throws Exception {
         try{
-            JSONObject jsonObject = RegeoUtil.getCityByLocation(journey.getEndLocationX(), journey.getEndLocationY());
-            int adcode = Integer.valueOf(jsonObject.getJSONObject("addressComponent").getString("adcode"));
-            int cityId = cityService.selectOne(new EntityWrapper<City>().eq("code", adcode)).getId();
-            journey.setEndCity(cityId);
+//            JSONObject jsonObject = RegeoUtil.getCityByLocation(journey.getEndLocationX(), journey.getEndLocationY());
+//            int adcode = Integer.valueOf(jsonObject.getJSONObject("addressComponent").getString("adcode"));
+//            int cityId = cityService.selectOne(new EntityWrapper<City>().eq("code", adcode)).getId();
             journey.setDistanceRound(Math.round(journey.getDistance()));
-            Bicycle bicycle = Bicycle.builder().id(journey.getBicycleId()).locationX(journey.getEndLocationX()).locationY(journey.getEndLocationY()).cityId(cityId == 0 ? Constants.VALUE_DEFAULT_CITY_ID : cityId).status(BicycleStatusEnum.UNUSED.getCode()).build();
+            Bicycle bicycle = Bicycle.builder().id(journey.getBicycleId()).locationX(journey.getEndLocationX()).locationY(journey.getEndLocationY()).cityId(journey.getEndArea()).status(BicycleStatusEnum.UNUSED.getCode()).build();
             Bicycle bicycleInfo = Bicycle.builder().id(journey.getBicycleId()).serviceTime(journey.getRideTime()).mileage(journey.getDistance()).build();
             boolean result = bicycleMapper.updateById(bicycle) > 0 && bicycleMapper.updateInfo(bicycleInfo) && journeyService.updateById(journey) && userService.reduceAccount(userId, journey.getAmount());
             if(result){

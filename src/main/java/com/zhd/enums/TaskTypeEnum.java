@@ -3,6 +3,7 @@ package com.zhd.enums;
 import com.baomidou.mybatisplus.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 
@@ -28,6 +29,17 @@ public enum TaskTypeEnum implements IEnum{
             }
         }
         return UNKNOWN;
+    }
+
+    public static int getByType(String type){
+        if(StringUtils.isNotEmpty(type)){
+            switch(type){
+                case "移动" : return MOVE.getCode();
+                case "修理" : return REPAIR.getCode();
+                case "报废" : return DISABLE.getCode();
+            }
+        }
+        return -1;
     }
 
     @Override

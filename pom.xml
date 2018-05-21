@@ -134,6 +134,12 @@
             <artifactId>httpclient</artifactId>
             <version>${httpclient.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <!--<version>1.0.11</version>-->
+        </dependency>
         <!-- other util end -->
 
         <!-- test util-->

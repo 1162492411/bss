@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * <p>
@@ -26,5 +27,11 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, Area> implements IA
     @Override
     public Area findArea(BigDecimal locationX, BigDecimal locationY) {
         return areaMapper.findArea(locationX,locationY);
+    }
+
+
+    @Override
+    public List<Integer> selectByCityIds(List<Integer> id) {
+        return areaMapper.selectAllByCityIds(id);
     }
 }

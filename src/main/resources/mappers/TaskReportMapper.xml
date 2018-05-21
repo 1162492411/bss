@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhd.mapper.TaskReportMapper">
+
+    <!-- 统计各类型任务总数 -->
+    <select id="countByType" resultType="java.util.Map">
+        select
+        (case TYPE
+          when 1 then '移动'
+          when 2 then '修理'
+          when 3 then '报废'
+          else '未知'
+        end
+        ) countKey, count(1) countValue from task
+        where start_time BETWEEN unix_timestamp(#{begin}) and unix_timestamp(#{end})
+        <if test=" areaIds and areaIds.size > 0">
+            and area in
+            <foreach collection="areaIds" item="area" open="(" separator="," close=")">
+                #{area}
+            </foreach>
+        </if>
+        <if test="type != 0">
+            and type = #{type}
+        </if>
+        group by type
+    </select>
+
+    <!-- 统计各子区划的任务总数 -->
+    <select id="countByCity" resultType="java.lang.Integer">
+        select count(1) countValue from task
+        where start_time BETWEEN unix_timestamp(#{begin}) and unix_timestamp(#{end})
+        <if test=" areaIds and areaIds.size > 0">
+            and area in
+            <foreach collection="areaIds" item="area" open="(" separator="," close=")">
+                #{area}
+            </foreach>
+        </if>
+        <if test="type != 0">
+            and type = #{type}
+        </if>
+    </select>
+
+    <!-- 统计完成时间 -->
+    <select id="countByTime" resultType="java.util.Map">
+        SELECT
+        count(*) AS countValue,
+        (CASE
+        WHEN ride_time > 0 AND ride_time &lt;= 12 * 3600 THEN '12小时内'
+        WHEN ride_time > 12 * 3600 AND ride_time &lt;= 24 * 3600 THEN '12-24小时'
+        WHEN ride_time > 24 * 3600 AND ride_time &lt;= 36 * 3600 THEN '24-36小时'
+        WHEN ride_time > 36 * 3600 AND ride_time &lt;= 48 * 3600 THEN '36-48小时'
+        WHEN ride_time > 48 * 3600 AND ride_time &lt;= 60 * 3600 THEN '48-60小时'
+        WHEN ride_time > 60 * 3600 AND ride_time &lt;= 72 * 3600 THEN '60-72小时'
+        WHEN ride_time > 72 * 3600 THEN '72小时以上'
+        else '异常数据' END
+        ) AS countKey
+        FROM task
+        where start_time BETWEEN unix_timestamp(#{begin}) and unix_timestamp(#{end})
+        <if test=" areaIds and areaIds.size > 0">
+            and area in
+            <foreach collection="areaIds" item="area" open="(" separator="," close=")">
+                #{area}
+            </foreach>
+        </if>
+        <if test="type != 0">
+            and type = #{type}
+        </if>
+        GROUP BY countKey
+    </select>
+
+</mapper>

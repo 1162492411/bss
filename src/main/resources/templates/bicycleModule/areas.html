@@ -25,10 +25,12 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>
-                区域列表
-                <button class="Button Button--blue" data-toggle="modal" data-target="#add-area-modal">添加</button>
-            </h1>
+            <div class="form-inline">
+                <span>区域列表</span>
+                <input type="text" placeholder="名称/类型关键字" id="search-area-form-input" class="form-control" />
+                <button class="Button Button--blue" onclick="searchArea()">查询</button>
+            </div>
+
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-bicycle"></i> 车辆模块</a></li>
                 <li class="active">区域管理</li>

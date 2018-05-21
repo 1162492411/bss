@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.enums.IEnum;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 
@@ -29,6 +30,16 @@ public enum BicycleTypeEnum implements IEnum{
             if(code == bicycleTypeEnum.getCode()) return bicycleTypeEnum;
         }
         return UNKNOWN;
+    }
+
+    public static int getByType(String type){
+        if(StringUtils.isNotBlank(type)){
+            switch (type){
+                case "一代经典版" : return FIRST_GENERATION_CLASSICS.getCode();
+                case "一代轻骑版" : return FIRST_GENERATION_LITE.getCode();
+            }
+        }
+        return  -1;
     }
 
     @Override

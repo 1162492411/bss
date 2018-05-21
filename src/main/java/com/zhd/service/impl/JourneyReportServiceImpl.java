@@ -1,6 +1,7 @@
 package com.zhd.service.impl;
 
 import com.zhd.mapper.JourneyReportMapper;
+import com.zhd.service.IAreaService;
 import com.zhd.service.ICityService;
 import com.zhd.service.IJourneyReportService;
 import org.apache.commons.collections.CollectionUtils;
@@ -16,16 +17,18 @@ public class JourneyReportServiceImpl implements IJourneyReportService {
     private JourneyReportMapper journeyReportMapper;
     @Autowired
     private ICityService cityService;
+    @Autowired
+    private IAreaService areaService;
 
     @Override
     public List<Map<String, Object>> countUseCount(String begin, String end, Integer cityId, Integer timeType) {
         switch (timeType) {
             case 0:
-                return journeyReportMapper.countByHour(begin, end, cityService.getAllChildren(cityId));
+                return journeyReportMapper.countByHour(begin, end, areaService.selectByCityIds(cityService.getAllChildren(cityId)));
             case 1:
-                return journeyReportMapper.countByDay(begin, end, cityService.getAllChildren(cityId));
+                return journeyReportMapper.countByDay(begin, end, areaService.selectByCityIds(cityService.getAllChildren(cityId)));
             case 2:
-                return journeyReportMapper.countByMonth(begin, end, cityService.getAllChildren(cityId));
+                return journeyReportMapper.countByMonth(begin, end, areaService.selectByCityIds(cityService.getAllChildren(cityId)));
             case 3 :
                 return countUseCountByCity(begin, end, cityId);
             default:
@@ -44,7 +47,13 @@ public class JourneyReportServiceImpl implements IJourneyReportService {
             List<Integer> childrenCity = cityService.getAllChildren(currentCityId);
             resultMap.put("countKey", cityName);
             if(CollectionUtils.isNotEmpty(childrenCity)){
-                resultMap.put("countValue", journeyReportMapper.countByCity(beginDay, endDay, childrenCity));
+                System.out.println("childrenCity--" + childrenCity);
+                List<Integer> areas = areaService.selectByCityIds(childrenCity);
+                if(CollectionUtils.isNotEmpty(areas)){
+                    resultMap.put("countValue", journeyReportMapper.countByCity(beginDay, endDay, areas));
+                }else{
+                    resultMap.put("countValue",0);
+                }
             }else{
                 resultMap.put("countValue",0);
             }
@@ -55,27 +64,26 @@ public class JourneyReportServiceImpl implements IJourneyReportService {
 
     @Override
     public List<Map<String, Object>> countRideTime(String begin, String end, Integer cityId) {
-        return journeyReportMapper.countRideTime(begin, end, cityService.getAllChildren(cityId));
+        return journeyReportMapper.countRideTime(begin, end, areaService.selectByCityIds(cityService.getAllChildren(cityId)));
     }
 
     @Override
     public List<Map<String, Object>> countRideDistance(String begin, String end, Integer cityId) {
-        return journeyReportMapper.countRideDistance(begin, end, cityService.getAllChildren(cityId));
+        return journeyReportMapper.countRideDistance(begin, end, areaService.selectByCityIds(cityService.getAllChildren(cityId)));
     }
 
     @Override
     public List<Map<String, Object>> countFlow(String begin, String end, Integer cityId, Integer timeType) {
         switch (timeType) {
             case 0:
-                return journeyReportMapper.countFlowByHour(begin, end, cityService.getAllChildren(cityId));
+                return journeyReportMapper.countFlowByHour(begin, end, areaService.selectByCityIds(cityService.getAllChildren(cityId)));
             case 1:
-                return journeyReportMapper.countFlowByDay(begin, end, cityService.getAllChildren(cityId));
+                return journeyReportMapper.countFlowByDay(begin, end, areaService.selectByCityIds(cityService.getAllChildren(cityId)));
             case 2:
-                return journeyReportMapper.countFlowByMonth(begin, end, cityService.getAllChildren(cityId));
+                return journeyReportMapper.countFlowByMonth(begin, end, areaService.selectByCityIds(cityService.getAllChildren(cityId)));
             default:
                 return Collections.EMPTY_LIST;
         }
     }
-
-
+    
 }
