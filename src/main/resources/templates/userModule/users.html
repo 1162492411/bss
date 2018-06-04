@@ -92,13 +92,6 @@ immediately after the control sidebar -->
                                     <input type="text" class="col-sm-9 form-control" id="update-user-modal-name" name="updateName" placeholder="昵称" />
                                 </div>
                             </div>
-                            <!--&lt;!&ndash; 信用分 &ndash;&gt;-->
-                            <!--<div class="form-group">-->
-                                <!--<label for="update-user-modal-credit" class="col-sm-3 control-label">信用分</label>-->
-                                <!--<div class="col-sm-9">-->
-                                    <!--<input type="text" class="col-sm-9 form-control" id="update-user-modal-credit" name="updateCredit" placeholder="信用分" />-->
-                                <!--</div>-->
-                            <!--</div>-->
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">放弃</button>
@@ -107,7 +100,6 @@ immediately after the control sidebar -->
                         <!-- /.box-body -->
                     </form>
                 </div>
-
             </div>
         </div>
     </div>
@@ -128,7 +120,6 @@ immediately after the control sidebar -->
                             <!-- 编号 -->
                             <div class="form-group">
                                 <label for="add-user-modal-id" class="col-sm-3 control-label">编号</label>
-
                                 <div class="col-sm-9">
                                     <input type="text" class="col-sm-9 form-control" id="add-user-modal-id" name="addId" placeholder="编号" />
                                 </div>
@@ -148,14 +139,6 @@ immediately after the control sidebar -->
                                     <select class="col-sm-9 form-control" id="add-user-modal-type"></select>
                                 </div>
                             </div>
-
-                            <!--&lt;!&ndash;  信用分 &ndash;&gt;-->
-                            <!--<div class="form-group">-->
-                                <!--<label for="add-user-modal-credit" class="col-sm-3 control-label">信用分</label>-->
-                                <!--<div class="col-sm-9">-->
-                                    <!--<input type="text" class="col-sm-9 form-control" id="add-user-modal-credit" name="addCredit" placeholder="信用分" />-->
-                                <!--</div>-->
-                            <!--</div>-->
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">放弃</button>
@@ -189,12 +172,7 @@ immediately after the control sidebar -->
         loadUsers(1);
         $("#update-user-form").validate({
             rules :{
-                updateName : "required",
-                updateCredit : {
-                    required : true,
-                    number : true,
-                    range : [0,100]
-                }
+                updateName : "required"
             }
         });
         $("#add-user-form").validate({
@@ -204,12 +182,7 @@ immediately after the control sidebar -->
                     number : true,
                     rangelength: [11,11]
                 },
-                addName : "required",
-                addCredit : {
-                    required : true,
-                    number : true,
-                    range : [0,100]
-                }
+                addName : "required"
             }
         });
     });

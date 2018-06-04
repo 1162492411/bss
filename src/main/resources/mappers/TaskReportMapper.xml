@@ -45,13 +45,13 @@
         SELECT
         count(*) AS countValue,
         (CASE
-        WHEN ride_time > 0 AND ride_time &lt;= 12 * 3600 THEN '12小时内'
-        WHEN ride_time > 12 * 3600 AND ride_time &lt;= 24 * 3600 THEN '12-24小时'
-        WHEN ride_time > 24 * 3600 AND ride_time &lt;= 36 * 3600 THEN '24-36小时'
-        WHEN ride_time > 36 * 3600 AND ride_time &lt;= 48 * 3600 THEN '36-48小时'
-        WHEN ride_time > 48 * 3600 AND ride_time &lt;= 60 * 3600 THEN '48-60小时'
-        WHEN ride_time > 60 * 3600 AND ride_time &lt;= 72 * 3600 THEN '60-72小时'
-        WHEN ride_time > 72 * 3600 THEN '72小时以上'
+        WHEN task_time > 0 AND task_time &lt;= 12 * 3600 THEN '12小时内'
+        WHEN task_time > 12 * 3600 AND task_time &lt;= 24 * 3600 THEN '12-24小时'
+        WHEN task_time > 24 * 3600 AND task_time &lt;= 36 * 3600 THEN '24-36小时'
+        WHEN task_time > 36 * 3600 AND task_time &lt;= 48 * 3600 THEN '36-48小时'
+        WHEN task_time > 48 * 3600 AND task_time &lt;= 60 * 3600 THEN '48-60小时'
+        WHEN task_time > 60 * 3600 AND task_time &lt;= 72 * 3600 THEN '60-72小时'
+        WHEN task_time > 72 * 3600 THEN '72小时以上'
         else '异常数据' END
         ) AS countKey
         FROM task

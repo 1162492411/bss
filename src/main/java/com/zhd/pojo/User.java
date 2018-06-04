@@ -39,7 +39,7 @@ public class User implements Serializable,BaseModel {
      * 用户编号
      */
     @TableId(value = "id", type = IdType.INPUT)
-    @NotNull(groups = {Update.class, Delete.class})
+    @NotNull(groups = {Insert.class, Update.class, Delete.class})
     private String id;
     /**
      * 昵称
@@ -49,32 +49,28 @@ public class User implements Serializable,BaseModel {
     /**
      * 密码
      */
-    @NotBlank(groups = {Insert.class, Update.class})
     private String password;
     /**
      * 账户类型
      */
-    @Range(min = 0, max = 3, groups = {Insert.class, Update.class})
+    @Range(min = 0, max = 3, groups = {Insert.class})
     private Integer type;
     /**
      * 头像
      */
-    @NotBlank(groups = Update.class)
     private String avatar;
     /**
      * 信用分
      */
-    @Range(min = 0, groups = {Insert.class, Update.class})
     private Integer credit;
     /**
      * 状态
      */
-    @NotNull(groups = {Insert.class, Update.class})
     private Integer status;
     /**
      * 账户余额
      */
-    @Range(min = 0, groups = {Update.class})
+    @Range(min = 0)
     @TableField("account_balance")
     private BigDecimal accountBalance;
 
@@ -87,7 +83,6 @@ public class User implements Serializable,BaseModel {
     /**
      * 包月截止时间
      */
-    @NotNull(groups = {Insert.class, Update.class})
     @TableField("monthly_time")
     private String monthlyTime;
 }

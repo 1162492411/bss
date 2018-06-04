@@ -635,6 +635,9 @@ function loadUsers(page) {
     $("#userTableBody").find("[id$='status']").each(function () {
         paintColumn($(this).attr("id"), allUserStatus);
     });
+    $("#userTableBody").find("[id$='monthlyTime']").each(function () {
+        formatDateTime($(this).attr("id"));
+    });
 }
 
 /**
@@ -655,16 +658,23 @@ function doUpdateUser() {
  * 封禁用户
  */
 function blockUser(data) {
-    let sendData = {"id": data.id, "status": true};
+    let sendData;
+    if(data.status === Texts.user.ban){
+        sendData = {"id": data.id, "status": Codes.user.normal, "name": data.name};
+    }else{
+        sendData = {"id": data.id, "status": Codes.user.ban, "name": data.name};
+    }
     $.ajax({
         type: 'PUT',
         url: '/users',
         data: JSON.stringify(sendData),
         contentType: 'application/json',
         success: function (data) {
-            if (data === true) {
-                $("#userTableTD-" + sendData.id + "-status").text(true);
-            }
+                // $("#userTableTD-" + sendData.id + "-status").text(true);
+                if (data.code == Codes.successResponse) {
+                    alert(data.message);
+                    window.location.reload();
+                }
         }
     });
 }
@@ -690,6 +700,12 @@ function searchUser(){
     let keyword = $("#search-user-form-input").val();
     if(dataNotEmpty(keyword)){
         internalLoadDatasKeyword(usersPath + "/list", 1, "userTable", "usersPagination", userMethods, "loadSearchUsers", keyword);
+        $("#userTableBody").find("[id$='status']").each(function () {
+            paintColumn($(this).attr("id"), allUserStatus);
+        });
+        $("#userTableBody").find("[id$='monthlyTime']").each(function () {
+            formatDateTime($(this).attr("id"));
+        });
     }
 }
 
@@ -700,6 +716,12 @@ function searchUser(){
  */
 function loadSearchUsers(keyword,page){
     internalLoadDatasKeyword(usersPath + "/list", page, "userTable", "usersPagination", userMethods, "loadSearchUsers", keyword);
+    $("#userTableBody").find("[id$='status']").each(function () {
+        paintColumn($(this).attr("id"), allUserStatus);
+    });
+    $("#userTableBody").find("[id$='monthlyTime']").each(function () {
+        formatDateTime($(this).attr("id"));
+    });
 }
 
 /*----------------车辆模块部分-------------------------*/
@@ -1741,12 +1763,20 @@ function journeyReportSubmit(appendMode){
 }
 
 /**
- * 重置图表页面的图表信息
+ * 重置图表页面的图表
+ * @param opt 图表的options
+ * @param chart 图表的chart
  */
-function resetChart(){
-    overviewReportOptions.series = [];
-    while(overviewReportChart.series.length){
-        overviewReportChart.series[0].remove();
+function resetChart(opt, chart){
+    // overviewReportOptions.series = [];
+    // while(overviewReportChart.series.length){
+    //     overviewReportChart.series[0].remove();
+    // }
+    opt.series = [];
+    while(chart.series.length){
+        for(let i = 0; i < chart.series.length; i++){
+            chart.series[i].remove();
+        }
     }
 }
 

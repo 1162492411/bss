@@ -63,12 +63,12 @@ create table city
 
 create table deposit
 (
-  id int not null auto_increment
+  id int not null auto_increment comment '主键'
     primary key,
-  amount decimal(5,2) null,
-  type int null,
-  user_id char(11) null,
-  operate_time varchar(50) null
+  amount decimal(5,2) null COMMENT '金额',
+  type int null COMMENT '类型',
+  user_id char(11) null COMMENT '用户',
+  operate_time varchar(50) null COMMENT '操作时间'
 )
   comment '押金记录表'  engine=InnoDB charset=utf8
 ;
@@ -127,7 +127,7 @@ create table supplier
     primary key,
   name varchar(254) null comment '供应商名',
   address varchar(254) null comment '供应商地址',
-  brand varchar(254) null
+  brand varchar(254) null comment '供应商品牌'
 )
   comment '供应商表'  engine=InnoDB charset=utf8
 ;
@@ -143,8 +143,8 @@ create table task
   start_time varchar(50) null comment '任务开始时间',
   end_time varchar(50) null comment '任务结束时间',
   bicycle int null comment '车辆编号',
-  task_time varchar(50) null,
-  area int null
+  task_time varchar(50) null comment '任务耗时',
+  area int null comment '任务所属区域'
 )
   comment '调度任务表' engine=InnoDB charset=utf8
 ;

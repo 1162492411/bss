@@ -84,10 +84,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public User findUser(String id) throws NoSuchUserException {
+    public User findUser(String id){
         User user = userMapper.selectById(id);
         if(user == null) {
-            throw new NoSuchUserException();
+            return null;
         }
         else{
             return user;
@@ -144,6 +144,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return false;
     }
 
+    @Override
+    public void reduceCredit(String id,int count) throws NoSuchUserException {
+        User user = findUser(id);
+        int currentCredit = user.getCredit();
+        if(currentCredit - count <= 0){
+            this.userMapper.updateById(User.builder().id(id).credit(0).build());
+        }else{
+            this.userMapper.updateById(User.builder().id(id).credit( currentCredit - count).build());
+        }
+    }
 }
 
 

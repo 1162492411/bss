@@ -21,9 +21,10 @@ public class Constants {
     public static final String NULL_USER_ID = "null";
 
     //user
-    public static final String[] USER_KEYS = {"id","name","type","status"};
-    public static final String[] USER_NAMES = {" 编号","名称","类型","状态"};
+    public static final String[] USER_KEYS = {"id","name","type","status","monthlyTime"};
+    public static final String[] USER_NAMES = {" 编号","名称","类型","状态","包月截止期"};
     public static final String TIP_NOT_LOGIN = "用户未登录";
+    public static final String TIP_HAS_EXIST = "用户已存在";
     public static final String TIP_NO_SUCH_USER = "不存在该用户";
     public static final String TIP_NO_PERMISSION = "权限不足";
     public static final String TIP_NO_ACCOUNT_BALANCE = "账户余额不足";

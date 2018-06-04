@@ -105,7 +105,7 @@ public class DepositController extends BaseController {
                     depositService.recharge(deposit);
                     return renderSuccess(deposit);
                 } else if (DepositTypeEnum.OUT.getCode() == deposit.getType()) {
-                    //取押金
+                    //取押金--该部分实际不再使用
                     if(userService.selectById(userid).getDepositBalance().intValue() <= 0){
                         return renderError(Constants.TIP_NO_DEPOSIT);
                     }

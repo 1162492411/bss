@@ -85,5 +85,5 @@ public class JourneyReportServiceImpl implements IJourneyReportService {
                 return Collections.EMPTY_LIST;
         }
     }
-    
+
 }

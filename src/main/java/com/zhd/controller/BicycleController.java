@@ -156,8 +156,9 @@ public class BicycleController extends BaseController{
                 throw new NotLoginException();
             }
             //检测是否存在未结束行程
-            if(journeyService.getContinuedJourneys(userid).size() > 0) {
-                return renderError(Constants.TIP_HAS_NO_END_JOURNEY);
+            List<Journey> continuedJourneys = journeyService.getContinuedJourneys(userid);
+            if(continuedJourneys.size() > 0) {
+                userService.reduceCredit(userid, continuedJourneys.size() * 10);
             }
             Journey journey = bicycleService.borrowBicycle(borrowBicycle, userid);
             return journey != null ? renderSuccess(journey) : renderError(Constants.TIP_BORROW_BICYCLE_ERROR);

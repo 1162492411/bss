@@ -34,5 +34,4 @@ public interface JourneyReportMapper {
 
     List<Map<String, Object>> countFlowByMonth(@Param("begin")String begin, @Param("end")String endDay , @Param("cityIds")List<Integer> cityIds);//统计某区域的所有子区域的统计周期内的每月车辆流动情况
 
-
 }

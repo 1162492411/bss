@@ -8,9 +8,12 @@ import com.zhd.convert.TaskConvert;
 import com.zhd.enums.BicycleStatusEnum;
 import com.zhd.enums.TaskStatusEnum;
 import com.zhd.enums.TaskTypeEnum;
+import com.zhd.enums.UserTypeEnum;
+import com.zhd.exceptions.NotLoginException;
 import com.zhd.pojo.Bicycle;
 import com.zhd.pojo.JSONResponse;
 import com.zhd.pojo.Task;
+import com.zhd.pojo.User;
 import com.zhd.service.IBicycleService;
 import com.zhd.service.ITaskService;
 import com.zhd.service.IUserService;
@@ -73,10 +76,17 @@ public class TaskController extends BaseController {
     }
 
     @GetMapping("list/{current}")
-    public JSONResponse list(@PathVariable("current") int pageNum, Page<Task> page) {
+    public JSONResponse list(@PathVariable("current") int pageNum, Page<Task> page, HttpSession session) {
         try {
             if (pageNum <= 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
-            return renderSuccess(TaskConvert.convertToVOPageInfo(taskService.selectPage(page, new EntityWrapper<Task>().orderBy("status"))));
+            String userid = String.valueOf(session.getAttribute("userid"));
+            if(userid == null) throw new NotLoginException();
+            User currentUser = userService.selectById(userid);
+            if(UserTypeEnum.ADMIN.getCode() == currentUser.getType()){
+                return renderSuccess(TaskConvert.convertToVOPageInfo(taskService.selectPage(page, new EntityWrapper<Task>().orderBy("status"))));
+            }else{
+                return renderSuccess(TaskConvert.convertToVOPageInfo(taskService.selectPage(page, new EntityWrapper<Task>().eq("user", userid).orderBy("status"))));
+            }
         } catch (Exception e) {
             return renderError(e.getMessage());
         }
@@ -97,6 +107,7 @@ public class TaskController extends BaseController {
                 } else {
                     record.setStatus(TaskStatusEnum.WAIT_SOMEONE.getCode());
                 }
+
                 bicycleService.updateById(Bicycle.builder().id(record.getBicycle()).status(calculateStatusAfterInsert(record.getType())).build());
                 return taskService.insert(record) ? renderSuccess(record) : renderError();
             }
@@ -156,7 +167,8 @@ public class TaskController extends BaseController {
                 return renderError(bindingResult.getFieldError().getDefaultMessage());
             } else if ((record = taskService.selectById(record.getId())) != null) {
                 String currentUserId = String.valueOf(session.getAttribute("userid"));
-                if (StringUtils.isNotEmpty(currentUserId) && userService.isAdmin(currentUserId)) {
+                String taskUserId = taskService.selectById(record.getId()).getUser();
+                if (StringUtils.isNotEmpty(currentUserId) && (userService.isAdmin(currentUserId) || currentUserId.equals(taskUserId))) {
                     int bicycleId = taskService.selectById(record.getId()).getBicycle();
                     bicycleService.updateById(Bicycle.builder().id(bicycleId).status(BicycleStatusEnum.UNUSED.getCode()).build());
                     return taskService.deleteById(record.getId()) ? renderSuccess(record) : renderError(Constants.UNKNOWN_EXCEPTION);

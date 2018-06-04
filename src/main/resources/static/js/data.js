@@ -9,9 +9,19 @@ const Codes = {
         "waitSomeOne" : 1,
         "waitComplete" : 2,
         "done" : 3
+    },
+    "user" : {
+        "normal" : 1,
+        "ban" : 2
     }
 };//常量
 
+const Texts = {
+    "user" : {
+        "normal" : "正常",
+        "ban" : "封禁"
+    }
+};//常量所对应的文字值
 const emptyStaff = {
     "id" : "",
     "name" : "暂不设置"
@@ -51,7 +61,7 @@ const applyMethods = [
     {"name": "完成", "method": "doneApply"}
 ];
 
-const rootPath = "http://localhost:8080";//网站根目录
+const rootPath = "http://localhost:9595";//网站根目录
 const usersPath = rootPath + "/users";//获取用户数据的根目录
 const allStaffsPath = usersPath + "/allStaffs";//获取所有员工简略信息的URL
 const areasPath = rootPath + "/areas";//获取区域信息的根目录

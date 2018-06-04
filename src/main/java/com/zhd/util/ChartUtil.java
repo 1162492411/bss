@@ -1,6 +1,7 @@
 package com.zhd.util;
 
 import com.zhd.pojo.Serie;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.math.BigDecimal;
@@ -9,6 +10,7 @@ import java.util.*;
 /**
  * HighCharts工具类，用于将传入的数据转化为符合highCharts的图表的格式
  */
+@Slf4j
 public class ChartUtil {
 
     /**
@@ -107,7 +109,14 @@ public class ChartUtil {
                 Map<String, Object> resultMap = new HashMap<>();
                 resultMap.put("name", key);
                 resultMap.put("y", value);
-                seriesList.add(resultMap);
+                try{
+                    Double valueDouble = Double.parseDouble(String.valueOf(value));
+                    if(valueDouble != 0.0){
+                        seriesList.add(resultMap);
+                    }
+                }catch (Exception e){
+                    continue;//出现value值取值异常时忽略该条数据
+                }
             }
             result.put("seriesData", seriesList);
             return result;

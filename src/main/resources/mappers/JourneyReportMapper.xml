@@ -170,7 +170,7 @@
         (
         SELECT from_unixtime(start_time,'%Y-%m-%d') start_time , start_area, end_area FROM journey
         WHERE start_time BETWEEN unix_timestamp(#{begin}) AND unix_timestamp(#{end})
-        and start_area in
+        and ( start_area in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
@@ -178,7 +178,7 @@
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
-        ) dataTable
+        )  ) dataTable
         group by countKey
     </select>
 
@@ -217,7 +217,7 @@
         (
         SELECT from_unixtime(start_time,'%Y-%m') start_time , start_area, end_area FROM journey
         WHERE start_time BETWEEN unix_timestamp(#{begin}) AND unix_timestamp(#{end})
-        and start_area in
+        and ( start_area in
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
@@ -225,7 +225,7 @@
         <foreach collection="cityIds" item="city" open="(" separator="," close=")">
             #{city}
         </foreach>
-        ) dataTable
+        ) ) dataTable
         group by countKey
     </select>
 

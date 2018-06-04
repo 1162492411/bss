@@ -1,6 +1,9 @@
 package com.zhd.convert;
 
+import com.alibaba.fastjson.JSON;
 import com.zhd.util.DataUtil;
+import lombok.extern.slf4j.Slf4j;
+
 import java.time.LocalDate;
 import java.util.*;
 import static com.zhd.util.ChartUtil.commonConvertColumn;
@@ -13,6 +16,7 @@ import static com.zhd.util.Constants.CHART_TYPE_PIE;
 /**
  * 行程报表转换类
  */
+@Slf4j
 public class JourneyReportConvert {
     private static final List<String> DEFAULT_HOURS_XAXIS = Arrays.asList("00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23");
     private static final List<String> DEFAULT_RIDETIME_XAXIS = Arrays.asList("30分钟内", "30-60分钟", "60-90分钟", "90-120分钟", "120分钟以上", "异常数据");
@@ -133,8 +137,16 @@ public class JourneyReportConvert {
         switch (chartType) {
             case CHART_TYPE_PIE:
                 return commonConvertPie(dataList, cityName);
-            default:
-                return commonConvertLine(dataList, DEFAULT_RIDETIME_XAXIS, DataUtil.generateZeroLongListList(1, DEFAULT_RIDETIME_XAXIS.size()), cityName, SINGLE_KEYS, Arrays.asList("骑行时间情况"));
+            default:{
+                List<String> xAxis = new ArrayList<>();
+                for (Map<String, Object> dataMap : dataList) {
+                    String countKey = String.valueOf(dataMap.get("countKey"));
+                    if (!xAxis.contains(countKey)) {
+                        xAxis.add(countKey);
+                    }
+                }
+                return commonConvertColumn(dataList, xAxis, DataUtil.generateZeroLongListList(1, xAxis.size()), cityName, SINGLE_KEYS, Arrays.asList("骑行时间分布"));
+            }
         }
     }
 
@@ -161,7 +173,7 @@ public class JourneyReportConvert {
                 for (int i = 0; i < resultX.size(); i++) {
                     xAxis.add(resultX.get(i).toString());
                 }
-                return commonConvertLine(dataList, xAxis, DataUtil.generateZeroLongListList(1, xAxis.size()), cityName, SINGLE_KEYS, Arrays.asList("骑行距离"));
+                return commonConvertColumn(dataList, xAxis, DataUtil.generateZeroLongListList(1, xAxis.size()), cityName, SINGLE_KEYS, Arrays.asList("骑行距离"));
         }
     }
 
@@ -169,14 +181,17 @@ public class JourneyReportConvert {
      * 将流动情况转化
      * @param dataList 统计数据
      * @param cityName 区划名称
-     * @param chartType 图表类型
      * @param timeType 时间类型
      * @return
      */
-    public static Map<String, Object> convertFlow(List<Map<String, Object>> dataList, String cityName, String chartType, int timeType) {
+    public static Map<String, Object> convertFlow(List<Map<String, Object>> dataList, String cityName,int timeType) {
         switch(timeType){
-            case 0 : return convertFlowByHour(dataList, cityName, chartType);
-            default : return convertFlowByDayOrMonth(dataList, cityName, chartType);
+            case 0 :
+                log.info("按小时查询流动情况");
+                return convertFlowByHour(dataList, cityName);
+            default :
+                log.info("按日/月查询流动情况");
+                return convertFlowByDayOrMonth(dataList, cityName);
         }
     }
 
@@ -184,30 +199,25 @@ public class JourneyReportConvert {
      * 将流动情况(按小时分组)转化
      * @param dataList 统计数据
      * @param cityName 区划名称
-     * @param chartType 图表类型
      */
-    private static Map<String, Object> convertFlowByHour(List<Map<String, Object>> dataList, String cityName, String chartType){
-//        switch(chartType){
-//            case CHART_TYPE_COLUMN :
-//                return commonConvertLine(dataList, DEFAULT_HOURS_XAXIS, DataUtil.generateZeroBigDecimalListList(FLOW_KEYS.size(), DEFAULT_HOURS_XAXIS.size()), cityName, FLOW_KEYS, FLOW_NAMES);
-//            default :
-                return commonConvertColumn(dataList, DEFAULT_HOURS_XAXIS, DataUtil.generateZeroBigDecimalListList(FLOW_KEYS.size(), DEFAULT_HOURS_XAXIS.size()), cityName, FLOW_KEYS, FLOW_NAMES);
-//        }
+    private static Map<String, Object> convertFlowByHour(List<Map<String, Object>> dataList, String cityName){
+        return commonConvertColumn(dataList, DEFAULT_HOURS_XAXIS, DataUtil.generateZeroBigDecimalListList(FLOW_KEYS.size(), DEFAULT_HOURS_XAXIS.size()), cityName, FLOW_KEYS, FLOW_NAMES);
     }
 
     /**
      * 将流动情况(按天/月分组)转化
      * @param dataList 统计数据
      * @param cityName 区划名称
-     * @param chartType 图表类型
      */
-    private static Map<String, Object> convertFlowByDayOrMonth(List<Map<String, Object>> dataList, String cityName, String chartType){
-        switch(chartType){
-            case CHART_TYPE_LINE :
-                return commonConvertLine(dataList, DEFAULT_HOURS_XAXIS, DataUtil.generateZeroBigDecimalListList(FLOW_KEYS.size(), DEFAULT_HOURS_XAXIS.size()), cityName, FLOW_KEYS, FLOW_NAMES);
-            default :
-                return commonConvertColumn(dataList, DEFAULT_HOURS_XAXIS, DataUtil.generateZeroBigDecimalListList(FLOW_KEYS.size(), DEFAULT_HOURS_XAXIS.size()), cityName, FLOW_KEYS, FLOW_NAMES);
+    private static Map<String, Object> convertFlowByDayOrMonth(List<Map<String, Object>> dataList, String cityName){
+        List<String> xAxis = new ArrayList<>();
+        for (Map<String, Object> dataMap : dataList) {
+            String countKey = String.valueOf(dataMap.get("countKey"));
+            if (!xAxis.contains(countKey)) {
+                xAxis.add(countKey);
+            }
         }
+        return commonConvertColumn(dataList, xAxis, DataUtil.generateZeroBigDecimalListList(FLOW_KEYS.size(), xAxis.size()), cityName, FLOW_KEYS, FLOW_NAMES);
     }
 
 

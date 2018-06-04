@@ -44,4 +44,6 @@ public interface IUserService extends IService<User> {
 
     boolean reduceAccount(String id, BigDecimal amount) throws NoEnoughAccountBalanceException; //扣钱接口
 
+    void reduceCredit(String id, int count) throws NoSuchUserException;//扣取信用分
+
 }

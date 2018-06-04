@@ -63,7 +63,7 @@ public class ReportController extends BaseController {
                         case 2:
                             return renderSuccess(JourneyReportConvert.convertRideDistance(journeyReportService.countRideDistance(startDate, endDate, cityId), cityName, chartType));
                         case 3:
-                            return renderSuccess(JourneyReportConvert.convertFlow(journeyReportService.countFlow(startDate, endDate, cityId, groupType), cityName, chartType, groupType));
+                            return renderSuccess(JourneyReportConvert.convertFlow(journeyReportService.countFlow(startDate, endDate, cityId, groupType), cityName, groupType));
                         default:
                             return renderError();
                     }
