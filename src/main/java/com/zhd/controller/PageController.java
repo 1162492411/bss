@@ -103,4 +103,10 @@ public class PageController {
      */
     @RequestMapping("reportModule/taskOverview")
     public void toTaskOverview(){}
+
+    /**
+     * 前往--用户管理-WS
+     */
+    @RequestMapping("userModule/ws")
+    public void toUserModuleWs(){}
 }

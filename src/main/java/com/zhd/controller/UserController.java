@@ -11,10 +11,13 @@ import com.zhd.pojo.JSONResponse;
 import com.zhd.pojo.User;
 import com.zhd.service.IUserService;
 import com.zhd.util.Constants;
+import com.zhd.util.RedisUtil;
 import jdk.nashorn.internal.runtime.logging.Logger;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +39,8 @@ import java.math.BigDecimal;
 public class UserController extends BaseController{
     @Autowired
     private IUserService userService;
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
 
     @GetMapping("list/{keyword}/{current}")
@@ -67,6 +72,8 @@ public class UserController extends BaseController{
     public JSONResponse list(@PathVariable("current") int pageNum, Page<User> page) {
         try {
             if(pageNum <= 0) throw new IllegalArgumentException(Constants.ILLEGAL_ARGUMENTS);
+            log.debug("获取用户列表接收参数:pageNum:{},page:{}",pageNum, JSON.toJSONString(page));
+            redisTemplate.opsForValue().set("bss-convert-2","0.2");
             return renderSuccess(UserConvert.convertToVOPageInfo(userService.selectPage(page, new EntityWrapper<User>().setSqlSelect("id,name,type,status,monthly_time").ne("type", UserTypeEnum.ADMIN.getCode()).orderBy("status", false))));
         } catch (Exception e) {
             return renderError(e.getMessage());
